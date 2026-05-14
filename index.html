@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Marcello Bergonzi Perrone – Candidato Sindaco Voghera 2026</title>
+  <title>Marcello Bergonzi Perrone â Candidato Sindaco Voghera 2026</title>
   <meta name="description" content="Marcello Bergonzi Perrone, candidato sindaco per le Elezioni Comunali di Voghera del 24/25 maggio 2026. Programma amministrativo, curriculum e trasparenza.">
   <link rel="icon" href="logocivici4.webp" type="image/webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,14 +12,14 @@
 
   <style>
     /* =============================================
-       RESET & BASE  —  stile civicivoghera.it
+       RESET & BASE  â  stile civicivoghera.it
     ============================================= */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
       /* Palette da civicivoghera.it */
       --blu:        #2d4a6e;   /* sfondo hero blu-acciaio */
-      --blu-scuro:  #1e3450;   /* variante più scura */
+      --blu-scuro:  #1e3450;   /* variante piÃ¹ scura */
       --blu-med:    #3a5f8a;   /* hover/sfumature */
       --arancio:    #e07b39;   /* accento arancio (CTA, titoli sezione) */
       --arancio-sc: #c4651f;   /* arancio hover */
@@ -48,7 +48,7 @@
     a { color: inherit; }
 
     /* =============================================
-       HEADER / NAV  —  stile civicivoghera.it
+       HEADER / NAV  â  stile civicivoghera.it
     ============================================= */
     header {
       position: sticky;
@@ -123,7 +123,7 @@
     }
 
     /* =============================================
-       HERO  —  stile civicivoghera.it
+       HERO  â  stile civicivoghera.it
        sfondo blu-acciaio, serif, arancio accent
     ============================================= */
     .hero {
@@ -167,7 +167,7 @@
       display: block;
     }
 
-    /* Placeholder logo testo se non c'è img */
+    /* Placeholder logo testo se non c'Ã¨ img */
     .hero-logo-text {
       font-family: var(--font-serif);
       font-size: .75rem;
@@ -372,7 +372,7 @@
     }
 
     /* =============================================
-       CHI È
+       CHI Ã
     ============================================= */
     .chi-e { background: #fff; }
 
@@ -508,7 +508,7 @@
     }
 
     .pub-list li::before {
-      content: '◆';
+      content: 'â';
       color: var(--blu);
       font-size: .65rem;
       flex-shrink: 0;
@@ -722,6 +722,8 @@
       font-family: var(--font-sans);
     }
     #chat-fab:hover { background: var(--arancio-sc); transform: translateY(-2px); }
+    /* Nasconde il FAB quando la chat è aperta (backup CSS oltre al JS) */
+    body.chat-open #chat-fab { display: none !important; }
 
     /* Pannello chat */
     #chat-panel {
@@ -882,6 +884,7 @@
         bottom: 0; right: 0;
         width: 100%; max-width: 100%;
         border-radius: 16px 16px 0 0;
+        z-index: 1001; /* sopra il FAB su mobile */
       }
       #chat-fab { bottom: 16px; right: 16px; }
     }
@@ -889,9 +892,9 @@
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
      HEADER
-══════════════════════════════════════════ -->
+ââââââââââââââââââââââââââââââââââââââââââ -->
 <header>
   <div class="nav-inner">
     <a class="nav-brand" href="#">
@@ -900,26 +903,26 @@
     </a>
     <nav>
       <ul>
-        <li><a href="#chi-sono">Chi è</a></li>
+        <li><a href="#chi-sono">Chi Ã¨</a></li>
         <li><a href="#curriculum">Curriculum</a></li>
         <li><a href="#programma">Programma</a></li>
         <li><a href="#casellario">Casellario</a></li>
-        <li><a href="#" onclick="chatOpen();return false;" style="color:var(--arancio);border-bottom-color:transparent;">🤖 Chiedimi del programma</a></li>
+        <li><a href="#" onclick="chatOpen();return false;" style="color:var(--arancio);border-bottom-color:transparent;">ð¤ Chiedimi del programma</a></li>
       </ul>
     </nav>
   </div>
 </header>
 
-<!-- ══════════════════════════════════════════
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
      STRISCIA ELEZIONI
-══════════════════════════════════════════ -->
+ââââââââââââââââââââââââââââââââââââââââââ -->
 <div class="elezioni-banner">
-  🗳&nbsp; ELEZIONI COMUNALI DI VOGHERA &nbsp;·&nbsp; 24 / 25 MAGGIO 2026
+  ð³&nbsp; ELEZIONI COMUNALI DI VOGHERA &nbsp;Â·&nbsp; 24 / 25 MAGGIO 2026
 </div>
 
-<!-- ══════════════════════════════════════════
-     HERO  —  layout centrato come civicivoghera.it
-══════════════════════════════════════════ -->
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
+     HERO  â  layout centrato come civicivoghera.it
+ââââââââââââââââââââââââââââââââââââââââââ -->
 <div class="hero">
   <div class="hero-inner">
 
@@ -928,14 +931,14 @@
       <h1>Bergonzi Perrone Sindaco</h1>
       <h2>Lista Civica per le Elezioni Comunali 2026</h2>
       <p class="hero-candidato-line">
-        🏛️ <strong>Marcello Bergonzi Perrone</strong> — Candidato Sindaco
+        ðï¸ <strong>Marcello Bergonzi Perrone</strong> â Candidato Sindaco
       </p>
     </div>
 
     <!-- Foto candidato -->
     <div class="hero-foto">
       <img src="foto-candidato.jpeg"
-           alt="Marcello Bergonzi Perrone – Candidato Sindaco Voghera 2026">
+           alt="Marcello Bergonzi Perrone â Candidato Sindaco Voghera 2026">
     </div>
 
     <!-- Slogan e CTA -->
@@ -954,15 +957,15 @@
     </div>
 
     <div class="hero-btn-group">
-      <a href="programma-amministrativo.pdf" class="btn btn-arancio" download>📋 Scarica Programma</a>
+      <a href="programma-amministrativo.pdf" class="btn btn-arancio" download>ð Scarica Programma</a>
     </div>
 
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
      COALIZIONE
-══════════════════════════════════════════ -->
+ââââââââââââââââââââââââââââââââââââââââââ -->
 <div class="coalizione">
   <h3>La Coalizione</h3>
   <ul>
@@ -976,40 +979,40 @@
   </ul>
 </div>
 
-<!-- ══════════════════════════════════════════
-     CHI È
-══════════════════════════════════════════ -->
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
+     CHI Ã
+ââââââââââââââââââââââââââââââââââââââââââ -->
 <section id="chi-sono" class="chi-e">
   <div class="container">
     <div class="section-header">
       <div class="section-label">Il Candidato</div>
-      <h2 class="section-title">Chi è Marcello Bergonzi Perrone</h2>
+      <h2 class="section-title">Chi Ã¨ Marcello Bergonzi Perrone</h2>
       <div class="section-sep"></div>
     </div>
 
     <p class="profilo-testo">
       Avvocato penalista, civilista e docente universitario, nato a Pavia il 21 novembre 1966.
-      Esperto in diritto delle nuove tecnologie e crimini informatici, docente all'Università
-      di Milano nel master in investigazioni digitali e computer forensics. Già Giudice di Pace
+      Esperto in diritto delle nuove tecnologie e crimini informatici, docente all'UniversitÃ 
+      di Milano nel master in investigazioni digitali e computer forensics. GiÃ  Giudice di Pace
       a Mortara e Ufficiale dell'Esercito Italiano con il grado di tenente. Autore di tre
-      volumi pubblicati da Giuffrè Editore. Esercita la professione forense a Voghera dal 1997,
-      città in cui è profondamente radicato e alla quale dedica questa candidatura.
+      volumi pubblicati da GiuffrÃ¨ Editore. Esercita la professione forense a Voghera dal 1997,
+      cittÃ  in cui Ã¨ profondamente radicato e alla quale dedica questa candidatura.
     </p>
 
     <div class="profilo-pillole">
-      <div class="pillola">⚖️ Avvocato dal 1997</div>
-      <div class="pillola">🎓 Docente Università di Milano</div>
-      <div class="pillola">🔒 Esperto in cybercrime</div>
-      <div class="pillola">⚖️ Ex Giudice di Pace</div>
-      <div class="pillola">🪖 Ufficiale dell'Esercito</div>
-      <div class="pillola">📚 Autore di 3 libri (Giuffrè)</div>
+      <div class="pillola">âï¸ Avvocato dal 1997</div>
+      <div class="pillola">ð Docente UniversitÃ  di Milano</div>
+      <div class="pillola">ð Esperto in cybercrime</div>
+      <div class="pillola">âï¸ Ex Giudice di Pace</div>
+      <div class="pillola">ðª Ufficiale dell'Esercito</div>
+      <div class="pillola">ð Autore di 3 libri (GiuffrÃ¨)</div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
      CURRICULUM VITAE
-══════════════════════════════════════════ -->
+ââââââââââââââââââââââââââââââââââââââââââ -->
 <section id="curriculum" class="curriculum">
   <div class="container">
     <div class="section-header">
@@ -1040,18 +1043,18 @@
           <li>Informatica giuridica</li>
           <li>Privacy e legislazione speciale</li>
           <li>Diritto di famiglia</li>
-          <li>Responsabilità civile</li>
+          <li>ResponsabilitÃ  civile</li>
         </ul>
 
         <h3>Lingue</h3>
-        <p>Inglese — C1 (avanzato)</p>
-        <p>Spagnolo — B1 (intermedio)</p>
+        <p>Inglese â C1 (avanzato)</p>
+        <p>Spagnolo â B1 (intermedio)</p>
 
         <h3>Soft skills</h3>
         <ul>
           <li>Autonomia organizzativa</li>
           <li>Problem solving</li>
-          <li>Capacità oratorie</li>
+          <li>CapacitÃ  oratorie</li>
           <li>Gestione del tempo</li>
         </ul>
 
@@ -1064,7 +1067,7 @@
           <div class="cv-block-title">Profilo professionale</div>
           <p style="font-size:.93rem; color:var(--testo-luce); line-height:1.65;">
             Avvocato esperto in diritto delle nuove tecnologie e crimini informatici,
-            con solide capacità di problem solving e gestione del tempo. Autonomia
+            con solide capacitÃ  di problem solving e gestione del tempo. Autonomia
             organizzativa e attenzione al dettaglio, con risultati eccellenti in
             contesti professionali complessi.
           </p>
@@ -1075,27 +1078,27 @@
 
           <div class="cv-entry">
             <div class="cv-entry-titolo">Cultore della materia e Docente</div>
-            <div class="cv-entry-ente">Università degli Studi di Milano</div>
-            <div class="cv-entry-periodo">Gennaio 2009 – in corso</div>
+            <div class="cv-entry-ente">UniversitÃ  degli Studi di Milano</div>
+            <div class="cv-entry-periodo">Gennaio 2009 â in corso</div>
             <div class="cv-entry-desc">
               Confermato come cultore della materia e docente per il corso-master di perfezionamento
               in investigazioni digitali e computer forensics. Tiene lezioni e seminari, valuta gli
               studenti nelle sessioni d'esame, ha scritto capitoli dei manuali adottati dalla
-              facoltà e ha condotto video-lezioni per corsi di aggiornamento accreditati destinati
+              facoltÃ  e ha condotto video-lezioni per corsi di aggiornamento accreditati destinati
               ad avvocati, professionisti e forze dell'ordine.
             </div>
           </div>
 
           <div class="cv-entry">
-            <div class="cv-entry-titolo">Avvocato – Diritto penale e civile</div>
-            <div class="cv-entry-ente">Studio Legale Bergonzi Perrone – Voghera</div>
-            <div class="cv-entry-periodo">Ottobre 1997 – in corso</div>
+            <div class="cv-entry-titolo">Avvocato â Diritto penale e civile</div>
+            <div class="cv-entry-ente">Studio Legale Bergonzi Perrone â Voghera</div>
+            <div class="cv-entry-periodo">Ottobre 1997 â in corso</div>
           </div>
 
           <div class="cv-entry">
             <div class="cv-entry-titolo">Docente per corsi di aggiornamento</div>
             <div class="cv-entry-ente">Legalforma</div>
-            <div class="cv-entry-periodo">Gennaio 2013 – Gennaio 2016</div>
+            <div class="cv-entry-periodo">Gennaio 2013 â Gennaio 2016</div>
             <div class="cv-entry-desc">
               Ha progettato lezioni accreditate e interventi didattici per professionisti
               e avvocati, anche con supporti multimediali.
@@ -1103,15 +1106,15 @@
           </div>
 
           <div class="cv-entry">
-            <div class="cv-entry-titolo">Giudice di Pace civile e penale – Vicedirigente</div>
+            <div class="cv-entry-titolo">Giudice di Pace civile e penale â Vicedirigente</div>
             <div class="cv-entry-ente">Ufficio del Giudice di Pace di Mortara</div>
-            <div class="cv-entry-periodo">Gennaio 2002 – Gennaio 2005</div>
+            <div class="cv-entry-periodo">Gennaio 2002 â Gennaio 2005</div>
           </div>
 
           <div class="cv-entry">
-            <div class="cv-entry-titolo">Allievo A.U.C. – Ufficiale dell'Esercito Italiano</div>
+            <div class="cv-entry-titolo">Allievo A.U.C. â Ufficiale dell'Esercito Italiano</div>
             <div class="cv-entry-ente">Scuola Allievi Ufficiali di Cesano</div>
-            <div class="cv-entry-periodo">Gennaio 1992 – Gennaio 1993</div>
+            <div class="cv-entry-periodo">Gennaio 1992 â Gennaio 1993</div>
             <div class="cv-entry-desc">
               Congedato col grado di tenente presso il reparto di Fanteria Motorizzata
               'Puglie' in Albenga (SV), con funzione di vicecomandante.
@@ -1123,8 +1126,8 @@
           <div class="cv-block-title">Istruzione e formazione</div>
 
           <div class="cv-entry">
-            <div class="cv-entry-titolo">Laurea in Giurisprudenza – voto 95/110</div>
-            <div class="cv-entry-ente">Università degli Studi di Pavia</div>
+            <div class="cv-entry-titolo">Laurea in Giurisprudenza â voto 95/110</div>
+            <div class="cv-entry-ente">UniversitÃ  degli Studi di Pavia</div>
             <div class="cv-entry-periodo">Ottobre 1994</div>
           </div>
 
@@ -1135,8 +1138,8 @@
           </div>
 
           <div class="cv-entry">
-            <div class="cv-entry-titolo">Diploma di Maturità Classica – voto 54/60</div>
-            <div class="cv-entry-ente">Liceo Classico Statale "Severino Grattoni" – Voghera</div>
+            <div class="cv-entry-titolo">Diploma di MaturitÃ  Classica â voto 54/60</div>
+            <div class="cv-entry-ente">Liceo Classico Statale "Severino Grattoni" â Voghera</div>
             <div class="cv-entry-periodo">1984</div>
           </div>
         </div>
@@ -1144,20 +1147,20 @@
         <div class="cv-block">
           <div class="cv-block-title">Pubblicazioni principali</div>
           <ul class="pub-list">
-            <li><em>Trattato di informatica giuridica</em>, Giuffrè Editore, 2020</li>
-            <li><em>Lo studio legale sicuro</em>, Giuffrè Editore, 2021</li>
-            <li><em>Cyberstalking e diritto</em>, Giuffrè Editore, 2022</li>
+            <li><em>Trattato di informatica giuridica</em>, GiuffrÃ¨ Editore, 2020</li>
+            <li><em>Lo studio legale sicuro</em>, GiuffrÃ¨ Editore, 2021</li>
+            <li><em>Cyberstalking e diritto</em>, GiuffrÃ¨ Editore, 2022</li>
             <li>In corso: <em>Trattato sulla Intelligenza Artificiale per il mondo del diritto</em></li>
           </ul>
         </div>
 
         <div style="text-align:center; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
           <a href="curriculum-bergonzi-perrone.pdf" class="download-btn" download>
-            <span class="icon">📄</span>
+            <span class="icon">ð</span>
             Scarica il CV completo (PDF)
           </a>
           <a href="casellario-giudiziario.pdf" class="download-btn" download>
-            <span class="icon">⚖️</span>
+            <span class="icon">âï¸</span>
             Scarica il Casellario Giudiziario (PDF)
           </a>
         </div>
@@ -1167,24 +1170,24 @@
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
      PROGRAMMA AMMINISTRATIVO
-══════════════════════════════════════════ -->
+ââââââââââââââââââââââââââââââââââââââââââ -->
 <section id="programma" class="programma">
   <div class="container-lg">
     <div class="section-header">
       <div class="section-label">Trasparenza</div>
       <h2 class="section-title">Programma Amministrativo</h2>
       <div class="section-sep"></div>
-      <p style="margin-top:.8rem; font-size:.9rem; color:var(--testo-luce);">Elezioni Comunali Voghera – 24/25 Maggio 2026</p>
+      <p style="margin-top:.8rem; font-size:.9rem; color:var(--testo-luce);">Elezioni Comunali Voghera â 24/25 Maggio 2026</p>
     </div>
 
     <div class="programma-vision">
-      <p>"Modernità, vivibilità, connettività."</p>
+      <p>"ModernitÃ , vivibilitÃ , connettivitÃ ."</p>
       <p>
-        Voghera ha un grande potenziale. Il nostro programma mira a migliorare la mobilità,
+        Voghera ha un grande potenziale. Il nostro programma mira a migliorare la mobilitÃ ,
         rilanciare il commercio, valorizzare il patrimonio culturale e potenziare i servizi essenziali,
-        con attenzione alla qualità della vita e alla partecipazione dei cittadini.
+        con attenzione alla qualitÃ  della vita e alla partecipazione dei cittadini.
       </p>
     </div>
 
@@ -1212,9 +1215,9 @@
 
       <div class="tavolo">
         <div class="tavolo-num">Tavolo 3</div>
-        <div class="tavolo-titolo">Welfare – Sanità – Lavoro</div>
+        <div class="tavolo-titolo">Welfare â SanitÃ  â Lavoro</div>
         <div class="tavolo-desc">
-          Sanità territoriale accessibile, sostegno agli anziani e ai disabili, assistenza
+          SanitÃ  territoriale accessibile, sostegno agli anziani e ai disabili, assistenza
           domiciliare, rilancio del commercio locale, contrasto alle dipendenze, housing sociale.
         </div>
       </div>
@@ -1231,10 +1234,10 @@
 
       <div class="tavolo">
         <div class="tavolo-num">Tavolo 5</div>
-        <div class="tavolo-titolo">Ambiente – Territorio</div>
+        <div class="tavolo-titolo">Ambiente â Territorio</div>
         <div class="tavolo-desc">
           Zero consumo di suolo, raccolta differenziata porta a porta, tariffa puntuale
-          (più ricicli, meno paghi), comunità energetica rinnovabile, mobilità sostenibile
+          (piÃ¹ ricicli, meno paghi), comunitÃ  energetica rinnovabile, mobilitÃ  sostenibile
           e potenziamento del verde pubblico.
         </div>
       </div>
@@ -1243,9 +1246,9 @@
         <div class="tavolo-num">Tavolo 6</div>
         <div class="tavolo-titolo">Rilancio del Centro Storico</div>
         <div class="tavolo-desc">
-          Piano organico per il commercio di prossimità, stop alla grande distribuzione,
-          riqualificazione urbana, sette direttrici di sviluppo per restituire vitalità
-          economica e sociale al cuore della città.
+          Piano organico per il commercio di prossimitÃ , stop alla grande distribuzione,
+          riqualificazione urbana, sette direttrici di sviluppo per restituire vitalitÃ 
+          economica e sociale al cuore della cittÃ .
         </div>
       </div>
 
@@ -1253,8 +1256,8 @@
         <div class="tavolo-num">Tavolo 7</div>
         <div class="tavolo-titolo">Piano Marketing Territoriale</div>
         <div class="tavolo-desc">
-          Brand territoriale per l'Oltrepò, promozione del turismo enogastronomico
-          e culturale, rete tra Comuni, Voghera come hub e porta dell'Oltrepò pavese.
+          Brand territoriale per l'OltrepÃ², promozione del turismo enogastronomico
+          e culturale, rete tra Comuni, Voghera come hub e porta dell'OltrepÃ² pavese.
         </div>
       </div>
 
@@ -1263,8 +1266,8 @@
         <div class="tavolo-titolo">Sport e Tempo Libero</div>
         <div class="tavolo-desc">
           Riqualificazione impianti sportivi, sport per tutti senza barriere,
-          "Voghera Città dello Sport", Olimpiadi dei Quartieri, piena valorizzazione
-          della Facoltà di Scienze Motorie.
+          "Voghera CittÃ  dello Sport", Olimpiadi dei Quartieri, piena valorizzazione
+          della FacoltÃ  di Scienze Motorie.
         </div>
       </div>
 
@@ -1282,7 +1285,7 @@
 
     <div style="text-align:center;">
       <a href="programma-amministrativo.pdf" class="download-btn" download>
-        <span class="icon">📄</span>
+        <span class="icon">ð</span>
         Scarica il Programma completo (PDF)
       </a>
     </div>
@@ -1290,9 +1293,9 @@
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
      CASELLARIO GIUDIZIARIO
-══════════════════════════════════════════ -->
+ââââââââââââââââââââââââââââââââââââââââââ -->
 <section id="casellario" class="casellario">
   <div class="container">
     <div class="section-header">
@@ -1302,30 +1305,30 @@
     </div>
 
     <div class="casellario-box">
-      <span class="icona">⚖️</span>
+      <span class="icona">âï¸</span>
       <h3>Casellario Giudiziario di Marcello Bergonzi Perrone</h3>
       <p>
-        Il documento è disponibile per la consultazione nel rispetto del principio
+        Il documento Ã¨ disponibile per la consultazione nel rispetto del principio
         di piena trasparenza verso i cittadini vogheresi.
       </p>
       <a href="casellario-giudiziario.pdf" class="download-btn" download style="margin-top:1.5rem;display:inline-flex;">
-        <span class="icon">📄</span>
+        <span class="icon">ð</span>
         Scarica il Casellario Giudiziario (PDF)
       </a>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
      FOOTER
-══════════════════════════════════════════ -->
-<!-- ══════════════════════════════════════════
+ââââââââââââââââââââââââââââââââââââââââââ -->
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
      CHATBOT WIDGET
-══════════════════════════════════════════ -->
+ââââââââââââââââââââââââââââââââââââââââââ -->
 
 <!-- Pulsante flottante -->
 <button id="chat-fab" onclick="chatToggle()">
-  <span>💬</span> Chiedimi del programma
+  <span>ð¬</span> Chiedimi del programma
 </button>
 
 <!-- Pannello chat -->
@@ -1334,9 +1337,9 @@
     <div class="chat-header-dot">C</div>
     <div class="chat-header-text">
       <strong>Assistente del Programma</strong>
-      <span>Bergonzi Perrone · Voghera 2026</span>
+      <span>Bergonzi Perrone Â· Voghera 2026</span>
     </div>
-    <button class="chat-close" onclick="chatClose()" title="Chiudi">✕</button>
+    <button class="chat-close" onclick="chatClose()" title="Chiudi">â</button>
   </div>
 
   <div id="chat-messages">
@@ -1344,19 +1347,19 @@
     <div class="chat-msg bot">
       <div class="chat-av">C</div>
       <div>
-        <div class="chat-bubble">Ciao! Sono l'assistente del programma elettorale di Marcello Bergonzi Perrone. Puoi chiedermi qualsiasi cosa sul programma. 👇</div>
+        <div class="chat-bubble">Ciao! Sono l'assistente del programma elettorale di Marcello Bergonzi Perrone. Puoi chiedermi qualsiasi cosa sul programma. ð</div>
         <div class="chat-chips">
           <button class="chat-chip" onclick="chatAsk(this.textContent)">Cosa prevede il programma per i giovani?</button>
           <button class="chat-chip" onclick="chatAsk(this.textContent)">Quali proposte per la sicurezza?</button>
           <button class="chat-chip" onclick="chatAsk(this.textContent)">Cosa si fa per il centro storico?</button>
-          <button class="chat-chip" onclick="chatAsk(this.textContent)">Cosa prevede il programma per la sanità?</button>
+          <button class="chat-chip" onclick="chatAsk(this.textContent)">Cosa prevede il programma per la sanitÃ ?</button>
         </div>
       </div>
     </div>
   </div>
 
   <div class="chat-footer">
-    <input id="chat-input" type="text" placeholder="Scrivi una domanda…" autocomplete="off">
+    <input id="chat-input" type="text" placeholder="Scrivi una domandaâ¦" autocomplete="off">
     <button id="chat-send" onclick="chatSend()" title="Invia">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
            stroke-linecap="round" stroke-linejoin="round">
@@ -1368,15 +1371,15 @@
 </div>
 
 <script>
-/* ── Configurazione ────────────────────────────────────────────────────────
+/* ââ Configurazione ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
    Sostituisci SUPABASE_URL e SUPABASE_ANON_KEY con i valori del tuo progetto.
-   Li trovi su: Supabase Dashboard → Settings → API
-   ──────────────────────────────────────────────────────────────────────── */
+   Li trovi su: Supabase Dashboard â Settings â API
+   ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 const SUPABASE_URL      = "https://zkpjqaguwfoacyyklgrz.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprcGpxYWd1d2ZvYWN5eWtsZ3J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1Njg0NTUsImV4cCI6MjA5NDE0NDQ1NX0.gnoJGr4XSRuesI5L6VdwoZufRSGVDBr8AHc9W-wHFug";
 const CHAT_ENDPOINT     = `${SUPABASE_URL}/functions/v1/chat`;
 
-/* ── UI helpers ──────────────────────────────────────────────────────────── */
+/* ââ UI helpers ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 const panel    = document.getElementById("chat-panel");
 const messages = document.getElementById("chat-messages");
 const input    = document.getElementById("chat-input");
@@ -1384,19 +1387,23 @@ const fab      = document.getElementById("chat-fab");
 
 function chatOpen()   {
   panel.classList.add("open");
+  document.body.classList.add("chat-open");
   fab.style.display = "none";
   input.focus();
 }
 function chatClose()  {
   panel.classList.remove("open");
+  document.body.classList.remove("chat-open");
   fab.style.display = "";
 }
 function chatToggle() {
   panel.classList.toggle("open");
   if (panel.classList.contains("open")) {
+    document.body.classList.add("chat-open");
     fab.style.display = "none";
     input.focus();
   } else {
+    document.body.classList.remove("chat-open");
     fab.style.display = "";
   }
 }
@@ -1412,7 +1419,7 @@ function addMsg(role, html) {
   div.innerHTML = `<div class="chat-av">${av}</div><div class="chat-bubble">${html}</div>`;
   messages.appendChild(div);
   if (role === "user") {
-    // Scorri in fondo così l'indicatore "sta scrivendo" è visibile
+    // Scorri in fondo cosÃ¬ l'indicatore "sta scrivendo" Ã¨ visibile
     messages.scrollTop = messages.scrollHeight;
   } else {
     // Scorri all'inizio della risposta del bot
@@ -1441,7 +1448,7 @@ function escHtml(s) {
           .replace(/\n/g,"<br>");
 }
 
-/* ── Invia domanda ───────────────────────────────────────────────────────── */
+/* ââ Invia domanda âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 function chatAsk(q) { input.value = q; chatSend(); }
 
 async function chatSend() {
@@ -1464,26 +1471,26 @@ async function chatSend() {
     });
     const data = await res.json();
     removeTyping();
-    if (data.error) addMsg("bot", "⚠️ " + escHtml(data.error));
+    if (data.error) addMsg("bot", "â ï¸ " + escHtml(data.error));
     else            addMsg("bot", escHtml(data.answer));
   } catch (err) {
     removeTyping();
-    addMsg("bot", "⚠️ Errore di connessione. Riprova tra qualche secondo.");
+    addMsg("bot", "â ï¸ Errore di connessione. Riprova tra qualche secondo.");
   }
 }
 </script>
 
 <footer>
   <div class="footer-nome">Marcello Bergonzi Perrone</div>
-  <div>Candidato Sindaco del Comune di Voghera – Elezioni Comunali 24/25 Maggio 2026</div>
+  <div>Candidato Sindaco del Comune di Voghera â Elezioni Comunali 24/25 Maggio 2026</div>
   <div style="margin-top:.5rem;">
     <a href="mailto:celloper1@yahoo.it">celloper1@yahoo.it</a>
-    &nbsp;·&nbsp;
+    &nbsp;Â·&nbsp;
     <a href="https://www.avvocatovoghera.it/" target="_blank" rel="noopener">avvocatovoghera.it</a>
   </div>
   <div style="margin-top:1rem; font-size:.78rem; opacity:.5;">
-    Coalizione: Partito Democratico · Rifondazione Comunista · Alleanza Verdi e Sinistra ·
-    Movimento 5 Stelle · Civici per Voghera · Casa Riformista
+    Coalizione: Partito Democratico Â· Rifondazione Comunista Â· Alleanza Verdi e Sinistra Â·
+    Movimento 5 Stelle Â· Civici per Voghera Â· Casa Riformista
   </div>
 </footer>
 
@@ -1494,7 +1501,7 @@ async function chatSend() {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Marcello Bergonzi Perrone – Candidato Sindaco Voghera 2026</title>
+  <title>Marcello Bergonzi Perrone â Candidato Sindaco Voghera 2026</title>
   <meta name="description" content="Marcello Bergonzi Perrone, candidato sindaco per le Elezioni Comunali di Voghera del 24/25 maggio 2026. Programma amministrativo, curriculum e trasparenza.">
   <link rel="icon" href="logocivici4.webp" type="image/webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1503,14 +1510,14 @@ async function chatSend() {
 
   <style>
     /* =============================================
-       RESET & BASE  —  stile civicivoghera.it
+       RESET & BASE  â  stile civicivoghera.it
     ============================================= */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
       /* Palette da civicivoghera.it */
       --blu:        #2d4a6e;   /* sfondo hero blu-acciaio */
-      --blu-scuro:  #1e3450;   /* variante più scura */
+      --blu-scuro:  #1e3450;   /* variante piÃ¹ scura */
       --blu-med:    #3a5f8a;   /* hover/sfumature */
       --arancio:    #e07b39;   /* accento arancio (CTA, titoli sezione) */
       --arancio-sc: #c4651f;   /* arancio hover */
@@ -1539,7 +1546,7 @@ async function chatSend() {
     a { color: inherit; }
 
     /* =============================================
-       HEADER / NAV  —  stile civicivoghera.it
+       HEADER / NAV  â  stile civicivoghera.it
     ============================================= */
     header {
       position: sticky;
@@ -1614,7 +1621,7 @@ async function chatSend() {
     }
 
     /* =============================================
-       HERO  —  stile civicivoghera.it
+       HERO  â  stile civicivoghera.it
        sfondo blu-acciaio, serif, arancio accent
     ============================================= */
     .hero {
@@ -1658,7 +1665,7 @@ async function chatSend() {
       display: block;
     }
 
-    /* Placeholder logo testo se non c'è img */
+    /* Placeholder logo testo se non c'Ã¨ img */
     .hero-logo-text {
       font-family: var(--font-serif);
       font-size: .75rem;
@@ -1863,7 +1870,7 @@ async function chatSend() {
     }
 
     /* =============================================
-       CHI È
+       CHI Ã
     ============================================= */
     .chi-e { background: #fff; }
 
@@ -1999,7 +2006,7 @@ async function chatSend() {
     }
 
     .pub-list li::before {
-      content: '◆';
+      content: 'â';
       color: var(--blu);
       font-size: .65rem;
       flex-shrink: 0;
@@ -2380,9 +2387,9 @@ async function chatSend() {
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
      HEADER
-══════════════════════════════════════════ -->
+ââââââââââââââââââââââââââââââââââââââââââ -->
 <header>
   <div class="nav-inner">
     <a class="nav-brand" href="#">
@@ -2391,26 +2398,26 @@ async function chatSend() {
     </a>
     <nav>
       <ul>
-        <li><a href="#chi-sono">Chi è</a></li>
+        <li><a href="#chi-sono">Chi Ã¨</a></li>
         <li><a href="#curriculum">Curriculum</a></li>
         <li><a href="#programma">Programma</a></li>
         <li><a href="#casellario">Casellario</a></li>
-        <li><a href="#" onclick="chatOpen();return false;" style="color:var(--arancio);border-bottom-color:transparent;">🤖 Chiedimi del programma</a></li>
+        <li><a href="#" onclick="chatOpen();return false;" style="color:var(--arancio);border-bottom-color:transparent;">ð¤ Chiedimi del programma</a></li>
       </ul>
     </nav>
   </div>
 </header>
 
-<!-- ══════════════════════════════════════════
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
      STRISCIA ELEZIONI
-══════════════════════════════════════════ -->
+ââââââââââââââââââââââââââââââââââââââââââ -->
 <div class="elezioni-banner">
-  🗳&nbsp; ELEZIONI COMUNALI DI VOGHERA &nbsp;·&nbsp; 24 / 25 MAGGIO 2026
+  ð³&nbsp; ELEZIONI COMUNALI DI VOGHERA &nbsp;Â·&nbsp; 24 / 25 MAGGIO 2026
 </div>
 
-<!-- ══════════════════════════════════════════
-     HERO  —  layout centrato come civicivoghera.it
-══════════════════════════════════════════ -->
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
+     HERO  â  layout centrato come civicivoghera.it
+ââââââââââââââââââââââââââââââââââââââââââ -->
 <div class="hero">
   <div class="hero-inner">
 
@@ -2419,14 +2426,14 @@ async function chatSend() {
       <h1>Bergonzi Perrone Sindaco</h1>
       <h2>Lista Civica per le Elezioni Comunali 2026</h2>
       <p class="hero-candidato-line">
-        🏛️ <strong>Marcello Bergonzi Perrone</strong> — Candidato Sindaco
+        ðï¸ <strong>Marcello Bergonzi Perrone</strong> â Candidato Sindaco
       </p>
     </div>
 
     <!-- Foto candidato -->
     <div class="hero-foto">
       <img src="foto-candidato.jpeg"
-           alt="Marcello Bergonzi Perrone – Candidato Sindaco Voghera 2026">
+           alt="Marcello Bergonzi Perrone â Candidato Sindaco Voghera 2026">
     </div>
 
     <!-- Slogan e CTA -->
@@ -2445,15 +2452,15 @@ async function chatSend() {
     </div>
 
     <div class="hero-btn-group">
-      <a href="programma-amministrativo.pdf" class="btn btn-arancio" download>📋 Scarica Programma</a>
+      <a href="programma-amministrativo.pdf" class="btn btn-arancio" download>ð Scarica Programma</a>
     </div>
 
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
      COALIZIONE
-══════════════════════════════════════════ -->
+ââââââââââââââââââââââââââââââââââââââââââ -->
 <div class="coalizione">
   <h3>La Coalizione</h3>
   <ul>
@@ -2467,40 +2474,40 @@ async function chatSend() {
   </ul>
 </div>
 
-<!-- ══════════════════════════════════════════
-     CHI È
-══════════════════════════════════════════ -->
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
+     CHI Ã
+ââââââââââââââââââââââââââââââââââââââââââ -->
 <section id="chi-sono" class="chi-e">
   <div class="container">
     <div class="section-header">
       <div class="section-label">Il Candidato</div>
-      <h2 class="section-title">Chi è Marcello Bergonzi Perrone</h2>
+      <h2 class="section-title">Chi Ã¨ Marcello Bergonzi Perrone</h2>
       <div class="section-sep"></div>
     </div>
 
     <p class="profilo-testo">
       Avvocato penalista, civilista e docente universitario, nato a Pavia il 21 novembre 1966.
-      Esperto in diritto delle nuove tecnologie e crimini informatici, docente all'Università
-      di Milano nel master in investigazioni digitali e computer forensics. Già Giudice di Pace
+      Esperto in diritto delle nuove tecnologie e crimini informatici, docente all'UniversitÃ 
+      di Milano nel master in investigazioni digitali e computer forensics. GiÃ  Giudice di Pace
       a Mortara e Ufficiale dell'Esercito Italiano con il grado di tenente. Autore di tre
-      volumi pubblicati da Giuffrè Editore. Esercita la professione forense a Voghera dal 1997,
-      città in cui è profondamente radicato e alla quale dedica questa candidatura.
+      volumi pubblicati da GiuffrÃ¨ Editore. Esercita la professione forense a Voghera dal 1997,
+      cittÃ  in cui Ã¨ profondamente radicato e alla quale dedica questa candidatura.
     </p>
 
     <div class="profilo-pillole">
-      <div class="pillola">⚖️ Avvocato dal 1997</div>
-      <div class="pillola">🎓 Docente Università di Milano</div>
-      <div class="pillola">🔒 Esperto in cybercrime</div>
-      <div class="pillola">⚖️ Ex Giudice di Pace</div>
-      <div class="pillola">🪖 Ufficiale dell'Esercito</div>
-      <div class="pillola">📚 Autore di 3 libri (Giuffrè)</div>
+      <div class="pillola">âï¸ Avvocato dal 1997</div>
+      <div class="pillola">ð Docente UniversitÃ  di Milano</div>
+      <div class="pillola">ð Esperto in cybercrime</div>
+      <div class="pillola">âï¸ Ex Giudice di Pace</div>
+      <div class="pillola">ðª Ufficiale dell'Esercito</div>
+      <div class="pillola">ð Autore di 3 libri (GiuffrÃ¨)</div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
      CURRICULUM VITAE
-══════════════════════════════════════════ -->
+ââââââââââââââââââââââââââââââââââââââââââ -->
 <section id="curriculum" class="curriculum">
   <div class="container">
     <div class="section-header">
@@ -2531,18 +2538,18 @@ async function chatSend() {
           <li>Informatica giuridica</li>
           <li>Privacy e legislazione speciale</li>
           <li>Diritto di famiglia</li>
-          <li>Responsabilità civile</li>
+          <li>ResponsabilitÃ  civile</li>
         </ul>
 
         <h3>Lingue</h3>
-        <p>Inglese — C1 (avanzato)</p>
-        <p>Spagnolo — B1 (intermedio)</p>
+        <p>Inglese â C1 (avanzato)</p>
+        <p>Spagnolo â B1 (intermedio)</p>
 
         <h3>Soft skills</h3>
         <ul>
           <li>Autonomia organizzativa</li>
           <li>Problem solving</li>
-          <li>Capacità oratorie</li>
+          <li>CapacitÃ  oratorie</li>
           <li>Gestione del tempo</li>
         </ul>
 
@@ -2555,7 +2562,7 @@ async function chatSend() {
           <div class="cv-block-title">Profilo professionale</div>
           <p style="font-size:.93rem; color:var(--testo-luce); line-height:1.65;">
             Avvocato esperto in diritto delle nuove tecnologie e crimini informatici,
-            con solide capacità di problem solving e gestione del tempo. Autonomia
+            con solide capacitÃ  di problem solving e gestione del tempo. Autonomia
             organizzativa e attenzione al dettaglio, con risultati eccellenti in
             contesti professionali complessi.
           </p>
@@ -2566,27 +2573,27 @@ async function chatSend() {
 
           <div class="cv-entry">
             <div class="cv-entry-titolo">Cultore della materia e Docente</div>
-            <div class="cv-entry-ente">Università degli Studi di Milano</div>
-            <div class="cv-entry-periodo">Gennaio 2009 – in corso</div>
+            <div class="cv-entry-ente">UniversitÃ  degli Studi di Milano</div>
+            <div class="cv-entry-periodo">Gennaio 2009 â in corso</div>
             <div class="cv-entry-desc">
               Confermato come cultore della materia e docente per il corso-master di perfezionamento
               in investigazioni digitali e computer forensics. Tiene lezioni e seminari, valuta gli
               studenti nelle sessioni d'esame, ha scritto capitoli dei manuali adottati dalla
-              facoltà e ha condotto video-lezioni per corsi di aggiornamento accreditati destinati
+              facoltÃ  e ha condotto video-lezioni per corsi di aggiornamento accreditati destinati
               ad avvocati, professionisti e forze dell'ordine.
             </div>
           </div>
 
           <div class="cv-entry">
-            <div class="cv-entry-titolo">Avvocato – Diritto penale e civile</div>
-            <div class="cv-entry-ente">Studio Legale Bergonzi Perrone – Voghera</div>
-            <div class="cv-entry-periodo">Ottobre 1997 – in corso</div>
+            <div class="cv-entry-titolo">Avvocato â Diritto penale e civile</div>
+            <div class="cv-entry-ente">Studio Legale Bergonzi Perrone â Voghera</div>
+            <div class="cv-entry-periodo">Ottobre 1997 â in corso</div>
           </div>
 
           <div class="cv-entry">
             <div class="cv-entry-titolo">Docente per corsi di aggiornamento</div>
             <div class="cv-entry-ente">Legalforma</div>
-            <div class="cv-entry-periodo">Gennaio 2013 – Gennaio 2016</div>
+            <div class="cv-entry-periodo">Gennaio 2013 â Gennaio 2016</div>
             <div class="cv-entry-desc">
               Ha progettato lezioni accreditate e interventi didattici per professionisti
               e avvocati, anche con supporti multimediali.
@@ -2594,15 +2601,15 @@ async function chatSend() {
           </div>
 
           <div class="cv-entry">
-            <div class="cv-entry-titolo">Giudice di Pace civile e penale – Vicedirigente</div>
+            <div class="cv-entry-titolo">Giudice di Pace civile e penale â Vicedirigente</div>
             <div class="cv-entry-ente">Ufficio del Giudice di Pace di Mortara</div>
-            <div class="cv-entry-periodo">Gennaio 2002 – Gennaio 2005</div>
+            <div class="cv-entry-periodo">Gennaio 2002 â Gennaio 2005</div>
           </div>
 
           <div class="cv-entry">
-            <div class="cv-entry-titolo">Allievo A.U.C. – Ufficiale dell'Esercito Italiano</div>
+            <div class="cv-entry-titolo">Allievo A.U.C. â Ufficiale dell'Esercito Italiano</div>
             <div class="cv-entry-ente">Scuola Allievi Ufficiali di Cesano</div>
-            <div class="cv-entry-periodo">Gennaio 1992 – Gennaio 1993</div>
+            <div class="cv-entry-periodo">Gennaio 1992 â Gennaio 1993</div>
             <div class="cv-entry-desc">
               Congedato col grado di tenente presso il reparto di Fanteria Motorizzata
               'Puglie' in Albenga (SV), con funzione di vicecomandante.
@@ -2614,8 +2621,8 @@ async function chatSend() {
           <div class="cv-block-title">Istruzione e formazione</div>
 
           <div class="cv-entry">
-            <div class="cv-entry-titolo">Laurea in Giurisprudenza – voto 95/110</div>
-            <div class="cv-entry-ente">Università degli Studi di Pavia</div>
+            <div class="cv-entry-titolo">Laurea in Giurisprudenza â voto 95/110</div>
+            <div class="cv-entry-ente">UniversitÃ  degli Studi di Pavia</div>
             <div class="cv-entry-periodo">Ottobre 1994</div>
           </div>
 
@@ -2626,8 +2633,8 @@ async function chatSend() {
           </div>
 
           <div class="cv-entry">
-            <div class="cv-entry-titolo">Diploma di Maturità Classica – voto 54/60</div>
-            <div class="cv-entry-ente">Liceo Classico Statale "Severino Grattoni" – Voghera</div>
+            <div class="cv-entry-titolo">Diploma di MaturitÃ  Classica â voto 54/60</div>
+            <div class="cv-entry-ente">Liceo Classico Statale "Severino Grattoni" â Voghera</div>
             <div class="cv-entry-periodo">1984</div>
           </div>
         </div>
@@ -2635,20 +2642,20 @@ async function chatSend() {
         <div class="cv-block">
           <div class="cv-block-title">Pubblicazioni principali</div>
           <ul class="pub-list">
-            <li><em>Trattato di informatica giuridica</em>, Giuffrè Editore, 2020</li>
-            <li><em>Lo studio legale sicuro</em>, Giuffrè Editore, 2021</li>
-            <li><em>Cyberstalking e diritto</em>, Giuffrè Editore, 2022</li>
+            <li><em>Trattato di informatica giuridica</em>, GiuffrÃ¨ Editore, 2020</li>
+            <li><em>Lo studio legale sicuro</em>, GiuffrÃ¨ Editore, 2021</li>
+            <li><em>Cyberstalking e diritto</em>, GiuffrÃ¨ Editore, 2022</li>
             <li>In corso: <em>Trattato sulla Intelligenza Artificiale per il mondo del diritto</em></li>
           </ul>
         </div>
 
         <div style="text-align:center; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
           <a href="curriculum-bergonzi-perrone.pdf" class="download-btn" download>
-            <span class="icon">📄</span>
+            <span class="icon">ð</span>
             Scarica il CV completo (PDF)
           </a>
           <a href="casellario-giudiziario.pdf" class="download-btn" download>
-            <span class="icon">⚖️</span>
+            <span class="icon">âï¸</span>
             Scarica il Casellario Giudiziario (PDF)
           </a>
         </div>
@@ -2658,24 +2665,24 @@ async function chatSend() {
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
      PROGRAMMA AMMINISTRATIVO
-══════════════════════════════════════════ -->
+ââââââââââââââââââââââââââââââââââââââââââ -->
 <section id="programma" class="programma">
   <div class="container-lg">
     <div class="section-header">
       <div class="section-label">Trasparenza</div>
       <h2 class="section-title">Programma Amministrativo</h2>
       <div class="section-sep"></div>
-      <p style="margin-top:.8rem; font-size:.9rem; color:var(--testo-luce);">Elezioni Comunali Voghera – 24/25 Maggio 2026</p>
+      <p style="margin-top:.8rem; font-size:.9rem; color:var(--testo-luce);">Elezioni Comunali Voghera â 24/25 Maggio 2026</p>
     </div>
 
     <div class="programma-vision">
-      <p>"Modernità, vivibilità, connettività."</p>
+      <p>"ModernitÃ , vivibilitÃ , connettivitÃ ."</p>
       <p>
-        Voghera ha un grande potenziale. Il nostro programma mira a migliorare la mobilità,
+        Voghera ha un grande potenziale. Il nostro programma mira a migliorare la mobilitÃ ,
         rilanciare il commercio, valorizzare il patrimonio culturale e potenziare i servizi essenziali,
-        con attenzione alla qualità della vita e alla partecipazione dei cittadini.
+        con attenzione alla qualitÃ  della vita e alla partecipazione dei cittadini.
       </p>
     </div>
 
@@ -2703,9 +2710,9 @@ async function chatSend() {
 
       <div class="tavolo">
         <div class="tavolo-num">Tavolo 3</div>
-        <div class="tavolo-titolo">Welfare – Sanità – Lavoro</div>
+        <div class="tavolo-titolo">Welfare â SanitÃ  â Lavoro</div>
         <div class="tavolo-desc">
-          Sanità territoriale accessibile, sostegno agli anziani e ai disabili, assistenza
+          SanitÃ  territoriale accessibile, sostegno agli anziani e ai disabili, assistenza
           domiciliare, rilancio del commercio locale, contrasto alle dipendenze, housing sociale.
         </div>
       </div>
@@ -2722,10 +2729,10 @@ async function chatSend() {
 
       <div class="tavolo">
         <div class="tavolo-num">Tavolo 5</div>
-        <div class="tavolo-titolo">Ambiente – Territorio</div>
+        <div class="tavolo-titolo">Ambiente â Territorio</div>
         <div class="tavolo-desc">
           Zero consumo di suolo, raccolta differenziata porta a porta, tariffa puntuale
-          (più ricicli, meno paghi), comunità energetica rinnovabile, mobilità sostenibile
+          (piÃ¹ ricicli, meno paghi), comunitÃ  energetica rinnovabile, mobilitÃ  sostenibile
           e potenziamento del verde pubblico.
         </div>
       </div>
@@ -2734,9 +2741,9 @@ async function chatSend() {
         <div class="tavolo-num">Tavolo 6</div>
         <div class="tavolo-titolo">Rilancio del Centro Storico</div>
         <div class="tavolo-desc">
-          Piano organico per il commercio di prossimità, stop alla grande distribuzione,
-          riqualificazione urbana, sette direttrici di sviluppo per restituire vitalità
-          economica e sociale al cuore della città.
+          Piano organico per il commercio di prossimitÃ , stop alla grande distribuzione,
+          riqualificazione urbana, sette direttrici di sviluppo per restituire vitalitÃ 
+          economica e sociale al cuore della cittÃ .
         </div>
       </div>
 
@@ -2744,8 +2751,8 @@ async function chatSend() {
         <div class="tavolo-num">Tavolo 7</div>
         <div class="tavolo-titolo">Piano Marketing Territoriale</div>
         <div class="tavolo-desc">
-          Brand territoriale per l'Oltrepò, promozione del turismo enogastronomico
-          e culturale, rete tra Comuni, Voghera come hub e porta dell'Oltrepò pavese.
+          Brand territoriale per l'OltrepÃ², promozione del turismo enogastronomico
+          e culturale, rete tra Comuni, Voghera come hub e porta dell'OltrepÃ² pavese.
         </div>
       </div>
 
@@ -2754,8 +2761,8 @@ async function chatSend() {
         <div class="tavolo-titolo">Sport e Tempo Libero</div>
         <div class="tavolo-desc">
           Riqualificazione impianti sportivi, sport per tutti senza barriere,
-          "Voghera Città dello Sport", Olimpiadi dei Quartieri, piena valorizzazione
-          della Facoltà di Scienze Motorie.
+          "Voghera CittÃ  dello Sport", Olimpiadi dei Quartieri, piena valorizzazione
+          della FacoltÃ  di Scienze Motorie.
         </div>
       </div>
 
@@ -2773,7 +2780,7 @@ async function chatSend() {
 
     <div style="text-align:center;">
       <a href="programma-amministrativo.pdf" class="download-btn" download>
-        <span class="icon">📄</span>
+        <span class="icon">ð</span>
         Scarica il Programma completo (PDF)
       </a>
     </div>
@@ -2781,9 +2788,9 @@ async function chatSend() {
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
      CASELLARIO GIUDIZIARIO
-══════════════════════════════════════════ -->
+ââââââââââââââââââââââââââââââââââââââââââ -->
 <section id="casellario" class="casellario">
   <div class="container">
     <div class="section-header">
@@ -2793,30 +2800,30 @@ async function chatSend() {
     </div>
 
     <div class="casellario-box">
-      <span class="icona">⚖️</span>
+      <span class="icona">âï¸</span>
       <h3>Casellario Giudiziario di Marcello Bergonzi Perrone</h3>
       <p>
-        Il documento è disponibile per la consultazione nel rispetto del principio
+        Il documento Ã¨ disponibile per la consultazione nel rispetto del principio
         di piena trasparenza verso i cittadini vogheresi.
       </p>
       <a href="casellario-giudiziario.pdf" class="download-btn" download style="margin-top:1.5rem;display:inline-flex;">
-        <span class="icon">📄</span>
+        <span class="icon">ð</span>
         Scarica il Casellario Giudiziario (PDF)
       </a>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
      FOOTER
-══════════════════════════════════════════ -->
-<!-- ══════════════════════════════════════════
+ââââââââââââââââââââââââââââââââââââââââââ -->
+<!-- ââââââââââââââââââââââââââââââââââââââââââ
      CHATBOT WIDGET
-══════════════════════════════════════════ -->
+ââââââââââââââââââââââââââââââââââââââââââ -->
 
 <!-- Pulsante flottante -->
 <button id="chat-fab" onclick="chatToggle()">
-  <span>💬</span> Chiedimi del programma
+  <span>ð¬</span> Chiedimi del programma
 </button>
 
 <!-- Pannello chat -->
@@ -2825,9 +2832,9 @@ async function chatSend() {
     <div class="chat-header-dot">C</div>
     <div class="chat-header-text">
       <strong>Assistente del Programma</strong>
-      <span>Bergonzi Perrone · Voghera 2026</span>
+      <span>Bergonzi Perrone Â· Voghera 2026</span>
     </div>
-    <button class="chat-close" onclick="chatClose()" title="Chiudi">✕</button>
+    <button class="chat-close" onclick="chatClose()" title="Chiudi">â</button>
   </div>
 
   <div id="chat-messages">
@@ -2835,19 +2842,19 @@ async function chatSend() {
     <div class="chat-msg bot">
       <div class="chat-av">C</div>
       <div>
-        <div class="chat-bubble">Ciao! Sono l'assistente del programma elettorale di Marcello Bergonzi Perrone. Puoi chiedermi qualsiasi cosa sul programma. 👇</div>
+        <div class="chat-bubble">Ciao! Sono l'assistente del programma elettorale di Marcello Bergonzi Perrone. Puoi chiedermi qualsiasi cosa sul programma. ð</div>
         <div class="chat-chips">
           <button class="chat-chip" onclick="chatAsk(this.textContent)">Cosa prevede il programma per i giovani?</button>
           <button class="chat-chip" onclick="chatAsk(this.textContent)">Quali proposte per la sicurezza?</button>
           <button class="chat-chip" onclick="chatAsk(this.textContent)">Cosa si fa per il centro storico?</button>
-          <button class="chat-chip" onclick="chatAsk(this.textContent)">Cosa prevede il programma per la sanità?</button>
+          <button class="chat-chip" onclick="chatAsk(this.textContent)">Cosa prevede il programma per la sanitÃ ?</button>
         </div>
       </div>
     </div>
   </div>
 
   <div class="chat-footer">
-    <input id="chat-input" type="text" placeholder="Scrivi una domanda…" autocomplete="off">
+    <input id="chat-input" type="text" placeholder="Scrivi una domandaâ¦" autocomplete="off">
     <button id="chat-send" onclick="chatSend()" title="Invia">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
            stroke-linecap="round" stroke-linejoin="round">
@@ -2859,15 +2866,15 @@ async function chatSend() {
 </div>
 
 <script>
-/* ── Configurazione ────────────────────────────────────────────────────────
+/* ââ Configurazione ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
    Sostituisci SUPABASE_URL e SUPABASE_ANON_KEY con i valori del tuo progetto.
-   Li trovi su: Supabase Dashboard → Settings → API
-   ──────────────────────────────────────────────────────────────────────── */
+   Li trovi su: Supabase Dashboard â Settings â API
+   ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 const SUPABASE_URL      = "https://zkpjqaguwfoacyyklgrz.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprcGpxYWd1d2ZvYWN5eWtsZ3J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1Njg0NTUsImV4cCI6MjA5NDE0NDQ1NX0.gnoJGr4XSRuesI5L6VdwoZufRSGVDBr8AHc9W-wHFug";
 const CHAT_ENDPOINT     = `${SUPABASE_URL}/functions/v1/chat`;
 
-/* ── UI helpers ──────────────────────────────────────────────────────────── */
+/* ââ UI helpers ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 const panel    = document.getElementById("chat-panel");
 const messages = document.getElementById("chat-messages");
 const input    = document.getElementById("chat-input");
@@ -2887,7 +2894,7 @@ function addMsg(role, html) {
   div.innerHTML = `<div class="chat-av">${av}</div><div class="chat-bubble">${html}</div>`;
   messages.appendChild(div);
   if (role === "user") {
-    // Scorri in fondo così l'indicatore "sta scrivendo" è visibile
+    // Scorri in fondo cosÃ¬ l'indicatore "sta scrivendo" Ã¨ visibile
     messages.scrollTop = messages.scrollHeight;
   } else {
     // Scorri all'inizio della risposta del bot
@@ -2916,7 +2923,7 @@ function escHtml(s) {
           .replace(/\n/g,"<br>");
 }
 
-/* ── Invia domanda ───────────────────────────────────────────────────────── */
+/* ââ Invia domanda âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 function chatAsk(q) { input.value = q; chatSend(); }
 
 async function chatSend() {
@@ -2938,28 +2945,29 @@ async function chatSend() {
     });
     const data = await res.json();
     removeTyping();
-    if (data.error) addMsg("bot", "⚠️ " + escHtml(data.error));
+    if (data.error) addMsg("bot", "â ï¸ " + escHtml(data.error));
     else            addMsg("bot", escHtml(data.answer));
   } catch (err) {
     removeTyping();
-    addMsg("bot", "⚠️ Errore di connessione. Riprova tra qualche secondo.");
+    addMsg("bot", "â ï¸ Errore di connessione. Riprova tra qualche secondo.");
   }
 }
 </script>
 
 <footer>
   <div class="footer-nome">Marcello Bergonzi Perrone</div>
-  <div>Candidato Sindaco del Comune di Voghera – Elezioni Comunali 24/25 Maggio 2026</div>
+  <div>Candidato Sindaco del Comune di Voghera â Elezioni Comunali 24/25 Maggio 2026</div>
   <div style="margin-top:.5rem;">
     <a href="mailto:celloper1@yahoo.it">celloper1@yahoo.it</a>
-    &nbsp;·&nbsp;
+    &nbsp;Â·&nbsp;
     <a href="https://www.avvocatovoghera.it/" target="_blank" rel="noopener">avvocatovoghera.it</a>
   </div>
   <div style="margin-top:1rem; font-size:.78rem; opacity:.5;">
-    Coalizione: Partito Democratico · Rifondazione Comunista · Alleanza Verdi e Sinistra ·
-    Movimento 5 Stelle · Civici per Voghera · Casa Riformista
+    Coalizione: Partito Democratico Â· Rifondazione Comunista Â· Alleanza Verdi e Sinistra Â·
+    Movimento 5 Stelle Â· Civici per Voghera Â· Casa Riformista
   </div>
 </footer>
 
 </body>
 </html>
+
