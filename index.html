@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Marcello Bergonzi Perrone – Candidato Sindaco Voghera 2026</title>
   <meta name="description" content="Marcello Bergonzi Perrone, candidato sindaco per le Elezioni Comunali di Voghera del 24/25 maggio 2026. Programma amministrativo, curriculum e trasparenza.">
-  <link rel="icon" href="logocivici4.png" type="image/webp">
+  <link rel="icon" href="logocivici4.webp" type="image/webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -696,6 +696,195 @@
       .tavoli-grid { grid-template-columns: 1fr; }
       .hero-testo h1 { font-size: 2rem; }
     }
+
+    /* =============================================
+       CHATBOT WIDGET
+    ============================================= */
+    /* Pulsante flottante */
+    #chat-fab {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 1000;
+      background: var(--arancio);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: .75rem 1.3rem;
+      font-size: .92rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      box-shadow: 0 4px 18px rgba(0,0,0,.28);
+      transition: background .2s, transform .15s;
+      font-family: var(--font-sans);
+    }
+    #chat-fab:hover { background: var(--arancio-sc); transform: translateY(-2px); }
+
+    /* Pannello chat */
+    #chat-panel {
+      position: fixed;
+      bottom: 90px;
+      right: 28px;
+      z-index: 999;
+      width: 370px;
+      max-width: calc(100vw - 32px);
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 40px rgba(0,0,0,.22);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--bordo);
+    }
+    #chat-panel.open { display: flex; }
+
+    .chat-header {
+      background: var(--blu-scuro);
+      color: #fff;
+      padding: .9rem 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+    }
+    .chat-header-dot {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--arancio);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 16px; flex-shrink: 0;
+    }
+    .chat-header-text strong { display: block; font-size: .95rem; }
+    .chat-header-text span   { font-size: .75rem; opacity: .75; }
+    .chat-close {
+      margin-left: auto;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,.7);
+      font-size: 1.3rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: .2rem;
+    }
+    .chat-close:hover { color: #fff; }
+
+    #chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .8rem;
+      min-height: 220px;
+      max-height: 340px;
+    }
+
+    .chat-msg {
+      display: flex;
+      gap: .5rem;
+      align-items: flex-start;
+    }
+    .chat-msg.user  { flex-direction: row-reverse; }
+    .chat-bubble {
+      padding: .6rem .85rem;
+      border-radius: 14px;
+      font-size: .87rem;
+      line-height: 1.5;
+      max-width: 88%;
+      white-space: pre-wrap;
+    }
+    .chat-msg.bot  .chat-bubble {
+      background: var(--grigio);
+      border: 1px solid var(--bordo);
+      border-bottom-left-radius: 4px;
+    }
+    .chat-msg.user .chat-bubble {
+      background: var(--blu);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+    .chat-av {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .chat-msg.bot  .chat-av { background: var(--arancio); color: #fff; }
+    .chat-msg.user .chat-av { background: var(--blu); color: #fff; }
+
+    .chat-chips {
+      display: flex; flex-direction: column; gap: .4rem;
+      margin-top: .2rem;
+    }
+    .chat-chip {
+      background: #fff;
+      border: 1.5px solid var(--bordo);
+      border-radius: 20px;
+      padding: .4rem .85rem;
+      font-size: .8rem;
+      cursor: pointer;
+      color: var(--blu);
+      text-align: left;
+      transition: border-color .2s, background .2s;
+      font-family: var(--font-sans);
+    }
+    .chat-chip:hover { border-color: var(--arancio); background: #fff7f2; }
+
+    /* Typing dots */
+    .chat-typing { display: flex; gap: 4px; padding: 4px 2px; }
+    .chat-typing span {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #aaa; animation: chatbounce .9s infinite;
+    }
+    .chat-typing span:nth-child(2) { animation-delay: .15s; }
+    .chat-typing span:nth-child(3) { animation-delay: .30s; }
+    @keyframes chatbounce {
+      0%,60%,100% { transform: translateY(0); }
+      30%          { transform: translateY(-5px); }
+    }
+
+    .chat-footer {
+      padding: .7rem .8rem;
+      border-top: 1px solid var(--bordo);
+      display: flex;
+      gap: .5rem;
+    }
+    #chat-input {
+      flex: 1;
+      padding: .55rem .85rem;
+      border: 1.5px solid var(--bordo);
+      border-radius: 20px;
+      font-size: .87rem;
+      outline: none;
+      font-family: var(--font-sans);
+    }
+    #chat-input:focus { border-color: var(--blu); }
+    #chat-send {
+      background: var(--arancio);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 36px; height: 36px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background .2s;
+    }
+    #chat-send:hover { background: var(--arancio-sc); }
+    #chat-send svg  { width: 16px; height: 16px; }
+
+    @media (max-width: 560px) {
+      #chat-panel {
+        bottom: 0; right: 0;
+        width: 100%; max-width: 100%;
+        border-radius: 16px 16px 0 0;
+      }
+      #chat-fab { bottom: 16px; right: 16px; }
+    }
   </style>
 </head>
 <body>
@@ -715,6 +904,7 @@
         <li><a href="#curriculum">Curriculum</a></li>
         <li><a href="#programma">Programma</a></li>
         <li><a href="#casellario">Casellario</a></li>
+        <li><a href="#" onclick="chatOpen();return false;" style="color:var(--arancio);border-bottom-color:transparent;">🤖 Chiedimi del programma</a></li>
       </ul>
     </nav>
   </div>
@@ -755,7 +945,7 @@
 
     <!-- Loghi delle liste di sostegno -->
     <div class="hero-liste">
-      <img src="logocivici4.png"        alt="Civici per Voghera">
+      <img src="logocivici4.webp"        alt="Civici per Voghera">
       <img src="logo-pd.png"             alt="Partito Democratico">
       <img src="logo-m5s.png"            alt="Movimento 5 Stelle 2050">
       <img src="logo-casa-riformista.png" alt="Casa Riformista">
@@ -778,10 +968,11 @@
   <ul>
     <li><a href="https://www.civicivoghera.it" target="_blank">Civici per Voghera</a></li>
     <li><a href="https://www.partitodemocraticovoghera.it/lista-pd-2026/" target="_blank">Partito Democratico</a></li>
-    <li><a href="https://www.facebook.com/voghera5stelle" target="_blank">Movimento 5 Stelle</a></li>
-    <li><a href="https://www.facebook.com/italiavivaoltrepo" target="_blank">Casa Riformista</a></li>
     <li>Alleanza Verdi e Sinistra</li>
-    <li><a href="https://www.facebook.com/RifondazioneComunistaVoghera" target="_blank">Rifondazione Comunista</a></li>
+    <li>Movimento 5 Stelle</li>
+    <li>Azione</li>
+    <li>Rifondazione Comunista</li>
+    <li>Casa Riformista</li>
   </ul>
 </div>
 
@@ -1128,6 +1319,135 @@
 <!-- ══════════════════════════════════════════
      FOOTER
 ══════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════
+     CHATBOT WIDGET
+══════════════════════════════════════════ -->
+
+<!-- Pulsante flottante -->
+<button id="chat-fab" onclick="chatToggle()">
+  <span>💬</span> Chiedimi del programma
+</button>
+
+<!-- Pannello chat -->
+<div id="chat-panel">
+  <div class="chat-header">
+    <div class="chat-header-dot">C</div>
+    <div class="chat-header-text">
+      <strong>Assistente del Programma</strong>
+      <span>Bergonzi Perrone · Voghera 2026</span>
+    </div>
+    <button class="chat-close" onclick="chatClose()" title="Chiudi">✕</button>
+  </div>
+
+  <div id="chat-messages">
+    <!-- Messaggio di benvenuto -->
+    <div class="chat-msg bot">
+      <div class="chat-av">C</div>
+      <div>
+        <div class="chat-bubble">Ciao! Sono l'assistente del programma elettorale di Marcello Bergonzi Perrone. Puoi chiedermi qualsiasi cosa sul programma. 👇</div>
+        <div class="chat-chips">
+          <button class="chat-chip" onclick="chatAsk(this.textContent)">Cosa prevede il programma per i giovani?</button>
+          <button class="chat-chip" onclick="chatAsk(this.textContent)">Quali proposte per la sicurezza?</button>
+          <button class="chat-chip" onclick="chatAsk(this.textContent)">Cosa si fa per il centro storico?</button>
+          <button class="chat-chip" onclick="chatAsk(this.textContent)">Cosa prevede il programma per la sanità?</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-footer">
+    <input id="chat-input" type="text" placeholder="Scrivi una domanda…" autocomplete="off">
+    <button id="chat-send" onclick="chatSend()" title="Invia">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+/* ── Configurazione ────────────────────────────────────────────────────────
+   Sostituisci SUPABASE_URL e SUPABASE_ANON_KEY con i valori del tuo progetto.
+   Li trovi su: Supabase Dashboard → Settings → API
+   ──────────────────────────────────────────────────────────────────────── */
+const SUPABASE_URL      = "https://zkpjqaguwfoacyyklgrz.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprcGpxYWd1d2ZvYWN5eWtsZ3J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1Njg0NTUsImV4cCI6MjA5NDE0NDQ1NX0.gnoJGr4XSRuesI5L6VdwoZufRSGVDBr8AHc9W-wHFug";
+const CHAT_ENDPOINT     = `${SUPABASE_URL}/functions/v1/chat`;
+
+/* ── UI helpers ──────────────────────────────────────────────────────────── */
+const panel    = document.getElementById("chat-panel");
+const messages = document.getElementById("chat-messages");
+const input    = document.getElementById("chat-input");
+
+function chatOpen()   { panel.classList.add("open");    input.focus(); }
+function chatClose()  { panel.classList.remove("open"); }
+function chatToggle() { panel.classList.toggle("open"); if (panel.classList.contains("open")) input.focus(); }
+
+input.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); chatSend(); }
+});
+
+function addMsg(role, html) {
+  const av  = role === "user" ? "T" : "C";
+  const div = document.createElement("div");
+  div.className = `chat-msg ${role}`;
+  div.innerHTML = `<div class="chat-av">${av}</div><div class="chat-bubble">${html}</div>`;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function addTyping() {
+  const div = document.createElement("div");
+  div.id = "chat-typing-row";
+  div.className = "chat-msg bot";
+  div.innerHTML = `<div class="chat-av">C</div>
+    <div class="chat-bubble"><div class="chat-typing"><span></span><span></span><span></span></div></div>`;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+function removeTyping() {
+  const t = document.getElementById("chat-typing-row");
+  if (t) t.remove();
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+          .replace(/\n/g,"<br>");
+}
+
+/* ── Invia domanda ───────────────────────────────────────────────────────── */
+function chatAsk(q) { input.value = q; chatSend(); }
+
+async function chatSend() {
+  const q = input.value.trim();
+  if (!q) return;
+  input.value = "";
+  addMsg("user", escHtml(q));
+  addTyping();
+
+  try {
+    const res = await fetch(CHAT_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+      },
+      body: JSON.stringify({ question: q }),
+    });
+    const data = await res.json();
+    removeTyping();
+    if (data.error) addMsg("bot", "⚠️ " + escHtml(data.error));
+    else            addMsg("bot", escHtml(data.answer));
+  } catch (err) {
+    removeTyping();
+    addMsg("bot", "⚠️ Errore di connessione. Riprova tra qualche secondo.");
+  }
+}
+</script>
+
 <footer>
   <div class="footer-nome">Marcello Bergonzi Perrone</div>
   <div>Candidato Sindaco del Comune di Voghera – Elezioni Comunali 24/25 Maggio 2026</div>
