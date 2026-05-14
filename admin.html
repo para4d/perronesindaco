@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · Chatbot Perrone 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --arancio: #e07b39;
+    --arancio-dark: #c4622a;
+    --blu: #1e3a5f;
+    --verde: #2ecc71;
+    --rosso: #e74c3c;
+    --giallo: #f39c12;
+    --bg: #f0f2f5;
+    --card: #ffffff;
+    --testo: #2c3e50;
+    --testo-light: #7f8c8d;
+    --bordo: #e0e0e0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--testo); }
+
+  /* ── GATE ── */
+  #gate {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--blu) 0%, #2c5282 100%);
+  }
+  .gate-box {
+    background: white; border-radius: 16px; padding: 2.5rem 3rem; width: 360px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.3); text-align: center;
+  }
+  .gate-logo { font-size: 2.2rem; font-weight: 800; color: var(--arancio); margin-bottom: .25rem; }
+  .gate-sub  { font-size: .85rem; color: var(--testo-light); margin-bottom: 2rem; }
+  .gate-box input {
+    width: 100%; padding: .75rem 1rem; border: 1.5px solid var(--bordo); border-radius: 8px;
+    font-size: 1rem; margin-bottom: 1rem; outline: none; transition: border-color .2s;
+  }
+  .gate-box input:focus { border-color: var(--arancio); }
+  .gate-box button {
+    width: 100%; padding: .8rem; background: var(--arancio); color: white; border: none;
+    border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background .2s;
+  }
+  .gate-box button:hover { background: var(--arancio-dark); }
+  #gate-err { color: var(--rosso); font-size: .85rem; margin-top: .75rem; }
+
+  /* ── LAYOUT ── */
+  #dashboard { display: none; }
+  header {
+    background: var(--blu); color: white; padding: 1rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .header-title { font-size: 1.1rem; font-weight: 700; }
+  .header-title span { color: var(--arancio); }
+  .header-right { display: flex; align-items: center; gap: 1rem; font-size: .82rem; color: #a0aec0; }
+  #refresh-countdown { font-variant-numeric: tabular-nums; }
+  .btn-logout {
+    background: transparent; border: 1px solid #4a5568; color: #a0aec0;
+    padding: .35rem .8rem; border-radius: 6px; cursor: pointer; font-size: .8rem;
+    transition: all .2s;
+  }
+  .btn-logout:hover { background: #4a5568; color: white; }
+
+  main { padding: 1.5rem 2rem; max-width: 1400px; margin: 0 auto; }
+
+  /* ── ALERT BANNER ── */
+  #alert-banner {
+    display: none; background: #fff5f5; border: 2px solid var(--rosso);
+    border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 1.5rem;
+    align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  }
+  #alert-banner.show { display: flex; }
+  .alert-text { color: var(--rosso); font-weight: 600; }
+  .btn-ricarica {
+    background: var(--rosso); color: white; border: none; padding: .6rem 1.2rem;
+    border-radius: 8px; cursor: pointer; font-weight: 600; font-size: .9rem;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-email-alert {
+    background: white; color: var(--rosso); border: 2px solid var(--rosso);
+    padding: .6rem 1.2rem; border-radius: 8px; cursor: pointer; font-weight: 600;
+    font-size: .9rem; text-decoration: none; display: inline-block;
+  }
+
+  /* ── SEZIONE ── */
+  .section-title {
+    font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+    color: var(--testo-light); margin-bottom: .75rem; margin-top: 1.75rem;
+  }
+
+  /* ── KPI GRID ── */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1rem; }
+  .kpi-card {
+    background: var(--card); border-radius: 12px; padding: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06); border: 1px solid var(--bordo);
+    position: relative; overflow: hidden;
+  }
+  .kpi-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--arancio);
+  }
+  .kpi-card.verde::before  { background: var(--verde); }
+  .kpi-card.rosso::before  { background: var(--rosso); }
+  .kpi-card.giallo::before { background: var(--giallo); }
+  .kpi-card.blu::before    { background: var(--blu); }
+  .kpi-label { font-size: .72rem; color: var(--testo-light); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; margin-bottom: .4rem; }
+  .kpi-value { font-size: 1.9rem; font-weight: 800; line-height: 1; }
+  .kpi-sub   { font-size: .75rem; color: var(--testo-light); margin-top: .3rem; }
+  .kpi-badge {
+    display: inline-block; padding: .15rem .5rem; border-radius: 20px; font-size: .7rem; font-weight: 600; margin-top: .3rem;
+  }
+  .badge-up   { background: #fef3cd; color: #856404; }
+  .badge-down { background: #d1e7dd; color: #0a3622; }
+  .badge-err  { background: #f8d7da; color: #842029; }
+
+  /* ── GRAFICO ── */
+  .chart-card {
+    background: var(--card); border-radius: 12px; padding: 1.25rem 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06); border: 1px solid var(--bordo); margin-bottom: 1rem;
+  }
+  .chart-title { font-size: .85rem; font-weight: 700; margin-bottom: 1rem; color: var(--testo); }
+  .chart-wrap  { position: relative; height: 220px; }
+
+  /* ── IMPOSTAZIONI ── */
+  .settings-card {
+    background: var(--card); border-radius: 12px; padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06); border: 1px solid var(--bordo);
+  }
+  .settings-row { display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end; }
+  .field { display: flex; flex-direction: column; gap: .35rem; flex: 1; min-width: 180px; }
+  .field label { font-size: .8rem; font-weight: 600; color: var(--testo-light); }
+  .field input {
+    padding: .6rem .9rem; border: 1.5px solid var(--bordo); border-radius: 8px;
+    font-size: .95rem; outline: none; transition: border-color .2s;
+  }
+  .field input:focus { border-color: var(--arancio); }
+  .btn-salva {
+    background: var(--arancio); color: white; border: none; padding: .65rem 1.4rem;
+    border-radius: 8px; cursor: pointer; font-weight: 600; font-size: .9rem;
+    transition: background .2s; white-space: nowrap;
+  }
+  .btn-salva:hover { background: var(--arancio-dark); }
+  .settings-note { font-size: .78rem; color: var(--testo-light); margin-top: .75rem; }
+
+  /* ── TABELLA ── */
+  .table-card {
+    background: var(--card); border-radius: 12px; overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06); border: 1px solid var(--bordo);
+  }
+  .table-header {
+    padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--bordo);
+  }
+  .table-header-title { font-size: .85rem; font-weight: 700; }
+  .btn-export {
+    background: var(--blu); color: white; border: none; padding: .45rem 1rem;
+    border-radius: 6px; cursor: pointer; font-size: .8rem; font-weight: 600;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+  thead th {
+    background: #f8fafc; padding: .75rem 1rem; text-align: left;
+    font-weight: 700; color: var(--testo-light); font-size: .72rem;
+    text-transform: uppercase; letter-spacing: .05em; border-bottom: 1px solid var(--bordo);
+  }
+  tbody tr { border-bottom: 1px solid #f0f0f0; transition: background .15s; }
+  tbody tr:hover { background: #fafafa; }
+  tbody td { padding: .75rem 1rem; vertical-align: top; }
+  .td-domanda { max-width: 320px; }
+  .td-risposta { max-width: 400px; color: var(--testo-light); }
+  .text-clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .badge-err-sm { background: #f8d7da; color: #842029; padding: .1rem .4rem; border-radius: 4px; font-size: .7rem; }
+  .badge-ok-sm  { background: #d1e7dd; color: #0a3622; padding: .1rem .4rem; border-radius: 4px; font-size: .7rem; }
+  .loading { text-align: center; padding: 3rem; color: var(--testo-light); font-size: .9rem; }
+  #no-data { text-align: center; padding: 2rem; color: var(--testo-light); }
+
+  @media (max-width: 600px) {
+    main { padding: 1rem; }
+    header { padding: .75rem 1rem; }
+    .kpi-value { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ GATE ═══════════════════ -->
+<div id="gate">
+  <div class="gate-box">
+    <div class="gate-logo">⚙️ Admin</div>
+    <div class="gate-sub">Chatbot Perrone 2026 · Dashboard</div>
+    <input type="password" id="pwd" placeholder="Password di accesso" autofocus>
+    <button onclick="login()">Accedi</button>
+    <div id="gate-err"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ DASHBOARD ═══════════════════ -->
+<div id="dashboard">
+
+  <header>
+    <div class="header-title">⚙️ Admin &nbsp;·&nbsp; <span>Chatbot Perrone 2026</span></div>
+    <div class="header-right">
+      <span>Aggiornamento automatico: <strong id="refresh-countdown">60</strong>s</span>
+      <button class="btn-logout" onclick="logout()">Esci</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Alert soglia -->
+    <div id="alert-banner">
+      <div class="alert-text" id="alert-text">⚠️ Soglia di spesa superata!</div>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+        <a id="btn-email" class="btn-email-alert" href="#">📧 Invia avviso email</a>
+        <a class="btn-ricarica" href="https://console.anthropic.com/settings/billing" target="_blank">💳 Ricarica credito Anthropic</a>
+      </div>
+    </div>
+
+    <!-- KPI principali -->
+    <div class="section-title">Panoramica generale</div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Domande totali</div>
+        <div class="kpi-value" id="k-tot">—</div>
+        <div class="kpi-sub" id="k-tot-sub">dal primo utilizzo</div>
+      </div>
+      <div class="kpi-card verde">
+        <div class="kpi-label">Domande oggi</div>
+        <div class="kpi-value" id="k-oggi">—</div>
+        <div class="kpi-sub" id="k-sett">Questa settimana: —</div>
+      </div>
+      <div class="kpi-card giallo">
+        <div class="kpi-label">Ultimi 20 min</div>
+        <div class="kpi-value" id="k-20min">—</div>
+        <div class="kpi-sub" id="k-20min-tok">Token: —</div>
+      </div>
+      <div class="kpi-card rosso">
+        <div class="kpi-label">Errori totali</div>
+        <div class="kpi-value" id="k-err">—</div>
+        <div class="kpi-sub" id="k-err-pct">Tasso: —%</div>
+      </div>
+      <div class="kpi-card blu">
+        <div class="kpi-label">Tempo medio risposta</div>
+        <div class="kpi-value" id="k-dur">—</div>
+        <div class="kpi-sub">millisecondi</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Ora di punta (24h)</div>
+        <div class="kpi-value" id="k-peak">—</div>
+        <div class="kpi-sub">fascia oraria più attiva</div>
+      </div>
+    </div>
+
+    <!-- KPI costi -->
+    <div class="section-title">Consumi e costi</div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Costo totale (USD)</div>
+        <div class="kpi-value" id="k-cost-tot">—</div>
+        <div class="kpi-sub" id="k-cost-eur">— €</div>
+      </div>
+      <div class="kpi-card verde">
+        <div class="kpi-label">Costo oggi (USD)</div>
+        <div class="kpi-value" id="k-cost-oggi">—</div>
+        <div class="kpi-sub">ultime 24 ore</div>
+      </div>
+      <div class="kpi-card giallo">
+        <div class="kpi-label">Costo ultimi 20 min</div>
+        <div class="kpi-value" id="k-cost-20min">—</div>
+        <div class="kpi-sub" id="k-cost-rate">proiezione/ora: —</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Costo medio/domanda</div>
+        <div class="kpi-value" id="k-cost-avg">—</div>
+        <div class="kpi-sub">USD per conversazione</div>
+      </div>
+      <div class="kpi-card blu">
+        <div class="kpi-label">Token input totali</div>
+        <div class="kpi-value" id="k-tok-in">—</div>
+        <div class="kpi-sub">@ $0.80/MTok</div>
+      </div>
+      <div class="kpi-card blu">
+        <div class="kpi-label">Token output totali</div>
+        <div class="kpi-value" id="k-tok-out">—</div>
+        <div class="kpi-sub">@ $4.00/MTok</div>
+      </div>
+    </div>
+
+    <!-- Trend settimana -->
+    <div class="section-title">Trend</div>
+    <div class="kpi-grid" style="grid-template-columns: repeat(auto-fill, minmax(260px,1fr));">
+      <div class="kpi-card">
+        <div class="kpi-label">Settimana corrente vs precedente</div>
+        <div class="kpi-value" id="k-trend-dom">—</div>
+        <div class="kpi-sub">domande &nbsp;<span id="k-trend-badge-dom"></span></div>
+        <div style="margin-top:.5rem;">
+          <div style="font-size:.78rem;color:var(--testo-light);">Costo &nbsp;<span id="k-trend-badge-cost"></span></div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Credito Anthropic</div>
+        <div class="kpi-value" style="font-size:1.1rem;line-height:1.4;">Non disponibile via API</div>
+        <div class="kpi-sub" style="margin-top:.5rem;">
+          <a href="https://console.anthropic.com/settings/billing" target="_blank"
+             style="color:var(--arancio);font-weight:600;font-size:.8rem;">
+            → Verifica su console.anthropic.com
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grafico -->
+    <div class="section-title">Andamento ultime 24 ore</div>
+    <div class="chart-card">
+      <div class="chart-title">Domande per ora · Costo (USD)</div>
+      <div class="chart-wrap"><canvas id="chart-usage"></canvas></div>
+    </div>
+
+    <!-- Impostazioni alert -->
+    <div class="section-title">Impostazioni alert</div>
+    <div class="settings-card">
+      <div class="settings-row">
+        <div class="field">
+          <label>Soglia di spesa (USD)</label>
+          <input type="number" id="s-soglia" min="0.1" step="0.5" placeholder="es. 5.00">
+        </div>
+        <div class="field">
+          <label>Email per avvisi</label>
+          <input type="email" id="s-email" placeholder="es. admin@email.com">
+        </div>
+        <button class="btn-salva" onclick="salvaImpostazioni()">💾 Salva</button>
+      </div>
+      <div class="settings-note">
+        ⓘ Gli alert sono visualizzati in questa pagina. Per ricevere email automatiche senza aprire la dashboard,
+        è necessario configurare un servizio SMTP (es. Resend) — contatta il tuo sviluppatore.
+      </div>
+    </div>
+
+    <!-- Tabella conversazioni -->
+    <div class="section-title" style="margin-top:2rem;">Conversazioni recenti</div>
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-header-title">Ultime 100 interazioni</div>
+        <button class="btn-export" onclick="esportaCSV()">⬇ Esporta CSV</button>
+      </div>
+      <div id="table-body">
+        <div class="loading">Caricamento…</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ══ CONFIGURAZIONE ══════════════════════════════════════════════════════════
+const SUPABASE_URL  = 'https://zkpjqaguwfoacyyklgrz.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprcGpxYWd1d2ZvYWN5eWtsZ3J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1Njg0NTUsImV4cCI6MjA5NDE0NDQ1NX0.gnoJGr4XSRuesI5L6VdwoZufRSGVDBr8AHc9W-wHFug';
+const ADMIN_PWD     = 'PerroneAdmin26';  // ← cambia qui se vuoi
+const EUR_RATE      = 0.92;             // tasso fisso USD→EUR
+
+let supabase, chart, refreshTimer, countdown, logsData = [];
+
+// ══ AUTH ════════════════════════════════════════════════════════════════════
+function login() {
+  const pwd = document.getElementById('pwd').value;
+  if (pwd === ADMIN_PWD) {
+    sessionStorage.setItem('admin_ok', '1');
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    caricaImpostazioni();
+    init();
+  } else {
+    document.getElementById('gate-err').textContent = 'Password errata.';
+  }
+}
+function logout() {
+  sessionStorage.removeItem('admin_ok');
+  location.reload();
+}
+document.getElementById('pwd').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+if (sessionStorage.getItem('admin_ok') === '1') {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  caricaImpostazioni();
+}
+
+// ══ IMPOSTAZIONI (localStorage) ═════════════════════════════════════════════
+function caricaImpostazioni() {
+  document.getElementById('s-soglia').value = localStorage.getItem('admin_soglia') || '5';
+  document.getElementById('s-email').value  = localStorage.getItem('admin_email')  || 'matteopara@gmail.com';
+}
+function salvaImpostazioni() {
+  localStorage.setItem('admin_soglia', document.getElementById('s-soglia').value);
+  localStorage.setItem('admin_email',  document.getElementById('s-email').value);
+  alert('✅ Impostazioni salvate!');
+  verificaAlert(parseFloat(localStorage.getItem('admin_soglia')), parseFloat(document.getElementById('k-cost-tot').dataset.raw || 0));
+}
+
+// ══ ALERT ═══════════════════════════════════════════════════════════════════
+function verificaAlert(soglia, costoTot) {
+  const banner = document.getElementById('alert-banner');
+  if (costoTot >= soglia) {
+    banner.classList.add('show');
+    document.getElementById('alert-text').textContent =
+      `⚠️ Soglia superata! Speso $${costoTot.toFixed(4)} su soglia $${soglia.toFixed(2)}`;
+    const email  = localStorage.getItem('admin_email') || '';
+    const subj   = encodeURIComponent('🚨 Alert chatbot Perrone — soglia spesa superata');
+    const body   = encodeURIComponent(`Attenzione!\n\nIl chatbot ha superato la soglia di spesa impostata.\n\nSpeso totale: $${costoTot.toFixed(4)}\nSoglia: $${soglia.toFixed(2)}\n\nVerifica il credito su:\nhttps://console.anthropic.com/settings/billing`);
+    document.getElementById('btn-email').href = `mailto:${email}?subject=${subj}&body=${body}`;
+  } else {
+    banner.classList.remove('show');
+  }
+}
+
+// ══ FORMATO ═════════════════════════════════════════════════════════════════
+const fmtUSD  = v => `$${parseFloat(v).toFixed(4)}`;
+const fmtK    = v => v >= 1000 ? `${(v/1000).toFixed(1)}k` : String(v);
+const fmtDate = s => s ? new Date(s).toLocaleString('it-IT', { dateStyle:'short', timeStyle:'short' }) : '—';
+const fmtDur  = ms => ms ? `${Math.round(ms)}` : '—';
+
+function badgeTrend(val, prev) {
+  if (!prev || prev === 0) return '';
+  const pct = ((val - prev) / prev * 100).toFixed(0);
+  const up  = val >= prev;
+  return `<span class="kpi-badge ${up ? 'badge-up' : 'badge-down'}">${up ? '▲' : '▼'} ${Math.abs(pct)}%</span>`;
+}
+
+// ══ CARICAMENTO DATI ════════════════════════════════════════════════════════
+async function init() {
+  await Promise.all([caricaStats(), caricaGrafico(), caricaLogs()]);
+  avviaCountdown();
+}
+
+async function caricaStats() {
+  try {
+    const { data, error } = await supabase.rpc('get_chat_stats');
+    if (error) throw error;
+    const s = data;
+
+    const totDom  = parseInt(s.totale_domande || 0);
+    const costoT  = parseFloat(s.costo_totale_usd || 0);
+    const errTot  = parseInt(s.errori_totali || 0);
+    const soglia  = parseFloat(localStorage.getItem('admin_soglia') || '5');
+
+    // KPI principali
+    document.getElementById('k-tot').textContent     = fmtK(totDom);
+    document.getElementById('k-tot-sub').textContent = s.prima_domanda_at
+      ? `dal ${fmtDate(s.prima_domanda_at)}` : 'nessuna ancora';
+    document.getElementById('k-oggi').textContent    = s.domande_oggi || 0;
+    document.getElementById('k-sett').textContent    = `Questa settimana: ${s.domande_settimana || 0}`;
+    document.getElementById('k-20min').textContent   = s.domande_ultimi_20min || 0;
+    document.getElementById('k-20min-tok').textContent = `Token: ${fmtK(parseInt(s.tokens_input_totali||0)+parseInt(s.tokens_output_totali||0))}`;
+    document.getElementById('k-err').textContent     = errTot;
+    document.getElementById('k-err-pct').textContent = totDom > 0
+      ? `Tasso: ${(errTot/totDom*100).toFixed(1)}%` : 'Tasso: 0%';
+    document.getElementById('k-dur').textContent     = fmtDur(s.durata_media_ms);
+    const peak = s.ora_di_punta !== null ? `${s.ora_di_punta}:00 – ${parseInt(s.ora_di_punta)+1}:00` : '—';
+    document.getElementById('k-peak').textContent    = peak;
+
+    // KPI costi
+    const costEl = document.getElementById('k-cost-tot');
+    costEl.textContent        = fmtUSD(costoT);
+    costEl.dataset.raw        = costoT;
+    document.getElementById('k-cost-eur').textContent   = `${(costoT * EUR_RATE).toFixed(4)} €`;
+    document.getElementById('k-cost-oggi').textContent  = fmtUSD(s.costo_oggi_usd || 0);
+    const cost20 = parseFloat(s.costo_ultimi_20min_usd || 0);
+    document.getElementById('k-cost-20min').textContent = fmtUSD(cost20);
+    document.getElementById('k-cost-rate').textContent  = `proiezione/ora: ${fmtUSD(cost20 * 3)}`;
+    document.getElementById('k-cost-avg').textContent   = totDom > 0
+      ? fmtUSD(costoT / totDom) : '$0.0000';
+    document.getElementById('k-tok-in').textContent     = fmtK(parseInt(s.tokens_input_totali  || 0));
+    document.getElementById('k-tok-out').textContent    = fmtK(parseInt(s.tokens_output_totali || 0));
+
+    // Trend settimana
+    const domSett    = parseInt(s.domande_settimana || 0);
+    const costSett   = parseFloat(s.costo_questa_settimana || 0);
+    const costPrev   = parseFloat(s.costo_settimana_prec  || 0);
+    document.getElementById('k-trend-dom').textContent = domSett;
+    document.getElementById('k-trend-badge-dom').innerHTML  = badgeTrend(domSett,  domSett);
+    document.getElementById('k-trend-badge-cost').innerHTML = badgeTrend(costSett, costPrev);
+
+    // Verifica alert
+    verificaAlert(soglia, costoT);
+
+  } catch(e) { console.error('Stats error:', e); }
+}
+
+async function caricaGrafico() {
+  try {
+    const { data, error } = await supabase.rpc('get_hourly_stats', { ore: 24 });
+    if (error) throw error;
+    const labels = (data||[]).map(r => {
+      const h = new Date(r.ora);
+      return `${h.getHours()}:00`;
+    });
+    const domande = (data||[]).map(r => parseInt(r.num_domande));
+    const costi   = (data||[]).map(r => parseFloat(r.costo_ora_usd));
+
+    const ctx = document.getElementById('chart-usage').getContext('2d');
+    if (chart) chart.destroy();
+    chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Domande',
+            data: domande,
+            backgroundColor: 'rgba(30,58,95,.7)',
+            borderRadius: 4,
+            yAxisID: 'y',
+          },
+          {
+            label: 'Costo (USD)',
+            data: costi,
+            type: 'line',
+            borderColor: '#e07b39',
+            backgroundColor: 'rgba(224,123,57,.1)',
+            borderWidth: 2,
+            pointRadius: 3,
+            fill: true,
+            tension: .3,
+            yAxisID: 'y1',
+          },
+        ],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } },
+        scales: {
+          y:  { beginAtZero: true, position: 'left',  title: { display: true, text: 'Domande' }, ticks: { font: { size: 11 } } },
+          y1: { beginAtZero: true, position: 'right', title: { display: true, text: 'USD' },
+                grid: { drawOnChartArea: false }, ticks: { font: { size: 11 }, callback: v => '$'+v.toFixed(4) } },
+          x:  { ticks: { font: { size: 11 } } },
+        },
+      },
+    });
+  } catch(e) { console.error('Grafico error:', e); }
+}
+
+async function caricaLogs() {
+  const el = document.getElementById('table-body');
+  try {
+    const { data, error } = await supabase
+      .from('chat_logs')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(100);
+    if (error) throw error;
+    logsData = data || [];
+
+    if (!logsData.length) {
+      el.innerHTML = '<div id="no-data">Nessuna conversazione ancora registrata.</div>';
+      return;
+    }
+
+    const rows = logsData.map(r => `
+      <tr>
+        <td style="white-space:nowrap;font-size:.75rem;color:var(--testo-light);">${fmtDate(r.created_at)}</td>
+        <td class="td-domanda"><div class="text-clamp">${esc(r.domanda)}</div></td>
+        <td class="td-risposta"><div class="text-clamp">${r.risposta ? esc(r.risposta) : '<em>errore</em>'}</div></td>
+        <td style="white-space:nowrap;">${r.tokens_input + r.tokens_output}</td>
+        <td style="white-space:nowrap;">$${parseFloat(r.costo_usd).toFixed(5)}</td>
+        <td style="white-space:nowrap;">${r.durata_ms ? r.durata_ms + ' ms' : '—'}</td>
+        <td>${r.errore ? '<span class="badge-err-sm">ERR</span>' : '<span class="badge-ok-sm">OK</span>'}</td>
+      </tr>`).join('');
+
+    el.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Data/ora</th><th>Domanda</th><th>Risposta</th>
+            <th>Token</th><th>Costo</th><th>Durata</th><th>Stato</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  } catch(e) {
+    el.innerHTML = `<div class="loading">Errore: ${e.message}</div>`;
+  }
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ══ EXPORT CSV ══════════════════════════════════════════════════════════════
+function esportaCSV() {
+  if (!logsData.length) { alert('Nessun dato da esportare.'); return; }
+  const header = ['id','data_ora','domanda','risposta','tokens_input','tokens_output','costo_usd','durata_ms','errore'];
+  const rows   = logsData.map(r => [
+    r.id,
+    r.created_at,
+    `"${(r.domanda||'').replace(/"/g,'""')}"`,
+    `"${(r.risposta||'').replace(/"/g,'""')}"`,
+    r.tokens_input, r.tokens_output,
+    r.costo_usd, r.durata_ms, r.errore,
+  ].join(','));
+  const csv  = [header.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = `chatbot_logs_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+// ══ AUTO-REFRESH ════════════════════════════════════════════════════════════
+function avviaCountdown() {
+  let sec = 60;
+  clearInterval(countdown);
+  countdown = setInterval(async () => {
+    sec--;
+    document.getElementById('refresh-countdown').textContent = sec;
+    if (sec <= 0) {
+      sec = 60;
+      await Promise.all([caricaStats(), caricaGrafico(), caricaLogs()]);
+    }
+  }, 1000);
+}
+
+// Avvio se già autenticato
+if (sessionStorage.getItem('admin_ok') === '1') init();
+</script>
+</body>
+</html>
