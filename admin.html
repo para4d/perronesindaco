@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -359,7 +360,7 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 const ADMIN_PWD     = 'PerroneAdmin26';  // ← cambia qui se vuoi
 const EUR_RATE      = 0.92;             // tasso fisso USD→EUR
 
-let supabase, chart, refreshTimer, countdown, logsData = [];
+let sbClient, chart, refreshTimer, countdown, logsData = [];
 
 // ══ AUTH ════════════════════════════════════════════════════════════════════
 function login() {
@@ -368,7 +369,7 @@ function login() {
     sessionStorage.setItem('admin_ok', '1');
     document.getElementById('gate').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
     caricaImpostazioni();
     init();
   } else {
@@ -379,13 +380,16 @@ function logout() {
   sessionStorage.removeItem('admin_ok');
   location.reload();
 }
-document.getElementById('pwd').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
-if (sessionStorage.getItem('admin_ok') === '1') {
-  document.getElementById('gate').style.display = 'none';
-  document.getElementById('dashboard').style.display = 'block';
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-  caricaImpostazioni();
-}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('pwd').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+  if (sessionStorage.getItem('admin_ok') === '1') {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    caricaImpostazioni();
+    init();
+  }
+});
 
 // ══ IMPOSTAZIONI (localStorage) ═════════════════════════════════════════════
 function caricaImpostazioni() {
@@ -436,7 +440,7 @@ async function init() {
 
 async function caricaStats() {
   try {
-    const { data, error } = await supabase.rpc('get_chat_stats');
+    const { data, error } = await sbClient.rpc('get_chat_stats');
     if (error) throw error;
     const s = data;
 
@@ -490,7 +494,7 @@ async function caricaStats() {
 
 async function caricaGrafico() {
   try {
-    const { data, error } = await supabase.rpc('get_hourly_stats', { ore: 24 });
+    const { data, error } = await sbClient.rpc('get_hourly_stats', { ore: 24 });
     if (error) throw error;
     const labels = (data||[]).map(r => {
       const h = new Date(r.ora);
@@ -544,7 +548,7 @@ async function caricaGrafico() {
 async function caricaLogs() {
   const el = document.getElementById('table-body');
   try {
-    const { data, error } = await supabase
+    const { data, error } = await sbClient
       .from('chat_logs')
       .select('*')
       .order('created_at', { ascending: false })
@@ -621,8 +625,7 @@ function avviaCountdown() {
   }, 1000);
 }
 
-// Avvio se già autenticato
-if (sessionStorage.getItem('admin_ok') === '1') init();
+
 </script>
 </body>
 </html>
