@@ -1395,7 +1395,15 @@ function addMsg(role, html) {
   div.className = `chat-msg ${role}`;
   div.innerHTML = `<div class="chat-av">${av}</div><div class="chat-bubble">${html}</div>`;
   messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
+  if (role === "user") {
+    // Scorri in fondo così l'indicatore "sta scrivendo" è visibile
+    messages.scrollTop = messages.scrollHeight;
+  } else {
+    // Scorri all'inizio della risposta del bot
+    const r  = div.getBoundingClientRect();
+    const cr = messages.getBoundingClientRect();
+    messages.scrollTop += r.top - cr.top;
+  }
 }
 
 function addTyping() {
