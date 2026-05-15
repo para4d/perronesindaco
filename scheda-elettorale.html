@@ -769,19 +769,23 @@ async function loadData() {
 
   // 2. Candidati di tutte le liste attive in un'unica query
   const activeIds = lists.filter(l => l.active).map(l => l.id);
-  const { data: candidates, error: candsErr } = await supabase
-    .from('ballot_candidates')
-    .select('list_id, ballot_name, full_name, gender, why')
-    .in('list_id', activeIds)
-    .eq('active', true)
-    .order('gender')
-    .order('ballot_name');
-  if (candsErr) throw candsErr;
+  let candidates = [];
+  if (activeIds.length > 0) {
+    const { data: candsData, error: candsErr } = await supabase
+      .from('ballot_candidates')
+      .select('list_id, ballot_name, full_name, gender, why')
+      .in('list_id', activeIds)
+      .eq('active', true)
+      .order('gender')
+      .order('ballot_name');
+    if (candsErr) throw candsErr;
+    candidates = candsData || [];
+  }
 
   // 3. Costruisce LISTS nel formato atteso dalla webapp
   LISTS = {};
   lists.forEach(lst => {
-    const lstCandidates = (candidates || [])
+    const lstCandidates = candidates
       .filter(c => c.list_id === lst.id)
       .map(c => ({
         ballot: c.ballot_name,
@@ -835,9 +839,14 @@ function updateProgress(n) {
 function buildPartyGrid() {
   const grid = document.getElementById('party-grid');
   grid.innerHTML = '';
-  const order = ['civici', 'm2050', 'pd', 'avs', 'casariformista', 'rifondazione'];
+  // Usa tutte le liste da Supabase, ordinate per sort_order (già in LISTS nell'ordine ricevuto)
+  // Fallback all'ordine hardcoded per compatibilità
+  const order = Object.keys(LISTS).length > 0
+    ? Object.keys(LISTS)
+    : ['civici', 'm2050', 'pd', 'avs', 'casariformista', 'rifondazione'];
   order.forEach(key => {
     const lst = LISTS[key];
+    if (!lst) return;                          // sicurezza: salta chiavi mancanti
     const hasCands = lst.candidates.length > 0;
     const div = document.createElement('div');
     div.className = 'party-card' + (hasCands ? ' has-candidates' : ' no-candidates');
