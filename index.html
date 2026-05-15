@@ -681,20 +681,89 @@
     }
 
     /* =============================================
+       HAMBURGER MENU MOBILE
+    ============================================= */
+    #menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      border-radius: 6px;
+      transition: background .2s;
+    }
+    #menu-btn:hover { background: rgba(255,255,255,.1); }
+    #menu-btn span {
+      display: block;
+      width: 24px; height: 2px;
+      background: #fff;
+      border-radius: 2px;
+      transition: all .3s;
+    }
+    #menu-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    #menu-btn.open span:nth-child(2) { opacity: 0; }
+    #menu-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    #mobile-nav {
+      display: none;
+      background: var(--blu-scuro);
+      border-top: 1px solid rgba(255,255,255,.1);
+      padding: .5rem 0 .8rem;
+    }
+    #mobile-nav.open { display: block; }
+    #mobile-nav a {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      color: rgba(255,255,255,.85);
+      text-decoration: none;
+      font-size: .97rem;
+      font-weight: 500;
+      padding: .85rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      transition: background .15s, color .15s;
+      min-height: 48px;
+    }
+    #mobile-nav a:hover { background: rgba(255,255,255,.07); color: #fff; }
+    #mobile-nav a:last-child { border-bottom: none; }
+    #mobile-nav .mn-votanoi {
+      background: var(--arancio);
+      color: #fff;
+      margin: .6rem 1.5rem 0;
+      border-radius: 10px;
+      font-weight: 700;
+      border: none;
+      justify-content: center;
+    }
+    #mobile-nav .mn-votanoi:hover { background: var(--arancio-sc); }
+    #mobile-nav .mn-chat { color: var(--arancio); }
+
+    /* =============================================
        RESPONSIVE
     ============================================= */
     @media (max-width: 860px) {
       nav ul { display: none; }
+      #menu-btn { display: flex; }
       .cv-grid { grid-template-columns: 1fr; }
       .cv-sidebar { order: 2; }
-      .cv-body { order: 1; }
+      .cv-body { order: 1; padding: 1.5rem; }
       .hero-foto { width: 200px; height: 250px; }
+      .programma-vision { padding: 1.5rem 1.2rem; }
     }
 
     @media (max-width: 560px) {
-      section { padding: 3rem 1rem; }
+      section { padding: 2.5rem 1rem; }
       .tavoli-grid { grid-template-columns: 1fr; }
       .hero-testo h1 { font-size: 2rem; }
+      .hero { padding: 3rem 1rem 2.5rem; }
+      .elezioni-banner { font-size: .78rem; padding: .45rem .8rem; }
+      .btn { min-height: 48px; padding: .85rem 1.5rem; }
+      .download-btn { min-height: 48px; }
+      .profilo-pillole { gap: .6rem; }
+      .pillola { min-width: 140px; font-size: .82rem; }
     }
 
     /* =============================================
@@ -884,9 +953,11 @@
         bottom: 0; right: 0;
         width: 100%; max-width: 100%;
         border-radius: 16px 16px 0 0;
-        z-index: 1001; /* sopra il FAB su mobile */
+        z-index: 1001;
       }
-      #chat-fab { bottom: 16px; right: 16px; }
+      #chat-fab { bottom: 16px; right: 16px; padding: .7rem 1rem; }
+      #chat-fab .fab-label { display: none; }
+      #chat-messages { max-height: 55vh; }
     }
   </style>
 </head>
@@ -911,7 +982,18 @@
         <li><a href="#" onclick="chatOpen();return false;" style="color:var(--arancio);border-bottom-color:transparent;">🤖 Chiedimi del programma</a></li>
       </ul>
     </nav>
+    <button id="menu-btn" onclick="toggleMenu()" aria-label="Apri menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </div>
+  <nav id="mobile-nav" aria-label="Menu mobile">
+    <a href="#chi-sono" onclick="closeMenu()">👤 Chi è</a>
+    <a href="#curriculum" onclick="closeMenu()">📄 Curriculum</a>
+    <a href="#programma" onclick="closeMenu()">📋 Programma</a>
+    <a href="#casellario" onclick="closeMenu()">⚖️ Casellario</a>
+    <a href="#" onclick="chatOpen();closeMenu();return false;" class="mn-chat">🤖 Chiedimi del programma</a>
+    <a href="scheda-elettorale.html" class="mn-votanoi">🗳️ Votanoi — Crea la tua scheda</a>
+  </nav>
 </header>
 
 <!-- ══════════════════════════════════════════
@@ -949,7 +1031,7 @@
 
     <!-- Loghi delle liste di sostegno -->
     <div class="hero-liste">
-      <img src="logocivici4.webp"        alt="Civici per Voghera">
+      <img src="logocivici4.png"        alt="Civici per Voghera">
       <img src="logo-pd.png"             alt="Partito Democratico">
       <img src="logo-m5s.png"            alt="Movimento 5 Stelle 2050">
       <img src="logo-casa-riformista.png" alt="Casa Riformista">
@@ -958,7 +1040,8 @@
     </div>
 
     <div class="hero-btn-group">
-      <a href="programma-amministrativo.pdf" class="btn btn-arancio" download>📋 Scarica Programma</a>
+      <a href="scheda-elettorale.html" class="btn btn-bianco" style="font-weight:700;">🗳️ Votanoi</a>
+      <a href="programma-amministrativo.pdf" class="btn btn-outline" download>📋 Scarica Programma</a>
     </div>
 
   </div>
@@ -1329,7 +1412,8 @@
 
 <!-- Pulsante flottante -->
 <button id="chat-fab" onclick="chatToggle()">
-  <span>💬</span> Chiedimi del programma
+  <span>💬</span>
+  <span class="fab-label">Chiedimi del programma</span>
 </button>
 
 <!-- Pannello chat -->
@@ -1372,6 +1456,28 @@
 </div>
 
 <script>
+/* ── Hamburger menu ──────────────────────────────────────────────────────── */
+function toggleMenu() {
+  const btn = document.getElementById('menu-btn');
+  const nav = document.getElementById('mobile-nav');
+  const open = nav.classList.toggle('open');
+  btn.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', open);
+}
+function closeMenu() {
+  document.getElementById('menu-btn').classList.remove('open');
+  document.getElementById('mobile-nav').classList.remove('open');
+  document.getElementById('menu-btn').setAttribute('aria-expanded', 'false');
+}
+document.addEventListener('click', e => {
+  const nav = document.getElementById('mobile-nav');
+  if (nav.classList.contains('open') &&
+      !nav.contains(e.target) &&
+      !document.getElementById('menu-btn').contains(e.target)) {
+    closeMenu();
+  }
+});
+
 /* ── Configurazione ────────────────────────────────────────────────────────
    Sostituisci SUPABASE_URL e SUPABASE_ANON_KEY con i valori del tuo progetto.
    Li trovi su: Supabase Dashboard → Settings → API
