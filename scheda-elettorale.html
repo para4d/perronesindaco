@@ -1115,7 +1115,7 @@ function buildSummary(showCand1) {
   return html;
 }
 
-// Genera il filename standard
+// ── Filename ──────────────────────────────────────────────────────────────
 function buildFilename() {
   const now = new Date();
   const yy = String(now.getFullYear()).slice(2);
@@ -1126,58 +1126,116 @@ function buildFilename() {
   return `${yy}${mm}${dd}-votanoi-${n1}${n2}.jpg`;
 }
 
-// Genera il canvas e restituisce una Promise<{blob, filename}>
-function generateImageBlob() {
-  const ballot = document.getElementById('ballot-portrait');
-  return html2canvas(ballot, {
-    scale: 2.5,
-    useCORS: true,
-    backgroundColor: '#1a3a6b',
+// ── Cattura un elemento DOM → Blob JPEG ───────────────────────────────────
+function captureBlob(el, bg) {
+  return html2canvas(el, {
+    scale: 2.5, useCORS: true,
+    backgroundColor: bg || '#ffffff',
     logging: false
-  }).then(canvas => new Promise(resolve => {
-    canvas.toBlob(blob => resolve({ blob, filename: buildFilename() }), 'image/jpeg', 0.92);
-  }));
+  }).then(canvas => new Promise(resolve =>
+    canvas.toBlob(blob => resolve(blob), 'image/jpeg', 0.92)
+  ));
 }
 
+// ── Immagine 1: scheda ballot ──────────────────────────────────────────────
+function generateImageBlob() {
+  return captureBlob(document.getElementById('ballot-portrait'), '#1a3a6b')
+    .then(blob => ({ blob, filename: buildFilename() }));
+}
+
+// ── Immagine 2: "Mi candido perché..." con wrapper portrait ───────────────
+function generateWhyBlob() {
+  const whySrc = document.getElementById('why-section');
+  if (!whySrc || whySrc.children.length === 0) return Promise.resolve(null);
+
+  // Wrapper off-screen clone, stessa estetica del ballot-portrait
+  const wrap = document.createElement('div');
+  wrap.style.cssText = [
+    'position:fixed', 'left:-9999px', 'top:0',
+    'width:420px', 'background:#1a3a6b',
+    'font-family:Inter,Arial,sans-serif', 'overflow:hidden'
+  ].join(';');
+  wrap.innerHTML = `
+    <div style="background:linear-gradient(135deg,#1a3a6b,#2d5fa8);
+                padding:18px 20px 14px;text-align:center;color:#fff;">
+      <div style="font-size:1rem;font-weight:800;letter-spacing:.06em;
+                  text-transform:uppercase;margin-bottom:3px;">🗳️ Votanoi</div>
+      <div style="font-size:.72rem;opacity:.8;letter-spacing:.04em;">
+        Voghera 2026 · perronesindaco.it</div>
+    </div>
+    <div id="_why_inner"
+         style="background:#eef2f7;padding:16px;display:flex;
+                flex-direction:column;gap:12px;"></div>
+    <div style="background:#1a3a6b;padding:10px;text-align:center;
+                color:rgba(255,255,255,.7);font-size:.7rem;
+                letter-spacing:.05em;">perronesindaco.it</div>`;
+  document.body.appendChild(wrap);
+
+  // Copia le why-card (cloneNode preserva stili inline; le classi CSS
+  // sono nella <style> della pagina e vengono lette da html2canvas)
+  const inner = wrap.querySelector('#_why_inner');
+  Array.from(whySrc.children).forEach(c => inner.appendChild(c.cloneNode(true)));
+
+  return captureBlob(wrap, '#1a3a6b').finally(() => document.body.removeChild(wrap));
+}
+
+// ── Download ───────────────────────────────────────────────────────────────
 function downloadImage() {
   generateImageBlob().then(({ blob, filename }) => {
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    link.click();
+    const a = document.createElement('a');
+    a.href = url; a.download = filename; a.click();
     setTimeout(() => URL.revokeObjectURL(url), 5000);
   });
 }
 
+// ── Condivisione WhatsApp: ballot + why (se compilato) + testo istruzioni ─
 async function shareWhatsApp() {
   const btn = document.querySelector('.btn-whatsapp');
-  const origHtml = btn.innerHTML;
-  btn.innerHTML = '⏳';
-  btn.disabled = true;
+  const orig = btn.innerHTML;
+  btn.innerHTML = '⏳ Preparando…'; btn.disabled = true;
+
   try {
-    const { blob, filename } = await generateImageBlob();
-    const file = new File([blob], filename, { type: 'image/jpeg' });
-    // Web Share API con file — funziona su Safari iOS e Chrome Android
-    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({
-        files: [file],
-        title: 'Votanoi – Voghera 2026',
-        text: '🗳️ Ecco come voto! Crea la tua scheda su perronesindaco.it'
-      });
+    // Genera le immagini in parallelo
+    const [imgResult, whyBlob] = await Promise.all([
+      generateImageBlob(),
+      generateWhyBlob()
+    ]);
+
+    const files = [
+      new File([imgResult.blob], imgResult.filename, { type: 'image/jpeg' })
+    ];
+    if (whyBlob) {
+      files.push(new File([whyBlob], 'votanoi-perche.jpg', { type: 'image/jpeg' }));
+    }
+
+    const text = document.getElementById('wa-text').value;
+
+    // Web Share API con file (iOS Safari + Chrome Android)
+    if (navigator.share && navigator.canShare && navigator.canShare({ files })) {
+      await navigator.share({ files, title: 'Votanoi – Voghera 2026', text });
     } else {
-      // Fallback desktop: testo via wa.me
-      const text = document.getElementById('wa-text').value;
-      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+      // Fallback desktop: scarica immagini + apre wa.me col testo
+      files.forEach((f, i) => {
+        setTimeout(() => {
+          const url = URL.createObjectURL(f);
+          const a = document.createElement('a');
+          a.href = url; a.download = f.name; a.click();
+          setTimeout(() => URL.revokeObjectURL(url), 5000);
+        }, i * 600);
+      });
+      setTimeout(() => {
+        window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+      }, files.length * 600 + 200);
     }
   } catch (err) {
     if (err.name !== 'AbortError') {
+      // Errore inatteso: fallback testo
       const text = document.getElementById('wa-text').value;
       window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
     }
   } finally {
-    btn.innerHTML = origHtml;
-    btn.disabled = false;
+    btn.innerHTML = orig; btn.disabled = false;
   }
 }
 
