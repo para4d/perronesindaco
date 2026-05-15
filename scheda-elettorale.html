@@ -764,7 +764,7 @@ html, body {
       <!-- ACTIONS -->
       <div class="action-row">
         <button class="btn btn-download" onclick="downloadImage()">📥 Scarica immagine</button>
-        <button class="btn btn-whatsapp" onclick="shareWhatsApp()">📱 WhatsApp</button>
+        <button class="btn btn-whatsapp" onclick="shareWhatsApp()">📲 Condividi immagine</button>
         <button class="btn btn-copy" onclick="copyText()">📋 Copia testo</button>
         <button class="btn btn-restart" onclick="restart()">🔄 Ricomincia</button>
       </div>
@@ -1115,31 +1115,70 @@ function buildSummary(showCand1) {
   return html;
 }
 
-function downloadImage() {
-  // Cattura il contenitore portrait (banner + ballot + footer) per immagine verticale
+// Genera il filename standard
+function buildFilename() {
+  const now = new Date();
+  const yy = String(now.getFullYear()).slice(2);
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  const n1 = (state.cand1?.ballot || '').replace(/\s+/g, '_');
+  const n2 = state.cand2 ? '-' + state.cand2.ballot.replace(/\s+/g, '_') : '';
+  return `${yy}${mm}${dd}-votanoi-${n1}${n2}.jpg`;
+}
+
+// Genera il canvas e restituisce una Promise<{blob, filename}>
+function generateImageBlob() {
   const ballot = document.getElementById('ballot-portrait');
-  html2canvas(ballot, {
+  return html2canvas(ballot, {
     scale: 2.5,
     useCORS: true,
     backgroundColor: '#1a3a6b',
     logging: false
-  }).then(canvas => {
+  }).then(canvas => new Promise(resolve => {
+    canvas.toBlob(blob => resolve({ blob, filename: buildFilename() }), 'image/jpeg', 0.92);
+  }));
+}
+
+function downloadImage() {
+  generateImageBlob().then(({ blob, filename }) => {
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    const now = new Date();
-    const yy  = String(now.getFullYear()).slice(2);
-    const mm  = String(now.getMonth() + 1).padStart(2, '0');
-    const dd  = String(now.getDate()).padStart(2, '0');
-    const n1  = (state.cand1?.ballot || '').replace(/\s+/g, '_');
-    const n2  = state.cand2 ? '-' + state.cand2.ballot.replace(/\s+/g, '_') : '';
-    link.download = `${yy}${mm}${dd}-votanoi-${n1}${n2}.jpg`;
-    link.href = canvas.toDataURL('image/jpeg', 0.92);
+    link.href = url;
+    link.download = filename;
     link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
   });
 }
 
-function shareWhatsApp() {
-  const text = document.getElementById('wa-text').value;
-  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+async function shareWhatsApp() {
+  const btn = document.querySelector('.btn-whatsapp');
+  const origHtml = btn.innerHTML;
+  btn.innerHTML = '⏳';
+  btn.disabled = true;
+  try {
+    const { blob, filename } = await generateImageBlob();
+    const file = new File([blob], filename, { type: 'image/jpeg' });
+    // Web Share API con file — funziona su Safari iOS e Chrome Android
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: 'Votanoi – Voghera 2026',
+        text: '🗳️ Ecco come voto! Crea la tua scheda su perronesindaco.it'
+      });
+    } else {
+      // Fallback desktop: testo via wa.me
+      const text = document.getElementById('wa-text').value;
+      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+    }
+  } catch (err) {
+    if (err.name !== 'AbortError') {
+      const text = document.getElementById('wa-text').value;
+      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+    }
+  } finally {
+    btn.innerHTML = origHtml;
+    btn.disabled = false;
+  }
 }
 
 function copyText() {
