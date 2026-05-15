@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -190,7 +189,8 @@
   <div class="gate-box">
     <div class="gate-logo">⚙️ Admin</div>
     <div class="gate-sub">Chatbot Perrone 2026 · Dashboard</div>
-    <input type="password" id="pwd" placeholder="Password di accesso" autofocus>
+    <input type="email" id="email" placeholder="Email" autocomplete="email">
+    <input type="password" id="pwd" placeholder="Password" autofocus>
     <button onclick="login()">Accedi</button>
     <div id="gate-err"></div>
   </div>
@@ -357,37 +357,54 @@
 // ══ CONFIGURAZIONE ══════════════════════════════════════════════════════════
 const SUPABASE_URL  = 'https://zkpjqaguwfoacyyklgrz.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprcGpxYWd1d2ZvYWN5eWtsZ3J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1Njg0NTUsImV4cCI6MjA5NDE0NDQ1NX0.gnoJGr4XSRuesI5L6VdwoZufRSGVDBr8AHc9W-wHFug';
-const ADMIN_PWD     = 'PerroneAdmin26';  // ← cambia qui se vuoi
 const EUR_RATE      = 0.92;             // tasso fisso USD→EUR
 
 let sbClient, chart, refreshTimer, countdown, logsData = [];
 
-// ══ AUTH ════════════════════════════════════════════════════════════════════
-function login() {
-  const pwd = document.getElementById('pwd').value;
-  if (pwd === ADMIN_PWD) {
-    sessionStorage.setItem('admin_ok', '1');
-    document.getElementById('gate').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-    caricaImpostazioni();
-    init();
-  } else {
-    document.getElementById('gate-err').textContent = 'Password errata.';
+// ══ AUTH (Supabase Auth — email + password) ══════════════════════════════════
+async function login() {
+  const email = document.getElementById('email').value.trim();
+  const pwd   = document.getElementById('pwd').value;
+  const errEl = document.getElementById('gate-err');
+  errEl.textContent = '';
+
+  if (!email || !pwd) {
+    errEl.textContent = 'Inserisci email e password.';
+    return;
   }
+
+  sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  const { data, error } = await sbClient.auth.signInWithPassword({ email, password: pwd });
+
+  if (error || !data.session) {
+    errEl.textContent = 'Credenziali non valide.';
+    return;
+  }
+
+  mostraDashboard();
 }
-function logout() {
-  sessionStorage.removeItem('admin_ok');
+
+function mostraDashboard() {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  caricaImpostazioni();
+  init();
+}
+
+async function logout() {
+  if (sbClient) await sbClient.auth.signOut();
   location.reload();
 }
-document.addEventListener('DOMContentLoaded', () => {
+
+document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('pwd').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
-  if (sessionStorage.getItem('admin_ok') === '1') {
-    document.getElementById('gate').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-    caricaImpostazioni();
-    init();
+  document.getElementById('email').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('pwd').focus(); });
+
+  // Riprendi sessione esistente se ancora valida
+  sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  const { data: { session } } = await sbClient.auth.getSession();
+  if (session) {
+    mostraDashboard();
   }
 });
 
@@ -411,7 +428,7 @@ function verificaAlert(soglia, costoTot) {
     document.getElementById('alert-text').textContent =
       `⚠️ Soglia superata! Speso $${costoTot.toFixed(4)} su soglia $${soglia.toFixed(2)}`;
     const email  = localStorage.getItem('admin_email') || '';
-    const subj   = encodeURIComponent('🚨 Alert chatbot Perrone — soglia spesa superata');
+    const subj   = encodeURIComponent('🚨 Alert chatbot Perrone — soglia spesa superate');
     const body   = encodeURIComponent(`Attenzione!\n\nIl chatbot ha superato la soglia di spesa impostata.\n\nSpeso totale: $${costoTot.toFixed(4)}\nSoglia: $${soglia.toFixed(2)}\n\nVerifica il credito su:\nhttps://console.anthropic.com/settings/billing`);
     document.getElementById('btn-email').href = `mailto:${email}?subject=${subj}&body=${body}`;
   } else {
@@ -624,7 +641,6 @@ function avviaCountdown() {
     }
   }, 1000);
 }
-
 
 </script>
 </body>
