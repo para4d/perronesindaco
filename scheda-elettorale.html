@@ -135,6 +135,7 @@ html, body {
   background: #f8fafc;
   text-align: center;
   position: relative;
+  overflow: hidden;
 }
 .party-card:hover {
   border-color: #2d5fa8;
@@ -154,10 +155,22 @@ html, body {
   opacity: 0.45;
   cursor: not-allowed;
 }
-.party-card img {
-  width: 72px; height: 72px;
-  object-fit: cover;
+.party-card .logo-circle {
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
+  overflow: hidden;
+  border: 1.5px solid #ccc;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+.party-card .logo-circle img {
+  width: 115%;
+  height: 115%;
+  object-fit: cover;
 }
 .party-card .name {
   font-size: 0.78rem;
@@ -402,8 +415,8 @@ html, body {
   overflow: hidden;   /* clippa il logo E la croce al cerchio */
 }
 .ballot-logo {
-  width: 100%;
-  height: 100%;
+  width: 115%;
+  height: 115%;
   object-fit: cover;
 }
 .ballot-party-name {
@@ -870,7 +883,7 @@ function buildPartyGrid() {
     const div = document.createElement('div');
     div.className = 'party-card' + (hasCands ? ' has-candidates' : ' no-candidates');
     div.innerHTML = `
-      <img src="${lst.logo}" alt="${lst.name}">
+      <div class="logo-circle"><img src="${lst.logo}" alt="${lst.name}"></div>
       <div class="name">${lst.name}</div>
       ${!hasCands ? '<div class="coming">Prossimamente</div>' : ''}
     `;
