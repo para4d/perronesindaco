@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Votanoi – Voghera 2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -752,7 +752,7 @@ html, body {
 // ========================================
 const SUPABASE_URL = 'https://rwmmolgtrqilqeoentop.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3bW1vbGd0cnFpbHFlb2VudG9wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MjQ3NjEsImV4cCI6MjA5MjEwMDc2MX0.lfI-tJhrnQt6FZDFG7oqDPXD9eV5G8G_3vsc1FNoFlg';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sbVotanoi = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ========================================
 // DATA  (caricato live da Supabase)
@@ -761,7 +761,7 @@ let LISTS = {};
 
 async function loadData() {
   // 1. Tutte le liste (ordinate per sort_order)
-  const { data: lists, error: listsErr } = await supabase
+  const { data: lists, error: listsErr } = await sbVotanoi
     .from('ballot_lists')
     .select('*')
     .order('sort_order');
@@ -771,7 +771,7 @@ async function loadData() {
   const activeIds = lists.filter(l => l.active).map(l => l.id);
   let candidates = [];
   if (activeIds.length > 0) {
-    const { data: candsData, error: candsErr } = await supabase
+    const { data: candsData, error: candsErr } = await sbVotanoi
       .from('ballot_candidates')
       .select('list_id, ballot_name, full_name, gender, why')
       .in('list_id', activeIds)
