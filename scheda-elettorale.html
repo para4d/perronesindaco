@@ -388,10 +388,28 @@ html, body {
   background: #f0f6ff;
 }
 .ballot-logo {
-  width: 52px; height: 52px;
+  width: 44px; height: 44px;
   object-fit: contain;
   flex-shrink: 0;
   border-radius: 50%;
+}
+.ballot-logo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  width: 56px;
+}
+.ballot-party-name {
+  font-size: 0.52rem;
+  font-weight: 700;
+  color: #222;
+  text-align: center;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  word-break: break-word;
+  text-transform: uppercase;
 }
 .ballot-lines {
   flex: 1;
@@ -641,42 +659,60 @@ html, body {
         </div>
         <div class="ballot-grid">
           <div class="ballot-cell" id="cell-avs">
-            <img class="ballot-logo" src="logo-avs.png" alt="AVS">
+            <div class="ballot-logo-wrap">
+              <img class="ballot-logo" src="logo-avs.png" alt="AVS">
+              <div class="ballot-party-name" id="bname-avs">AVS</div>
+            </div>
             <div class="ballot-lines">
               <div class="ballot-line" id="line-avs-1"></div>
               <div class="ballot-line" id="line-avs-2"></div>
             </div>
           </div>
           <div class="ballot-cell" id="cell-pd">
-            <img class="ballot-logo" src="logo-pd.png" alt="PD">
+            <div class="ballot-logo-wrap">
+              <img class="ballot-logo" src="logo-pd.png" alt="PD">
+              <div class="ballot-party-name" id="bname-pd">PD</div>
+            </div>
             <div class="ballot-lines">
               <div class="ballot-line" id="line-pd-1"></div>
               <div class="ballot-line" id="line-pd-2"></div>
             </div>
           </div>
           <div class="ballot-cell" id="cell-casariformista">
-            <img class="ballot-logo" src="logo-casa-riformista.png" alt="Casa Riformista">
+            <div class="ballot-logo-wrap">
+              <img class="ballot-logo" src="logo-casa-riformista.png" alt="Casa Riformista">
+              <div class="ballot-party-name" id="bname-casariformista">Casa Rif.</div>
+            </div>
             <div class="ballot-lines">
               <div class="ballot-line" id="line-casariformista-1"></div>
               <div class="ballot-line" id="line-casariformista-2"></div>
             </div>
           </div>
           <div class="ballot-cell" id="cell-civici">
-            <img class="ballot-logo" src="logocivici4.webp" alt="Civici">
+            <div class="ballot-logo-wrap">
+              <img class="ballot-logo" src="logocivici4.webp" alt="Civici">
+              <div class="ballot-party-name" id="bname-civici">Civici BP</div>
+            </div>
             <div class="ballot-lines">
               <div class="ballot-line" id="line-civici-1"></div>
               <div class="ballot-line" id="line-civici-2"></div>
             </div>
           </div>
           <div class="ballot-cell" id="cell-m2050">
-            <img class="ballot-logo" src="logo-m5s.png" alt="M2050">
+            <div class="ballot-logo-wrap">
+              <img class="ballot-logo" src="logo-m5s.png" alt="M5S">
+              <div class="ballot-party-name" id="bname-m2050">M5S</div>
+            </div>
             <div class="ballot-lines">
               <div class="ballot-line" id="line-m2050-1"></div>
               <div class="ballot-line" id="line-m2050-2"></div>
             </div>
           </div>
           <div class="ballot-cell" id="cell-rifondazione">
-            <img class="ballot-logo" src="logo-rifondazione.png" alt="Rifondazione">
+            <div class="ballot-logo-wrap">
+              <img class="ballot-logo" src="logo-rifondazione.png" alt="Rifondazione">
+              <div class="ballot-party-name" id="bname-rifondazione">Rifond.</div>
+            </div>
             <div class="ballot-lines">
               <div class="ballot-line" id="line-rifondazione-1"></div>
               <div class="ballot-line" id="line-rifondazione-2"></div>
@@ -1059,6 +1095,11 @@ async function initApp() {
   try {
     await loadData();
     buildPartyGrid();
+    // Aggiorna le etichette delle celle ballot con i nomi reali da Supabase
+    Object.keys(LISTS).forEach(key => {
+      const el = document.getElementById('bname-' + key);
+      if (el && LISTS[key].short) el.textContent = LISTS[key].short;
+    });
   } catch (e) {
     grid.innerHTML = '<p style="color:#c0392b;padding:20px;text-align:center">Errore nel caricamento dei dati.<br>Ricarica la pagina.</p>';
     console.error('loadData error:', e);

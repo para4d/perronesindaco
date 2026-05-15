@@ -822,6 +822,16 @@ async function vnInit() {
 async function vnLoadLists() {
   const grid = document.getElementById('vn-lists-grid');
   try {
+    // Test di connettività prima di procedere
+    const testUrl = VN_URL + '/rest/v1/ballot_lists?select=id&limit=1';
+    const testRes = await fetch(testUrl, {
+      headers: { 'apikey': VN_ANON, 'Authorization': 'Bearer ' + VN_ANON }
+    });
+    if (!testRes.ok) {
+      const txt = await testRes.text();
+      throw new Error(`HTTP ${testRes.status}: ${txt}`);
+    }
+
     const { data, error } = await vnClient
       .from('ballot_lists').select('*').order('sort_order');
     if (error) throw error;
@@ -852,7 +862,8 @@ async function vnLoadLists() {
         </label>
       </div>`).join('');
   } catch(e) {
-    grid.innerHTML = `<div class="loading">Errore: ${esc(e.message)}</div>`;
+    console.error('[Votanoi] vnLoadLists error:', e);
+    grid.innerHTML = `<div class="loading">Errore: ${esc(e.message)}<br><small style="color:#aaa">Apri DevTools → Console per dettagli</small></div>`;
   }
 }
 
