@@ -1006,15 +1006,9 @@ function buildStep4() {
   const c1 = state.cand1;
   const c2 = state.cand2;
 
-  // Line 1 = M candidate, Line 2 = F candidate (standard ballot order)
-  let lineM = '', lineF = '';
-  if (c1 && c1.gender === 'M') lineM = c1.ballot;
-  if (c1 && c1.gender === 'F') lineF = c1.ballot;
-  if (c2 && c2.gender === 'M') lineM = c2.ballot;
-  if (c2 && c2.gender === 'F') lineF = c2.ballot;
-
-  document.getElementById('line-' + partyKey + '-1').textContent = lineM;
-  document.getElementById('line-' + partyKey + '-2').textContent = lineF;
+  // Line 1 = primo candidato selezionato, Line 2 = secondo (se presente)
+  document.getElementById('line-' + partyKey + '-1').textContent = c1 ? c1.ballot : '';
+  document.getElementById('line-' + partyKey + '-2').textContent = c2 ? c2.ballot : '';
 
   // WHY CARDS
   const whySection = document.getElementById('why-section');
