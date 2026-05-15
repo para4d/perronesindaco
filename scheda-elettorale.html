@@ -156,7 +156,7 @@ html, body {
 }
 .party-card img {
   width: 72px; height: 72px;
-  object-fit: contain;
+  object-fit: cover;
   border-radius: 50%;
 }
 .party-card .name {
@@ -388,29 +388,26 @@ html, body {
 .ballot-cell.active-cell {
   background: #f0f6ff;
 }
-.ballot-logo {
-  width: 44px; height: 44px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
 .ballot-logo-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  flex-shrink: 0;
   width: 56px;
-  position: relative;  /* per la croce in sovrimpressione */
+  height: 56px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1.5px solid #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;   /* clippa il logo E la croce al cerchio */
+}
+.ballot-logo {
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
 }
 .ballot-party-name {
-  font-size: 0.52rem;
-  font-weight: 700;
-  color: #222;
-  text-align: center;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
-  word-break: break-word;
-  text-transform: uppercase;
+  display: none;  /* nome sotto il simbolo rimosso */
 }
 .ballot-lines {
   flex: 1;
