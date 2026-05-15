@@ -348,6 +348,7 @@ html, body {
   border-bottom: 2px solid #111;
   padding: 10px 14px 8px;
   text-align: center;
+  position: relative;
 }
 .ballot-candidate-line {
   display: flex;
@@ -391,7 +392,6 @@ html, body {
   width: 44px; height: 44px;
   object-fit: contain;
   flex-shrink: 0;
-  border-radius: 50%;
 }
 .ballot-logo-wrap {
   display: flex;
@@ -400,6 +400,7 @@ html, body {
   gap: 2px;
   flex-shrink: 0;
   width: 56px;
+  position: relative;  /* per la croce in sovrimpressione */
 }
 .ballot-party-name {
   font-size: 0.52rem;
@@ -428,6 +429,27 @@ html, body {
   padding-bottom: 1px;
   letter-spacing: 0.04em;
 }
+/* ===== CROSS MARK (html2canvas-compatible, no pseudo-elements) ===== */
+.x-mark {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+.x-line {
+  position: absolute;
+  background: rgba(10,10,10,0.80);
+  height: 3px;
+  width: 200%;
+  top: 50%;
+  left: -50%;
+  transform-origin: center center;
+  border-radius: 2px;
+}
+.x-line-1 { transform: translateY(-50%) rotate(45deg); }
+.x-line-2 { transform: translateY(-50%) rotate(-45deg); }
+
 .facsimile-watermark {
   position: absolute;
   bottom: 14px;
@@ -939,6 +961,9 @@ function buildStep4() {
 
   const partyKey = state.partyKey;
 
+  // Remove any existing cross marks
+  document.querySelectorAll('.x-mark').forEach(el => el.remove());
+
   // Clear all ballot cells
   ['avs','pd','casariformista','civici','m2050','rifondazione'].forEach(p => {
     document.getElementById('cell-' + p).classList.remove('active-cell');
@@ -948,6 +973,23 @@ function buildStep4() {
 
   // Fill selected party
   document.getElementById('cell-' + partyKey).classList.add('active-cell');
+
+  // Cross ✕ on the selected party logo-wrap
+  const logoWrap = document.querySelector('#cell-' + partyKey + ' .ballot-logo-wrap');
+  if (logoWrap) {
+    const xm = document.createElement('div');
+    xm.className = 'x-mark';
+    xm.innerHTML = '<div class="x-line x-line-1"></div><div class="x-line x-line-2"></div>';
+    logoWrap.appendChild(xm);
+  }
+  // Cross ✕ on the sindaco name header
+  const ballotHeader = document.querySelector('.ballot-header');
+  if (ballotHeader) {
+    const xm = document.createElement('div');
+    xm.className = 'x-mark';
+    xm.innerHTML = '<div class="x-line x-line-1"></div><div class="x-line x-line-2"></div>';
+    ballotHeader.appendChild(xm);
+  }
 
   const c1 = state.cand1;
   const c2 = state.cand2;
@@ -1071,8 +1113,14 @@ function downloadImage() {
     logging: false
   }).then(canvas => {
     const link = document.createElement('a');
-    link.download = 'votanoi-voghera-2026.png';
-    link.href = canvas.toDataURL('image/png');
+    const now = new Date();
+    const yy  = String(now.getFullYear()).slice(2);
+    const mm  = String(now.getMonth() + 1).padStart(2, '0');
+    const dd  = String(now.getDate()).padStart(2, '0');
+    const n1  = (state.cand1?.ballot || '').replace(/\s+/g, '_');
+    const n2  = state.cand2 ? '-' + state.cand2.ballot.replace(/\s+/g, '_') : '';
+    link.download = `${yy}${mm}${dd}-votanoi-${n1}${n2}.jpg`;
+    link.href = canvas.toDataURL('image/jpeg', 0.92);
     link.click();
   });
 }
