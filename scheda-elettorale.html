@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Votanoi – Voghera 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  font-family: 'Inter', sans-serif;
+  background: #eef2f7;
+  min-height: 100vh;
+  color: #222;
+}
+
+/* ===== HEADER ===== */
+.header {
+  background: linear-gradient(135deg, #1a3a6b 0%, #2d5fa8 100%);
+  color: #fff;
+  text-align: center;
+  padding: 22px 20px 18px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+}
+.header h1 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.header p {
+  font-size: 0.82rem;
+  opacity: 0.82;
+  margin-top: 4px;
+}
+
+/* ===== PROGRESS BAR ===== */
+.progress-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  padding: 16px 20px;
+  background: #fff;
+  border-bottom: 1px solid #e0e6f0;
+}
+.step-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #aaa;
+  padding: 6px 14px;
+  border-radius: 20px;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+.step-pill .num {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #dde3ee;
+  color: #aaa;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+.step-pill.active {
+  color: #1a3a6b;
+}
+.step-pill.active .num {
+  background: #1a3a6b;
+  color: #fff;
+}
+.step-pill.done .num {
+  background: #27ae60;
+  color: #fff;
+}
+.step-pill.done {
+  color: #27ae60;
+}
+.step-sep {
+  color: #ccc;
+  font-size: 1.1rem;
+  padding: 0 4px;
+}
+
+/* ===== MAIN ===== */
+.main {
+  max-width: 860px;
+  margin: 24px auto;
+  padding: 0 16px 40px;
+}
+
+/* ===== CARDS ===== */
+.card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+.card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a3a6b;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title span {
+  font-size: 1.2rem;
+}
+
+/* ===== PARTY GRID ===== */
+.party-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 14px;
+}
+.party-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 8px;
+  border: 2px solid #e0e6f0;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #f8fafc;
+  text-align: center;
+  position: relative;
+}
+.party-card:hover {
+  border-color: #2d5fa8;
+  background: #eef4ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(29,85,175,0.12);
+}
+.party-card.has-candidates::after {
+  content: '';
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #27ae60;
+}
+.party-card.no-candidates {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.party-card img {
+  width: 72px; height: 72px;
+  object-fit: contain;
+  border-radius: 50%;
+}
+.party-card .name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.3;
+}
+.party-card .coming {
+  font-size: 0.65rem;
+  color: #999;
+  font-style: italic;
+}
+
+/* ===== CANDIDATE LIST ===== */
+.candidate-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.candidate-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 2px solid #e0e6f0;
+  border-radius: 10px;
+  background: #f8fafc;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s;
+  width: 100%;
+}
+.candidate-btn:hover {
+  border-color: #2d5fa8;
+  background: #eef4ff;
+}
+.candidate-btn .gender-badge {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  font-weight: 700;
+}
+.candidate-btn .gender-badge.M {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.candidate-btn .gender-badge.F {
+  background: #fce7f3;
+  color: #be185d;
+}
+.candidate-btn .ballot-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  font-family: 'Caveat', cursive;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+.candidate-btn .full-name {
+  font-size: 0.7rem;
+  color: #777;
+  line-height: 1.2;
+}
+.candidate-btn .has-why {
+  font-size: 0.62rem;
+  color: #27ae60;
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+/* ===== SKIP BTN ===== */
+.skip-btn {
+  margin-top: 16px;
+  padding: 10px 20px;
+  background: #f0f4f8;
+  border: 2px solid #dde3ee;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #666;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.18s;
+  width: 100%;
+}
+.skip-btn:hover {
+  background: #e2e8f0;
+}
+
+/* ===== BACK BTN ===== */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1.5px solid #dde3ee;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 0.8rem;
+  color: #555;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.18s;
+  margin-bottom: 16px;
+}
+.back-btn:hover { background: #f5f5f5; }
+
+/* ===== SELECTION SUMMARY ===== */
+.selection-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #f0f6ff;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.sel-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.sel-tag.party { background: #1a3a6b; color: #fff; }
+.sel-tag.cand1 { background: #1d4ed8; color: #fff; }
+.sel-tag.cand2 { background: #be185d; color: #fff; }
+
+/* ===== BALLOT ===== */
+#ballot-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+/* Contenitore esterno catturato da html2canvas (formato verticale smartphone) */
+#ballot-portrait {
+  width: 420px;
+  max-width: 100%;
+  background: #1a3a6b;
+  border-radius: 0;
+  overflow: hidden;
+}
+.ballot-portrait-top {
+  background: linear-gradient(135deg, #1a3a6b 0%, #2d5fa8 100%);
+  padding: 18px 20px 14px;
+  text-align: center;
+  color: #fff;
+}
+.ballot-portrait-top .vn-brand {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.ballot-portrait-top .vn-sub {
+  font-size: 0.72rem;
+  opacity: 0.8;
+  letter-spacing: 0.04em;
+}
+.ballot-portrait-footer {
+  background: #1a3a6b;
+  padding: 10px 16px;
+  text-align: center;
+  color: rgba(255,255,255,0.7);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+}
+#ballot {
+  background: #fff;
+  border: none;
+  border-top: 2.5px solid #111;
+  border-bottom: 2.5px solid #111;
+  width: 100%;
+  font-family: Arial, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+.ballot-header {
+  border-bottom: 2px solid #111;
+  padding: 10px 14px 8px;
+  text-align: center;
+}
+.ballot-candidate-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.ballot-candidate-name {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #111;
+  text-decoration: underline;
+}
+.pencil { font-size: 1rem; opacity: 0.65; transform: rotate(-10deg); display:inline-block; }
+.ballot-role {
+  font-size: 0.6rem;
+  color: #555;
+  margin-top: 2px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.ballot-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.ballot-cell {
+  border: 1px solid #888;
+  padding: 7px 9px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 74px;
+  background: #fff;
+  transition: background 0.2s;
+}
+.ballot-cell.active-cell {
+  background: #f0f6ff;
+}
+.ballot-logo {
+  width: 52px; height: 52px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+.ballot-lines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 4px;
+}
+.ballot-line {
+  border-bottom: 1px dotted #888;
+  min-height: 22px;
+  font-family: 'Caveat', cursive;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111;
+  padding-bottom: 1px;
+  letter-spacing: 0.04em;
+}
+.facsimile-watermark {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: rgba(0,0,0,0.12);
+  letter-spacing: 0.12em;
+  transform: rotate(-10deg);
+  pointer-events: none;
+  font-family: Arial Black, sans-serif;
+  white-space: nowrap;
+}
+
+/* ===== WHY CARDS ===== */
+.why-section {
+  width: 420px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+.why-card {
+  background: #fff;
+  border: 1.5px solid #e0e6f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  border-left: 4px solid #1a3a6b;
+}
+.why-card.female { border-left-color: #be185d; }
+.why-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.why-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #888;
+  font-style: italic;
+}
+.why-text {
+  font-size: 0.88rem;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.action-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 420px;
+  max-width: 100%;
+}
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s;
+  flex: 1;
+  min-width: 140px;
+}
+.btn-download {
+  background: linear-gradient(135deg, #1a3a6b, #2d5fa8);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(26,58,107,0.35);
+  font-size: 1.05rem;
+  padding: 16px 28px;
+  flex: 0 0 100%;       /* occupa tutta la riga */
+  border-radius: 14px;
+}
+.btn-download:hover { background: linear-gradient(135deg, #0f2447, #1a3a6b); }
+.btn-whatsapp { background: #25d366; color: #fff; }
+.btn-whatsapp:hover { background: #1da852; }
+.btn-copy { background: #f0f4f8; color: #1a3a6b; border: 2px solid #dde3ee; }
+.btn-copy:hover { background: #e2e9f5; }
+.btn-restart { background: #f0f4f8; color: #555; border: 2px solid #dde3ee; }
+.btn-restart:hover { background: #e2e8f0; }
+
+/* ===== WA TEXT ===== */
+.wa-section {
+  width: 420px;
+  max-width: 100%;
+  margin-top: 16px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px 16px;
+  border: 1.5px solid #e0e6f0;
+}
+.wa-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #25d366;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+#wa-text {
+  width: 100%;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 10px;
+  color: #333;
+  background: #fafafa;
+  resize: vertical;
+  font-family: 'Inter', sans-serif;
+}
+.copy-ok {
+  font-size: 0.75rem;
+  color: #25d366;
+  font-weight: 600;
+  display: none;
+  margin-top: 6px;
+}
+
+/* ===== STEPS ===== */
+.step { display: none; }
+.step.active { display: block; }
+
+@media (max-width: 580px) {
+  #ballot, .why-section, .action-row, .wa-section { width: 100%; }
+  .candidate-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🗳️ Votanoi – Voghera 2026</h1>
+  <p>Scegli la lista e i tuoi candidati preferiti</p>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-bar">
+  <div class="step-pill active" id="prog-1">
+    <div class="num">1</div><span>Lista</span>
+  </div>
+  <div class="step-sep">›</div>
+  <div class="step-pill" id="prog-2">
+    <div class="num">2</div><span>1° candidato</span>
+  </div>
+  <div class="step-sep">›</div>
+  <div class="step-pill" id="prog-3">
+    <div class="num">3</div><span>2° candidato</span>
+  </div>
+  <div class="step-sep">›</div>
+  <div class="step-pill" id="prog-4">
+    <div class="num">4</div><span>Scheda</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ===== STEP 1: SCEGLI LISTA ===== -->
+  <div class="step active" id="step1">
+    <div class="card">
+      <div class="card-title"><span>🏛️</span> Scegli la lista</div>
+      <div class="party-grid" id="party-grid">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 2: PRIMO CANDIDATO ===== -->
+  <div class="step" id="step2">
+    <button class="back-btn" onclick="goStep(1)">‹ Indietro</button>
+    <div class="card">
+      <div id="step2-summary"></div>
+      <div class="card-title"><span>👤</span> <span id="step2-title">Scegli il primo candidato</span></div>
+      <div class="candidate-grid" id="candidate-grid-1">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 3: SECONDO CANDIDATO ===== -->
+  <div class="step" id="step3">
+    <button class="back-btn" onclick="goStep(2)">‹ Indietro</button>
+    <div class="card">
+      <div id="step3-summary"></div>
+      <div class="card-title"><span>👤</span> <span id="step3-title">Aggiungi il secondo voto</span></div>
+      <div class="candidate-grid" id="candidate-grid-2">
+        <!-- populated by JS -->
+      </div>
+      <button class="skip-btn" onclick="skipSecond()">Continua con un solo voto ›</button>
+    </div>
+  </div>
+
+  <!-- ===== STEP 4: ANTEPRIMA ===== -->
+  <div class="step" id="step4">
+    <button class="back-btn" onclick="goStep(3)">‹ Indietro</button>
+    <div id="step4-summary" style="margin-bottom:16px;"></div>
+
+    <div id="ballot-wrapper">
+      <!-- BALLOT (avvolto in contenitore portrait per screenshot verticale) -->
+      <div id="ballot-portrait">
+        <div class="ballot-portrait-top">
+          <div class="vn-brand">🗳️ Votanoi</div>
+          <div class="vn-sub">Voghera 2026 · perronesindaco.it</div>
+        </div>
+      <div id="ballot">
+        <div class="ballot-header">
+          <div class="ballot-candidate-line">
+            <span class="pencil">✏️</span>
+            <span class="ballot-candidate-name">MARCELLO BERGONZI PERRONE</span>
+            <span class="pencil">✏️</span>
+          </div>
+          <div class="ballot-role">(Candidato alla carica di Sindaco)</div>
+        </div>
+        <div class="ballot-grid">
+          <div class="ballot-cell" id="cell-avs">
+            <img class="ballot-logo" src="logo-avs.png" alt="AVS">
+            <div class="ballot-lines">
+              <div class="ballot-line" id="line-avs-1"></div>
+              <div class="ballot-line" id="line-avs-2"></div>
+            </div>
+          </div>
+          <div class="ballot-cell" id="cell-pd">
+            <img class="ballot-logo" src="logo-pd.png" alt="PD">
+            <div class="ballot-lines">
+              <div class="ballot-line" id="line-pd-1"></div>
+              <div class="ballot-line" id="line-pd-2"></div>
+            </div>
+          </div>
+          <div class="ballot-cell" id="cell-casariformista">
+            <img class="ballot-logo" src="logo-casa-riformista.png" alt="Casa Riformista">
+            <div class="ballot-lines">
+              <div class="ballot-line" id="line-casariformista-1"></div>
+              <div class="ballot-line" id="line-casariformista-2"></div>
+            </div>
+          </div>
+          <div class="ballot-cell" id="cell-civici">
+            <img class="ballot-logo" src="logocivici4.webp" alt="Civici">
+            <div class="ballot-lines">
+              <div class="ballot-line" id="line-civici-1"></div>
+              <div class="ballot-line" id="line-civici-2"></div>
+            </div>
+          </div>
+          <div class="ballot-cell" id="cell-m2050">
+            <img class="ballot-logo" src="logo-m5s.png" alt="M2050">
+            <div class="ballot-lines">
+              <div class="ballot-line" id="line-m2050-1"></div>
+              <div class="ballot-line" id="line-m2050-2"></div>
+            </div>
+          </div>
+          <div class="ballot-cell" id="cell-rifondazione">
+            <img class="ballot-logo" src="logo-rifondazione.png" alt="Rifondazione">
+            <div class="ballot-lines">
+              <div class="ballot-line" id="line-rifondazione-1"></div>
+              <div class="ballot-line" id="line-rifondazione-2"></div>
+            </div>
+          </div>
+        </div>
+        <div class="facsimile-watermark">FAC-SIMILE</div>
+      </div><!-- /#ballot -->
+        <div class="ballot-portrait-footer">perronesindaco.it</div>
+      </div><!-- /#ballot-portrait -->
+
+      <!-- WHY CARDS -->
+      <div class="why-section" id="why-section"></div>
+
+      <!-- ACTIONS -->
+      <div class="action-row">
+        <button class="btn btn-download" onclick="downloadImage()">📥 Scarica immagine</button>
+        <button class="btn btn-whatsapp" onclick="shareWhatsApp()">📱 WhatsApp</button>
+        <button class="btn btn-copy" onclick="copyText()">📋 Copia testo</button>
+        <button class="btn btn-restart" onclick="restart()">🔄 Ricomincia</button>
+      </div>
+      <div class="copy-ok" id="copy-ok">✅ Testo copiato!</div>
+
+      <!-- WA TEXT -->
+      <div class="wa-section">
+        <div class="wa-label">💬 Testo pronto per WhatsApp</div>
+        <textarea id="wa-text" rows="9" readonly></textarea>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ========================================
+// SUPABASE CONFIG
+// ========================================
+const SUPABASE_URL = 'https://rwmmolgtrqilqeoentop.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3bW1vbGd0cnFpbHFlb2VudG9wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MjQ3NjEsImV4cCI6MjA5MjEwMDc2MX0.lfI-tJhrnQt6FZDFG7oqDPXD9eV5G8G_3vsc1FNoFlg';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ========================================
+// DATA  (caricato live da Supabase)
+// ========================================
+let LISTS = {};
+
+async function loadData() {
+  // 1. Tutte le liste (ordinate per sort_order)
+  const { data: lists, error: listsErr } = await supabase
+    .from('ballot_lists')
+    .select('*')
+    .order('sort_order');
+  if (listsErr) throw listsErr;
+
+  // 2. Candidati di tutte le liste attive in un'unica query
+  const activeIds = lists.filter(l => l.active).map(l => l.id);
+  const { data: candidates, error: candsErr } = await supabase
+    .from('ballot_candidates')
+    .select('list_id, ballot_name, full_name, gender, why')
+    .in('list_id', activeIds)
+    .eq('active', true)
+    .order('gender')
+    .order('ballot_name');
+  if (candsErr) throw candsErr;
+
+  // 3. Costruisce LISTS nel formato atteso dalla webapp
+  LISTS = {};
+  lists.forEach(lst => {
+    const lstCandidates = (candidates || [])
+      .filter(c => c.list_id === lst.id)
+      .map(c => ({
+        ballot: c.ballot_name,
+        full:   c.full_name || c.ballot_name,
+        gender: c.gender,
+        why:    c.why || ''
+      }));
+    LISTS[lst.id] = {
+      name:       lst.name,
+      short:      lst.short_name || lst.name,
+      logo:       lst.logo_path,
+      candidates: lstCandidates
+    };
+  });
+}
+
+
+// ========================================
+// STATE
+// ========================================
+let state = {
+  partyKey: null,
+  cand1: null,  // { ballot, full, gender, why }
+  cand2: null,
+  currentStep: 1
+};
+
+// ========================================
+// STEP NAVIGATION
+// ========================================
+function goStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
+  state.currentStep = n;
+  updateProgress(n);
+  window.scrollTo(0, 0);
+}
+
+function updateProgress(n) {
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('prog-' + i);
+    el.classList.remove('active', 'done');
+    if (i < n) el.classList.add('done');
+    else if (i === n) el.classList.add('active');
+  }
+}
+
+// ========================================
+// STEP 1: PARTY GRID
+// ========================================
+function buildPartyGrid() {
+  const grid = document.getElementById('party-grid');
+  grid.innerHTML = '';
+  const order = ['civici', 'm2050', 'pd', 'avs', 'casariformista', 'rifondazione'];
+  order.forEach(key => {
+    const lst = LISTS[key];
+    const hasCands = lst.candidates.length > 0;
+    const div = document.createElement('div');
+    div.className = 'party-card' + (hasCands ? ' has-candidates' : ' no-candidates');
+    div.innerHTML = `
+      <img src="${lst.logo}" alt="${lst.name}">
+      <div class="name">${lst.name}</div>
+      ${!hasCands ? '<div class="coming">Prossimamente</div>' : ''}
+    `;
+    if (hasCands) {
+      div.onclick = () => selectParty(key);
+    }
+    grid.appendChild(div);
+  });
+}
+
+function selectParty(key) {
+  state.partyKey = key;
+  state.cand1 = null;
+  state.cand2 = null;
+  buildCandidateGrid1();
+  goStep(2);
+}
+
+// ========================================
+// STEP 2: FIRST CANDIDATE
+// ========================================
+function buildCandidateGrid1() {
+  const lst = LISTS[state.partyKey];
+  document.getElementById('step2-title').textContent = `Scegli il candidato/a – ${lst.name}`;
+  document.getElementById('step2-summary').innerHTML = buildSummary(false);
+
+  const grid = document.getElementById('candidate-grid-1');
+  grid.innerHTML = '';
+
+  // Sort: F first, then M; alphabetical within
+  const sorted = [...lst.candidates].sort((a, b) => {
+    if (a.gender !== b.gender) return a.gender === 'F' ? -1 : 1;
+    return a.ballot.localeCompare(b.ballot);
+  });
+
+  sorted.forEach(c => {
+    grid.appendChild(makeCandBtn(c, () => selectCand1(c)));
+  });
+}
+
+function selectCand1(c) {
+  state.cand1 = c;
+  buildCandidateGrid2();
+  goStep(3);
+}
+
+// ========================================
+// STEP 3: SECOND CANDIDATE (OPPOSITE GENDER)
+// ========================================
+function buildCandidateGrid2() {
+  const lst = LISTS[state.partyKey];
+  const oppGender = state.cand1.gender === 'M' ? 'F' : 'M';
+  const label = oppGender === 'F' ? 'Scegli una candidata (donna)' : 'Scegli un candidato (uomo)';
+  document.getElementById('step3-title').textContent = `${label} – ${lst.name}`;
+  document.getElementById('step3-summary').innerHTML = buildSummary(true);
+
+  const grid = document.getElementById('candidate-grid-2');
+  grid.innerHTML = '';
+
+  const filtered = lst.candidates.filter(c => c.gender === oppGender && c.ballot !== state.cand1.ballot);
+  filtered.sort((a, b) => a.ballot.localeCompare(b.ballot));
+
+  filtered.forEach(c => {
+    grid.appendChild(makeCandBtn(c, () => selectCand2(c)));
+  });
+}
+
+function selectCand2(c) {
+  state.cand2 = c;
+  buildStep4();
+  goStep(4);
+}
+
+function skipSecond() {
+  state.cand2 = null;
+  buildStep4();
+  goStep(4);
+}
+
+// ========================================
+// STEP 4: BALLOT + WHY + SHARE
+// ========================================
+function buildStep4() {
+  document.getElementById('step4-summary').innerHTML = buildSummary(true);
+
+  const partyKey = state.partyKey;
+
+  // Clear all ballot cells
+  ['avs','pd','casariformista','civici','m2050','rifondazione'].forEach(p => {
+    document.getElementById('cell-' + p).classList.remove('active-cell');
+    document.getElementById('line-' + p + '-1').textContent = '';
+    document.getElementById('line-' + p + '-2').textContent = '';
+  });
+
+  // Fill selected party
+  document.getElementById('cell-' + partyKey).classList.add('active-cell');
+
+  const c1 = state.cand1;
+  const c2 = state.cand2;
+
+  // Line 1 = M candidate, Line 2 = F candidate (standard ballot order)
+  let lineM = '', lineF = '';
+  if (c1 && c1.gender === 'M') lineM = c1.ballot;
+  if (c1 && c1.gender === 'F') lineF = c1.ballot;
+  if (c2 && c2.gender === 'M') lineM = c2.ballot;
+  if (c2 && c2.gender === 'F') lineF = c2.ballot;
+
+  document.getElementById('line-' + partyKey + '-1').textContent = lineM;
+  document.getElementById('line-' + partyKey + '-2').textContent = lineF;
+
+  // WHY CARDS
+  const whySection = document.getElementById('why-section');
+  whySection.innerHTML = '';
+  [c1, c2].forEach(c => {
+    if (!c || !c.why) return;
+    const isF = c.gender === 'F';
+    const card = document.createElement('div');
+    card.className = 'why-card' + (isF ? ' female' : '');
+    card.innerHTML = `
+      <div class="why-name">
+        <span>${isF ? '👩' : '👨'}</span>
+        ${c.full}
+        <span class="why-label">– Mi candido perché...</span>
+      </div>
+      <div class="why-text">"${c.why}"</div>
+    `;
+    whySection.appendChild(card);
+  });
+
+  buildWhatsAppText();
+}
+
+// ========================================
+// WHATSAPP TEXT
+// ========================================
+function buildWhatsAppText() {
+  const lst = LISTS[state.partyKey];
+  const c1 = state.cand1;
+  const c2 = state.cand2;
+
+  let prefText = '';
+  const names = [];
+  if (c1) names.push(c1.ballot + (c1.gender === 'F' ? ' (donna)' : ' (uomo)'));
+  if (c2) names.push(c2.ballot + (c2.gender === 'F' ? ' (donna)' : ' (uomo)'));
+
+  if (names.length === 2) {
+    prefText = `✍️ Nelle righe accanto al simbolo scrivi:\n   ${names[0]}\n   ${names[1]}`;
+  } else if (names.length === 1) {
+    prefText = `✍️ Nella riga accanto al simbolo scrivi:\n   ${names[0]}`;
+  }
+
+  let whyTexts = '';
+  [c1, c2].forEach(c => {
+    if (c && c.why) {
+      whyTexts += `\n\n${c.full} dice:\n"${c.why.substring(0, 120)}..."`;
+    }
+  });
+
+  const text = `🗳️ COME VOTARE – Elezioni Voghera 2026
+
+✅ 1. In cima alla scheda scrivi:
+   BERGONZI PERRONE
+
+✅ 2. Metti una X sul simbolo:
+   ${lst.name}
+
+${prefText}
+
+📌 Con 2 preferenze devi indicare un uomo e una donna.${whyTexts}
+
+💙 Condividi con chi conosci! 🙏`;
+
+  document.getElementById('wa-text').value = text;
+}
+
+// ========================================
+// HELPERS
+// ========================================
+function makeCandBtn(c, onClick) {
+  const btn = document.createElement('button');
+  btn.className = 'candidate-btn';
+  btn.innerHTML = `
+    <div class="gender-badge ${c.gender}">${c.gender}</div>
+    <div>
+      <div class="ballot-name">${c.ballot}</div>
+      <div class="full-name">${c.full !== c.ballot ? c.full : ''}</div>
+      ${c.why ? '<div class="has-why">✓ Mi candido perché</div>' : ''}
+    </div>
+  `;
+  btn.onclick = onClick;
+  return btn;
+}
+
+function buildSummary(showCand1) {
+  const lst = LISTS[state.partyKey];
+  let html = '<div class="selection-summary">';
+  html += `<span class="sel-tag party">🏛️ ${lst.short}</span>`;
+  if (showCand1 && state.cand1) {
+    const icon = state.cand1.gender === 'F' ? '👩' : '👨';
+    html += `<span class="sel-tag cand1">${icon} ${state.cand1.ballot}</span>`;
+  }
+  if (state.cand2) {
+    const icon = state.cand2.gender === 'F' ? '👩' : '👨';
+    html += `<span class="sel-tag cand2">${icon} ${state.cand2.ballot}</span>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+function downloadImage() {
+  // Cattura il contenitore portrait (banner + ballot + footer) per immagine verticale
+  const ballot = document.getElementById('ballot-portrait');
+  html2canvas(ballot, {
+    scale: 2.5,
+    useCORS: true,
+    backgroundColor: '#1a3a6b',
+    logging: false
+  }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'votanoi-voghera-2026.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+}
+
+function shareWhatsApp() {
+  const text = document.getElementById('wa-text').value;
+  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+}
+
+function copyText() {
+  navigator.clipboard.writeText(document.getElementById('wa-text').value).then(() => {
+    const el = document.getElementById('copy-ok');
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 2500);
+  });
+}
+
+function restart() {
+  state = { partyKey: null, cand1: null, cand2: null, currentStep: 1 };
+  goStep(1);
+}
+
+// ========================================
+// INIT
+// ========================================
+async function initApp() {
+  const grid = document.getElementById('party-grid');
+  grid.innerHTML = '<p style="text-align:center;color:#888;padding:30px;font-size:1rem">⏳ Caricamento liste...</p>';
+  try {
+    await loadData();
+    buildPartyGrid();
+  } catch (e) {
+    grid.innerHTML = '<p style="color:#c0392b;padding:20px;text-align:center">Errore nel caricamento dei dati.<br>Ricarica la pagina.</p>';
+    console.error('loadData error:', e);
+  }
+}
+initApp();
+</script>
+</body>
+</html>

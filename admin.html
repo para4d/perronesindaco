@@ -180,6 +180,112 @@
     header { padding: .75rem 1rem; }
     .kpi-value { font-size: 1.5rem; }
   }
+
+  /* ── TAB NAV ── */
+  .tab-nav {
+    background: var(--blu); border-top: 1px solid rgba(255,255,255,.08);
+    display: flex; gap: 0; padding: 0 2rem;
+  }
+  .tab-btn {
+    background: transparent; border: none; color: #a0aec0; cursor: pointer;
+    padding: .65rem 1.3rem; font-size: .88rem; font-weight: 600;
+    border-bottom: 3px solid transparent; transition: all .2s; margin-bottom: -1px;
+  }
+  .tab-btn:hover { color: white; }
+  .tab-btn.active { color: var(--arancio); border-bottom-color: var(--arancio); }
+
+  /* ── VOTANOI SECTION ── */
+  #tab-votanoi { display: none; }
+  .vn-section-title {
+    font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+    color: var(--testo-light); margin-bottom: .75rem; margin-top: 1.75rem;
+  }
+  .vn-lists-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .75rem;
+  }
+  .vn-list-card {
+    background: var(--card); border-radius: 12px; padding: 1rem 1.25rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06); border: 1px solid var(--bordo);
+    display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+  }
+  .vn-list-name { font-size: .88rem; font-weight: 700; }
+  .vn-list-meta { font-size: .72rem; color: var(--testo-light); }
+  .toggle-switch {
+    position: relative; width: 44px; height: 24px; flex-shrink: 0;
+  }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute; inset: 0; background: #ccc; border-radius: 24px;
+    cursor: pointer; transition: .2s;
+  }
+  .toggle-slider::before {
+    content:''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px;
+    background: white; border-radius: 50%; transition: .2s;
+  }
+  input:checked + .toggle-slider { background: var(--verde); }
+  input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+  /* Candidate table Votanoi */
+  .vn-toolbar {
+    display: flex; gap: .75rem; align-items: center; flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .vn-select {
+    padding: .5rem .9rem; border: 1.5px solid var(--bordo); border-radius: 8px;
+    font-size: .88rem; outline: none; background: white; cursor: pointer;
+  }
+  .vn-select:focus { border-color: var(--arancio); }
+  .btn-primary {
+    background: var(--arancio); color: white; border: none; padding: .55rem 1.2rem;
+    border-radius: 8px; cursor: pointer; font-weight: 600; font-size: .88rem;
+    transition: background .2s; white-space: nowrap;
+  }
+  .btn-primary:hover { background: var(--arancio-dark); }
+  .btn-danger {
+    background: #fee2e2; color: var(--rosso); border: 1px solid #fca5a5;
+    padding: .3rem .7rem; border-radius: 6px; cursor: pointer; font-size: .75rem;
+    font-weight: 600; transition: all .15s;
+  }
+  .btn-danger:hover { background: var(--rosso); color: white; }
+  .btn-edit {
+    background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;
+    padding: .3rem .7rem; border-radius: 6px; cursor: pointer; font-size: .75rem;
+    font-weight: 600; transition: all .15s;
+  }
+  .btn-edit:hover { background: #2563eb; color: white; }
+  .badge-M { background: #dbeafe; color: #1d4ed8; padding: .15rem .5rem; border-radius: 12px; font-size: .72rem; font-weight: 700; }
+  .badge-F { background: #fce7f3; color: #be185d; padding: .15rem .5rem; border-radius: 12px; font-size: .72rem; font-weight: 700; }
+  .badge-active   { background: #d1fae5; color: #065f46; padding: .15rem .5rem; border-radius: 12px; font-size: .7rem; font-weight: 600; }
+  .badge-inactive { background: #f3f4f6; color: #6b7280; padding: .15rem .5rem; border-radius: 12px; font-size: .7rem; font-weight: 600; }
+
+  /* Modal form */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45);
+    z-index: 100; align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: white; border-radius: 16px; padding: 2rem; width: 480px;
+    max-width: 95vw; box-shadow: 0 24px 60px rgba(0,0,0,.25);
+  }
+  .modal-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 1.25rem; }
+  .form-row { display: flex; gap: .75rem; flex-wrap: wrap; }
+  .form-field { display: flex; flex-direction: column; gap: .3rem; flex: 1; min-width: 140px; }
+  .form-field label { font-size: .78rem; font-weight: 600; color: var(--testo-light); }
+  .form-field input, .form-field select, .form-field textarea {
+    padding: .55rem .85rem; border: 1.5px solid var(--bordo); border-radius: 8px;
+    font-size: .9rem; outline: none; transition: border-color .2s; font-family: inherit;
+  }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+    border-color: var(--arancio);
+  }
+  .form-field textarea { resize: vertical; min-height: 80px; }
+  .modal-footer { display: flex; gap: .75rem; justify-content: flex-end; margin-top: 1.5rem; }
+  .btn-secondary {
+    background: white; color: var(--testo); border: 1.5px solid var(--bordo);
+    padding: .55rem 1.2rem; border-radius: 8px; cursor: pointer; font-weight: 600;
+    font-size: .88rem;
+  }
 </style>
 </head>
 <body>
@@ -207,6 +313,14 @@
     </div>
   </header>
 
+  <!-- TAB NAVIGATION -->
+  <div class="tab-nav">
+    <button class="tab-btn active" id="tab-btn-bot" onclick="showTab('bot')">🤖 Bot Dashboard</button>
+    <button class="tab-btn" id="tab-btn-votanoi" onclick="showTab('votanoi')">🗳️ Votanoi</button>
+  </div>
+
+  <!-- ═══════ BOT DASHBOARD ═══════ -->
+  <div id="tab-bot">
   <main>
 
     <!-- Alert soglia -->
@@ -351,13 +465,92 @@
     </div>
 
   </main>
-</div>
+  </div><!-- /tab-bot -->
+
+  <!-- ═══════ VOTANOI MANAGEMENT ═══════ -->
+  <div id="tab-votanoi">
+  <main>
+
+    <div class="vn-section-title">Liste elettorali</div>
+    <div class="vn-lists-grid" id="vn-lists-grid">
+      <div class="loading">Caricamento…</div>
+    </div>
+
+    <div class="vn-section-title" style="margin-top:2rem;">Candidati</div>
+    <div class="vn-toolbar">
+      <select class="vn-select" id="vn-filter-list" onchange="vnLoadCandidates()">
+        <option value="">— Tutte le liste —</option>
+      </select>
+      <select class="vn-select" id="vn-filter-gender" onchange="vnLoadCandidates()">
+        <option value="">M + F</option>
+        <option value="M">Solo M</option>
+        <option value="F">Solo F</option>
+      </select>
+      <button class="btn-primary" onclick="vnOpenForm(null)">+ Aggiungi candidato</button>
+    </div>
+    <div class="table-card">
+      <div id="vn-candidates-body">
+        <div class="loading">Caricamento…</div>
+      </div>
+    </div>
+
+  </main>
+  </div><!-- /tab-votanoi -->
+
+  <!-- ═══════ MODAL FORM CANDIDATO ═══════ -->
+  <div class="modal-overlay" id="vn-modal">
+    <div class="modal-box">
+      <div class="modal-title" id="vn-modal-title">Nuovo candidato</div>
+      <input type="hidden" id="vn-form-original-ballot">
+      <div class="form-row" style="margin-bottom:.75rem;">
+        <div class="form-field" style="flex:2;">
+          <label>Nome completo</label>
+          <input type="text" id="vn-form-full" placeholder="es. Riccardo Canevari">
+        </div>
+        <div class="form-field" style="flex:1;">
+          <label>Sesso</label>
+          <select id="vn-form-gender">
+            <option value="M">M</option>
+            <option value="F">F</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row" style="margin-bottom:.75rem;">
+        <div class="form-field" style="flex:2;">
+          <label>Nome elettorale <span style="color:#999;font-weight:400">(come in scheda)</span></label>
+          <input type="text" id="vn-form-ballot" placeholder="es. CANEVARI RICCARDO">
+        </div>
+        <div class="form-field" style="flex:1;">
+          <label>Lista</label>
+          <select id="vn-form-list"></select>
+        </div>
+      </div>
+      <div class="form-field" style="margin-bottom:.75rem;">
+        <label>«Mi candido perché…» <span style="color:#999;font-weight:400">(opzionale)</span></label>
+        <textarea id="vn-form-why" placeholder="Testo motivazione..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="vnCloseForm()">Annulla</button>
+        <button class="btn-primary" onclick="vnSaveCandidate()">Salva</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /dashboard -->
 
 <script>
 // ══ CONFIGURAZIONE ══════════════════════════════════════════════════════════
 const SUPABASE_URL  = 'https://zkpjqaguwfoacyyklgrz.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprcGpxYWd1d2ZvYWN5eWtsZ3J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1Njg0NTUsImV4cCI6MjA5NDE0NDQ1NX0.gnoJGr4XSRuesI5L6VdwoZufRSGVDBr8AHc9W-wHFug';
 const EUR_RATE      = 0.92;             // tasso fisso USD→EUR
+
+// ── Votanoi (civicivoghera) ──
+const VN_URL   = 'https://rwmmolgtrqilqeoentop.supabase.co';
+const VN_ANON  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3bW1vbGd0cnFpbHFlb2VudG9wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1MjQ3NjEsImV4cCI6MjA5MjEwMDc2MX0.lfI-tJhrnQt6FZDFG7oqDPXD9eV5G8G_3vsc1FNoFlg';
+const VN_TOKEN = 'votanoi_admin_2026_X9k';  // token RPC segreto
+let vnClient;
+let vnAllLists = [], vnAllCandidates = [];
+let vnEditingId = null;  // id candidato in modifica (null = nuovo)
 
 let sbClient, chart, refreshTimer, countdown, logsData = [];
 
@@ -389,6 +582,17 @@ function mostraDashboard() {
   document.getElementById('dashboard').style.display = 'block';
   caricaImpostazioni();
   init();
+  // Init Votanoi client
+  vnClient = window.supabase.createClient(VN_URL, VN_ANON);
+}
+
+// ── TAB SWITCHING ──────────────────────────────────────────────────────────
+function showTab(name) {
+  document.getElementById('tab-bot').style.display     = name === 'bot'     ? 'block' : 'none';
+  document.getElementById('tab-votanoi').style.display = name === 'votanoi' ? 'block' : 'none';
+  document.getElementById('tab-btn-bot').classList.toggle('active',     name === 'bot');
+  document.getElementById('tab-btn-votanoi').classList.toggle('active', name === 'votanoi');
+  if (name === 'votanoi') vnInit();
 }
 
 async function logout() {
@@ -428,7 +632,7 @@ function verificaAlert(soglia, costoTot) {
     document.getElementById('alert-text').textContent =
       `⚠️ Soglia superata! Speso $${costoTot.toFixed(4)} su soglia $${soglia.toFixed(2)}`;
     const email  = localStorage.getItem('admin_email') || '';
-    const subj   = encodeURIComponent('🚨 Alert chatbot Perrone — soglia spesa superate');
+    const subj   = encodeURIComponent('🚨 Alert chatbot Perrone — soglia spesa superata');
     const body   = encodeURIComponent(`Attenzione!\n\nIl chatbot ha superato la soglia di spesa impostata.\n\nSpeso totale: $${costoTot.toFixed(4)}\nSoglia: $${soglia.toFixed(2)}\n\nVerifica il credito su:\nhttps://console.anthropic.com/settings/billing`);
     document.getElementById('btn-email').href = `mailto:${email}?subject=${subj}&body=${body}`;
   } else {
@@ -606,6 +810,201 @@ async function caricaLogs() {
 
 function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ══ VOTANOI MANAGEMENT ══════════════════════════════════════════════════════
+
+async function vnInit() {
+  if (!vnClient) return;
+  await Promise.all([vnLoadLists(), vnLoadCandidates()]);
+}
+
+async function vnLoadLists() {
+  const grid = document.getElementById('vn-lists-grid');
+  try {
+    const { data, error } = await vnClient
+      .from('ballot_lists').select('*').order('sort_order');
+    if (error) throw error;
+    vnAllLists = data || [];
+
+    // Popola select lista nel filtro e nel form
+    const filterSel = document.getElementById('vn-filter-list');
+    const formSel   = document.getElementById('vn-form-list');
+    const opts = vnAllLists.map(l => `<option value="${l.id}">${l.name}</option>`).join('');
+    filterSel.innerHTML = '<option value="">— Tutte le liste —</option>' + opts;
+    formSel.innerHTML   = opts;
+
+    // Render cards liste
+    if (!vnAllLists.length) {
+      grid.innerHTML = '<div class="loading">Nessuna lista trovata.</div>';
+      return;
+    }
+    grid.innerHTML = vnAllLists.map(l => `
+      <div class="vn-list-card">
+        <div>
+          <div class="vn-list-name">${esc(l.name)}</div>
+          <div class="vn-list-meta">${l.short_name || ''} · ordine ${l.sort_order}</div>
+        </div>
+        <label class="toggle-switch" title="${l.active ? 'Attiva' : 'Inattiva'}">
+          <input type="checkbox" ${l.active ? 'checked' : ''}
+            onchange="vnToggleList('${l.id}', this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>`).join('');
+  } catch(e) {
+    grid.innerHTML = `<div class="loading">Errore: ${esc(e.message)}</div>`;
+  }
+}
+
+async function vnLoadCandidates() {
+  const body   = document.getElementById('vn-candidates-body');
+  const listId = document.getElementById('vn-filter-list').value;
+  const gender = document.getElementById('vn-filter-gender').value;
+  body.innerHTML = '<div class="loading">Caricamento…</div>';
+  try {
+    let q = vnClient
+      .from('ballot_candidates')
+      .select('id, list_id, ballot_name, full_name, gender, why, active')
+      .order('list_id').order('gender').order('ballot_name');
+    if (listId) q = q.eq('list_id', listId);
+    if (gender) q = q.eq('gender', gender);
+    const { data, error } = await q;
+    if (error) throw error;
+    vnAllCandidates = data || [];
+
+    if (!vnAllCandidates.length) {
+      body.innerHTML = '<div id="no-data">Nessun candidato trovato.</div>';
+      return;
+    }
+    const rows = vnAllCandidates.map(c => {
+      const lista = vnAllLists.find(l => l.id === c.list_id);
+      return `
+        <tr>
+          <td style="white-space:nowrap;">
+            <span class="badge-${c.gender}">${c.gender}</span>
+          </td>
+          <td><strong>${esc(c.ballot_name)}</strong></td>
+          <td style="color:var(--testo-light);">${esc(c.full_name || '—')}</td>
+          <td style="white-space:nowrap;">${lista ? esc(lista.short_name || lista.name) : c.list_id}</td>
+          <td style="max-width:220px;"><div class="text-clamp" style="-webkit-line-clamp:1;">${c.why ? esc(c.why) : '<em style="color:#bbb">—</em>'}</div></td>
+          <td><span class="${c.active ? 'badge-active' : 'badge-inactive'}">${c.active ? 'attivo' : 'inattivo'}</span></td>
+          <td style="white-space:nowrap;">
+            <button class="btn-edit" onclick="vnOpenForm('${c.id}')">✏️</button>
+            &nbsp;
+            <button class="btn-danger" onclick="vnDeleteCandidate('${c.id}', '${esc(c.ballot_name)}')">🗑</button>
+          </td>
+        </tr>`;
+    }).join('');
+    body.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Sesso</th><th>Nome elettorale</th><th>Nome completo</th>
+            <th>Lista</th><th>Mi candido perché</th><th>Stato</th><th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  } catch(e) {
+    body.innerHTML = `<div class="loading">Errore: ${esc(e.message)}</div>`;
+  }
+}
+
+async function vnToggleList(listId, active) {
+  const { data, error } = await vnClient.rpc('manage_ballot', {
+    p_token:  VN_TOKEN,
+    p_action: 'toggle_list',
+    p_data:   { list_id: listId, active }
+  });
+  if (error || !data?.ok) {
+    alert('Errore: ' + (data?.error || error?.message));
+    vnLoadLists();
+  }
+}
+
+function vnOpenForm(candidateId) {
+  vnEditingId = candidateId;
+  const modal = document.getElementById('vn-modal');
+  document.getElementById('vn-modal-title').textContent =
+    candidateId ? 'Modifica candidato' : 'Nuovo candidato';
+
+  // Pre-fill se modifica
+  if (candidateId) {
+    const c = vnAllCandidates.find(x => x.id === candidateId);
+    if (c) {
+      document.getElementById('vn-form-full').value   = c.full_name   || '';
+      document.getElementById('vn-form-ballot').value = c.ballot_name || '';
+      document.getElementById('vn-form-gender').value = c.gender      || 'M';
+      document.getElementById('vn-form-list').value   = c.list_id     || '';
+      document.getElementById('vn-form-why').value    = c.why         || '';
+      document.getElementById('vn-form-original-ballot').value = c.ballot_name || '';
+    }
+  } else {
+    document.getElementById('vn-form-full').value   = '';
+    document.getElementById('vn-form-ballot').value = '';
+    document.getElementById('vn-form-gender').value = 'M';
+    document.getElementById('vn-form-why').value    = '';
+    document.getElementById('vn-form-original-ballot').value = '';
+    // Preseleziona lista filtrata se attiva
+    const filterList = document.getElementById('vn-filter-list').value;
+    if (filterList) document.getElementById('vn-form-list').value = filterList;
+  }
+  modal.classList.add('open');
+}
+
+function vnCloseForm() {
+  document.getElementById('vn-modal').classList.remove('open');
+  vnEditingId = null;
+}
+
+async function vnSaveCandidate() {
+  const full   = document.getElementById('vn-form-full').value.trim();
+  const ballot = document.getElementById('vn-form-ballot').value.trim().toUpperCase();
+  const gender = document.getElementById('vn-form-gender').value;
+  const listId = document.getElementById('vn-form-list').value;
+  const why    = document.getElementById('vn-form-why').value.trim();
+
+  if (!ballot || !gender || !listId) {
+    alert('Compilare: nome elettorale, sesso e lista.');
+    return;
+  }
+
+  // Se stiamo modificando e il ballot_name è cambiato, eliminiamo il vecchio e inseriamo nuovo
+  const originalBallot = document.getElementById('vn-form-original-ballot').value;
+  if (vnEditingId && originalBallot && originalBallot !== ballot) {
+    await vnClient.rpc('manage_ballot', {
+      p_token:  VN_TOKEN,
+      p_action: 'delete_candidate',
+      p_data:   { id: vnEditingId }
+    });
+  }
+
+  const { data, error } = await vnClient.rpc('manage_ballot', {
+    p_token:  VN_TOKEN,
+    p_action: 'upsert_candidate',
+    p_data:   { list_id: listId, ballot_name: ballot, full_name: full, gender, why, active: true }
+  });
+
+  if (error || !data?.ok) {
+    alert('Errore nel salvataggio: ' + (data?.error || error?.message));
+    return;
+  }
+  vnCloseForm();
+  vnLoadCandidates();
+}
+
+async function vnDeleteCandidate(id, ballotName) {
+  if (!confirm(`Eliminare il candidato "${ballotName}"?`)) return;
+  const { data, error } = await vnClient.rpc('manage_ballot', {
+    p_token:  VN_TOKEN,
+    p_action: 'delete_candidate',
+    p_data:   { id }
+  });
+  if (error || !data?.ok) {
+    alert('Errore: ' + (data?.error || error?.message));
+  } else {
+    vnLoadCandidates();
+  }
 }
 
 // ══ EXPORT CSV ══════════════════════════════════════════════════════════════
