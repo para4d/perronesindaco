@@ -476,13 +476,72 @@ html, body {
   white-space: nowrap;
 }
 
+/* ===== CANDIDATE PHOTO BLOCK ===== */
+.cand-block {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+.cand-block:last-child { margin-bottom: 0; }
+
+.cand-photo-block {
+  width: 420px;
+  max-width: 100%;
+  background: linear-gradient(160deg, #1a3a6b 0%, #2d5fa8 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 22px 20px 16px;
+  gap: 8px;
+  border-radius: 12px 12px 0 0;
+}
+.cand-photo-block.female {
+  background: linear-gradient(160deg, #6b1a3a 0%, #a82d6a 100%);
+}
+.cand-photo-img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255,255,255,0.85);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+.cand-photo-name {
+  font-family: 'Caveat', cursive;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  letter-spacing: 0.03em;
+}
+.cand-photo-lista {
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ===== SHARE ROW ===== */
+.share-row {
+  width: 420px;
+  max-width: 100%;
+  margin-top: 14px;
+}
+.share-row .btn-whatsapp {
+  width: 100%;
+  padding: 16px 28px;
+  font-size: 1.05rem;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.35);
+}
+
 /* ===== WHY CARDS ===== */
 .why-section {
   width: 420px;
   max-width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0;
   margin-top: 16px;
 }
 .why-card {
@@ -491,6 +550,10 @@ html, body {
   border-radius: 12px;
   padding: 14px 16px;
   border-left: 4px solid #1a3a6b;
+}
+.why-card.why-card-attached {
+  border-radius: 0 0 12px 12px;
+  border-top: none;
 }
 .why-card.female { border-left-color: #be185d; }
 .why-name {
@@ -602,7 +665,8 @@ html, body {
 .step.active { display: block; }
 
 @media (max-width: 580px) {
-  #ballot, .why-section, .action-row, .wa-section { width: 100%; }
+  #ballot, .why-section, .action-row, .wa-section,
+  .cand-photo-block, .share-row { width: 100%; }
   .candidate-grid { grid-template-columns: 1fr 1fr; }
 }
 </style>
@@ -758,23 +822,27 @@ html, body {
         <div class="ballot-portrait-footer">perronesindaco.it</div>
       </div><!-- /#ballot-portrait -->
 
-      <!-- WHY CARDS -->
+      <!-- 2. CONDIVIDI SU WHATSAPP (sotto fac-simile) -->
+      <div class="share-row">
+        <button class="btn btn-whatsapp" onclick="shareWhatsApp()">📲 Condividi su WhatsApp</button>
+      </div>
+
+      <!-- 3-6. FOTO + WHY per ogni candidato -->
       <div class="why-section" id="why-section"></div>
 
-      <!-- ACTIONS -->
-      <div class="action-row">
-        <button class="btn btn-download" onclick="downloadImage()">📥 Scarica immagine</button>
-        <button class="btn btn-whatsapp" onclick="shareWhatsApp()">📲 Condividi immagine</button>
-        <button class="btn btn-copy" onclick="copyText()">📋 Copia testo</button>
-        <button class="btn btn-restart" onclick="restart()">🔄 Ricomincia</button>
-      </div>
-      <div class="copy-ok" id="copy-ok">✅ Testo copiato!</div>
-
-      <!-- WA TEXT -->
+      <!-- 7. TESTO DESCRITTIVO -->
       <div class="wa-section">
         <div class="wa-label">💬 Testo pronto per WhatsApp</div>
         <textarea id="wa-text" rows="9" readonly></textarea>
       </div>
+
+      <!-- AZIONI SECONDARIE -->
+      <div class="action-row">
+        <button class="btn btn-download" onclick="downloadImage()">📥 Scarica immagine</button>
+        <button class="btn btn-copy" onclick="copyText()">📋 Copia testo</button>
+        <button class="btn btn-restart" onclick="restart()">🔄 Ricomincia</button>
+      </div>
+      <div class="copy-ok" id="copy-ok">✅ Testo copiato!</div>
     </div>
   </div>
 
@@ -807,7 +875,7 @@ async function loadData() {
   if (activeIds.length > 0) {
     const { data: candsData, error: candsErr } = await sbVotanoi
       .from('ballot_candidates')
-      .select('list_id, ballot_name, full_name, gender, why')
+      .select('list_id, ballot_name, full_name, gender, why, foto_url')
       .in('list_id', activeIds)
       .eq('active', true)
       .order('gender')
@@ -825,7 +893,8 @@ async function loadData() {
         ballot: c.ballot_name,
         full:   c.full_name || c.ballot_name,
         gender: c.gender,
-        why:    c.why || ''
+        why:    c.why || '',
+        foto:   c.foto_url || ''
       }));
     LISTS[lst.id] = {
       name:       lst.name,
@@ -842,7 +911,7 @@ async function loadData() {
 // ========================================
 let state = {
   partyKey: null,
-  cand1: null,  // { ballot, full, gender, why }
+  cand1: null,  // { ballot, full, gender, why, foto }
   cand2: null,
   currentStep: 1
 };
@@ -1010,23 +1079,53 @@ function buildStep4() {
   document.getElementById('line-' + partyKey + '-1').textContent = c1 ? c1.ballot : '';
   document.getElementById('line-' + partyKey + '-2').textContent = c2 ? c2.ballot : '';
 
-  // WHY CARDS
+  // BLOCCHI CANDIDATO (foto + why separati)
   const whySection = document.getElementById('why-section');
   whySection.innerHTML = '';
   [c1, c2].forEach(c => {
-    if (!c || !c.why) return;
-    const isF = c.gender === 'F';
-    const card = document.createElement('div');
-    card.className = 'why-card' + (isF ? ' female' : '');
-    card.innerHTML = `
-      <div class="why-name">
-        <span>${isF ? '👩' : '👨'}</span>
-        ${c.full}
-        <span class="why-label">– Mi candido perché...</span>
-      </div>
-      <div class="why-text">"${c.why}"</div>
-    `;
-    whySection.appendChild(card);
+    if (!c) return;
+    const hasPhoto = !!c.foto;
+    const hasWhy   = !!c.why;
+    if (!hasPhoto && !hasWhy) return;
+
+    const isF  = c.gender === 'F';
+    const lst  = LISTS[state.partyKey];
+
+    const block = document.createElement('div');
+    block.className = 'cand-block';
+
+    // Foto
+    if (hasPhoto) {
+      const photoDiv = document.createElement('div');
+      photoDiv.className = 'cand-photo-block' + (isF ? ' female' : '');
+      photoDiv.innerHTML = `
+        <img class="cand-photo-img"
+             src="${c.foto}"
+             alt="${c.full}"
+             crossorigin="anonymous"
+             onerror="this.style.display='none'">
+        <div class="cand-photo-name">${c.ballot}</div>
+        <div class="cand-photo-lista">${lst.name}</div>
+      `;
+      block.appendChild(photoDiv);
+    }
+
+    // Why
+    if (hasWhy) {
+      const card = document.createElement('div');
+      card.className = 'why-card' + (isF ? ' female' : '') + (hasPhoto ? ' why-card-attached' : '');
+      card.innerHTML = `
+        <div class="why-name">
+          <span>${isF ? '👩' : '👨'}</span>
+          ${c.full}
+          <span class="why-label">– Mi candido perché...</span>
+        </div>
+        <div class="why-text">"${c.why}"</div>
+      `;
+      block.appendChild(card);
+    }
+
+    whySection.appendChild(block);
   });
 
   buildWhatsAppText();
@@ -1081,8 +1180,11 @@ ${prefText}
 function makeCandBtn(c, onClick) {
   const btn = document.createElement('button');
   btn.className = 'candidate-btn';
+  const fotoEl = c.foto
+    ? `<img src="${c.foto}" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;border:1.5px solid #dde3ee;" crossorigin="anonymous" onerror="this.style.display='none'">`
+    : `<div class="gender-badge ${c.gender}">${c.gender}</div>`;
   btn.innerHTML = `
-    <div class="gender-badge ${c.gender}">${c.gender}</div>
+    ${fotoEl}
     <div>
       <div class="ballot-name">${c.ballot}</div>
       <div class="full-name">${c.full !== c.ballot ? c.full : ''}</div>

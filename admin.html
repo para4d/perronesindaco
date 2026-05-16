@@ -487,6 +487,7 @@
         <option value="F">Solo F</option>
       </select>
       <button class="btn-primary" onclick="vnOpenForm(null)">+ Aggiungi candidato</button>
+      <button class="btn-secondary" onclick="vnImportCiviciFotos()" title="Importa le foto dei candidati Civici dal database civicivoghera" style="white-space:nowrap;">📸 Importa foto Civici</button>
     </div>
     <div class="table-card">
       <div id="vn-candidates-body">
@@ -528,6 +529,21 @@
       <div class="form-field" style="margin-bottom:.75rem;">
         <label>«Mi candido perché…» <span style="color:#999;font-weight:400">(opzionale)</span></label>
         <textarea id="vn-form-why" placeholder="Testo motivazione..."></textarea>
+      </div>
+      <div class="form-field" style="margin-bottom:.75rem;">
+        <label>Foto candidato <span style="color:#999;font-weight:400">(opzionale)</span></label>
+        <div id="vn-foto-preview-wrap" style="display:none;align-items:center;gap:.75rem;margin-bottom:.6rem;">
+          <img id="vn-foto-preview-img" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--bordo);" src="" alt="">
+          <button type="button" style="font-size:.75rem;color:var(--rosso);background:none;border:none;cursor:pointer;font-weight:600;" onclick="vnClearFoto()">✕ Rimuovi foto</button>
+        </div>
+        <input type="file" id="vn-form-foto-file" accept="image/jpeg,image/png,image/webp"
+               style="margin-bottom:.4rem;width:100%;font-size:.82rem;"
+               onchange="vnHandleFotoUpload(this)">
+        <input type="text" id="vn-form-foto-url"
+               style="width:100%;padding:.55rem .8rem;border:1.5px solid var(--bordo);border-radius:8px;font-size:.82rem;font-family:inherit;"
+               placeholder="oppure incolla URL immagine..."
+               oninput="vnUpdateFotoPreview()">
+        <div id="vn-foto-upload-status" style="font-size:.75rem;color:var(--testo-light);margin-top:.3rem;"></div>
       </div>
       <div class="modal-footer">
         <button class="btn-secondary" onclick="vnCloseForm()">Annulla</button>
@@ -875,7 +891,7 @@ async function vnLoadCandidates() {
   try {
     let q = vnClient
       .from('ballot_candidates')
-      .select('id, list_id, ballot_name, full_name, gender, why, active')
+      .select('id, list_id, ballot_name, full_name, gender, why, active, foto_url')
       .order('list_id').order('gender').order('ballot_name');
     if (listId) q = q.eq('list_id', listId);
     if (gender) q = q.eq('gender', gender);
@@ -889,8 +905,12 @@ async function vnLoadCandidates() {
     }
     const rows = vnAllCandidates.map(c => {
       const lista = vnAllLists.find(l => l.id === c.list_id);
+      const fotoHtml = c.foto_url
+        ? `<img src="${esc(c.foto_url)}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;vertical-align:middle;border:1.5px solid var(--bordo);" onerror="this.style.display='none'">`
+        : '<span style="color:#ccc;font-size:.8rem;">—</span>';
       return `
         <tr>
+          <td>${fotoHtml}</td>
           <td style="white-space:nowrap;">
             <span class="badge-${c.gender}">${c.gender}</span>
           </td>
@@ -910,7 +930,7 @@ async function vnLoadCandidates() {
       <table>
         <thead>
           <tr>
-            <th>Sesso</th><th>Nome elettorale</th><th>Nome completo</th>
+            <th>Foto</th><th>Sesso</th><th>Nome elettorale</th><th>Nome completo</th>
             <th>Lista</th><th>Mi candido perché</th><th>Stato</th><th>Azioni</th>
           </tr>
         </thead>
@@ -949,6 +969,8 @@ function vnOpenForm(candidateId) {
       document.getElementById('vn-form-list').value   = c.list_id     || '';
       document.getElementById('vn-form-why').value    = c.why         || '';
       document.getElementById('vn-form-original-ballot').value = c.ballot_name || '';
+      document.getElementById('vn-form-foto-url').value = c.foto_url  || '';
+      vnUpdateFotoPreview();
     }
   } else {
     document.getElementById('vn-form-full').value   = '';
@@ -956,6 +978,9 @@ function vnOpenForm(candidateId) {
     document.getElementById('vn-form-gender').value = 'M';
     document.getElementById('vn-form-why').value    = '';
     document.getElementById('vn-form-original-ballot').value = '';
+    document.getElementById('vn-form-foto-url').value = '';
+    document.getElementById('vn-form-foto-file').value = '';
+    vnUpdateFotoPreview();
     // Preseleziona lista filtrata se attiva
     const filterList = document.getElementById('vn-filter-list').value;
     if (filterList) document.getElementById('vn-form-list').value = filterList;
@@ -965,15 +990,20 @@ function vnOpenForm(candidateId) {
 
 function vnCloseForm() {
   document.getElementById('vn-modal').classList.remove('open');
+  document.getElementById('vn-form-foto-file').value = '';
+  document.getElementById('vn-form-foto-url').value  = '';
+  document.getElementById('vn-foto-upload-status').textContent = '';
+  vnUpdateFotoPreview();
   vnEditingId = null;
 }
 
 async function vnSaveCandidate() {
-  const full   = document.getElementById('vn-form-full').value.trim();
-  const ballot = document.getElementById('vn-form-ballot').value.trim().toUpperCase();
-  const gender = document.getElementById('vn-form-gender').value;
-  const listId = document.getElementById('vn-form-list').value;
-  const why    = document.getElementById('vn-form-why').value.trim();
+  const full     = document.getElementById('vn-form-full').value.trim();
+  const ballot   = document.getElementById('vn-form-ballot').value.trim().toUpperCase();
+  const gender   = document.getElementById('vn-form-gender').value;
+  const listId   = document.getElementById('vn-form-list').value;
+  const why      = document.getElementById('vn-form-why').value.trim();
+  const foto_url = document.getElementById('vn-form-foto-url').value.trim() || null;
 
   if (!ballot || !gender || !listId) {
     alert('Compilare: nome elettorale, sesso e lista.');
@@ -993,7 +1023,7 @@ async function vnSaveCandidate() {
   const { data, error } = await vnClient.rpc('manage_ballot', {
     p_token:  VN_TOKEN,
     p_action: 'upsert_candidate',
-    p_data:   { list_id: listId, ballot_name: ballot, full_name: full, gender, why, active: true }
+    p_data:   { list_id: listId, ballot_name: ballot, full_name: full, gender, why, active: true, foto_url }
   });
 
   if (error || !data?.ok) {
@@ -1036,6 +1066,172 @@ function esportaCSV() {
   const a    = document.createElement('a');
   a.href = url; a.download = `chatbot_logs_${new Date().toISOString().slice(0,10)}.csv`;
   a.click(); URL.revokeObjectURL(url);
+}
+
+// ══ FOTO CANDIDATI ══════════════════════════════════════════════════════════
+
+function vnUpdateFotoPreview() {
+  const url  = document.getElementById('vn-form-foto-url').value.trim();
+  const wrap = document.getElementById('vn-foto-preview-wrap');
+  const img  = document.getElementById('vn-foto-preview-img');
+  if (url) {
+    img.src = url;
+    wrap.style.display = 'flex';
+  } else {
+    wrap.style.display = 'none';
+    img.src = '';
+  }
+}
+
+function vnClearFoto() {
+  document.getElementById('vn-form-foto-url').value  = '';
+  document.getElementById('vn-form-foto-file').value = '';
+  document.getElementById('vn-foto-upload-status').textContent = '';
+  vnUpdateFotoPreview();
+}
+
+async function vnHandleFotoUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const statusEl = document.getElementById('vn-foto-upload-status');
+  statusEl.textContent = '⏳ Upload in corso…';
+
+  try {
+    // Genera un nome file sicuro e univoco
+    const ext      = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
+    const filename = `cand_${Date.now()}.${ext}`;
+
+    const { data, error } = await vnClient.storage
+      .from('candidati-foto')
+      .upload(filename, file, { upsert: true, contentType: file.type });
+
+    if (error) throw error;
+
+    const { data: { publicUrl } } = vnClient.storage
+      .from('candidati-foto')
+      .getPublicUrl(filename);
+
+    document.getElementById('vn-form-foto-url').value = publicUrl;
+    vnUpdateFotoPreview();
+    statusEl.textContent = '✅ Upload completato!';
+    setTimeout(() => { statusEl.textContent = ''; }, 3000);
+  } catch (e) {
+    statusEl.textContent = '❌ Errore upload: ' + e.message;
+    console.error('foto upload error', e);
+  }
+}
+
+// Import automatico foto per candidati Civici da tabella civicivoghera
+async function vnImportCiviciFotos() {
+  // Scopri quale lista è "civici"
+  const civiciList = vnAllLists.find(l =>
+    l.id === 'civici' || (l.name || '').toLowerCase().includes('civici')
+  );
+  if (!civiciList) {
+    alert('Lista Civici non trovata. Verifica il list_id nel database.');
+    return;
+  }
+
+  if (!confirm(`Importare le foto dei candidati "${civiciList.name}" dal database civicivoghera?\n\nVerranno sovrascritte solo le foto mancanti (i candidati con foto già impostata non vengono toccati).`)) return;
+
+  const statusMsg = (m) => { if (window._vnImportStatus) window._vnImportStatus.textContent = m; };
+  window._vnImportStatus = document.createElement('div');
+  window._vnImportStatus.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#1a3a6b;color:#fff;padding:12px 18px;border-radius:10px;font-size:.85rem;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.3)';
+  document.body.appendChild(window._vnImportStatus);
+
+  try {
+    statusMsg('🔍 Cerco la tabella candidati…');
+
+    // Prova diverse tabelle comuni
+    let rawCandidati = null;
+    let fotoCol = null;
+    let nomeCol = null, cognomeCol = null, fullCol = null;
+
+    for (const tableName of ['candidati', 'candidates', 'members', 'persone']) {
+      const { data, error } = await vnClient.from(tableName).select('*').limit(3);
+      if (!error && data && data.length > 0) {
+        const cols = Object.keys(data[0]);
+        // Cerca colonna foto
+        fotoCol = cols.find(c => ['foto_url','foto','photo_url','image_url','avatar_url','immagine'].includes(c));
+        if (fotoCol) {
+          // Cerca colonne nome
+          nomeCol     = cols.find(c => ['nome','first_name','name'].includes(c));
+          cognomeCol  = cols.find(c => ['cognome','last_name','surname'].includes(c));
+          fullCol     = cols.find(c => ['full_name','nome_completo','nome_e_cognome'].includes(c));
+
+          // Carica tutti i candidati con foto
+          const selectCols = [fotoCol, nomeCol, cognomeCol, fullCol].filter(Boolean).join(',');
+          const { data: all, error: err2 } = await vnClient
+            .from(tableName)
+            .select(selectCols)
+            .not(fotoCol, 'is', null);
+
+          if (!err2) { rawCandidati = all; break; }
+        }
+      }
+    }
+
+    if (!rawCandidati || rawCandidati.length === 0) {
+      document.body.removeChild(window._vnImportStatus);
+      alert('Nessun candidato con foto trovato nel database civicivoghera.\n\nColonne cercate: foto_url, foto, photo_url, image_url\nTabelle cercate: candidati, candidates, members, persone');
+      return;
+    }
+
+    statusMsg(`📸 Trovate ${rawCandidati.length} foto. Matching…`);
+
+    // Candidati Civici senza foto
+    const civiciCands = vnAllCandidates.filter(c =>
+      c.list_id === civiciList.id && !c.foto_url
+    );
+
+    let updated = 0, skipped = 0;
+
+    for (const bc of civiciCands) {
+      const ballotNorm = bc.ballot_name.toUpperCase().trim();
+
+      const match = rawCandidati.find(c => {
+        const options = [];
+        if (nomeCol && cognomeCol) {
+          options.push(((c[cognomeCol] || '') + ' ' + (c[nomeCol] || '')).toUpperCase().trim());
+          options.push(((c[nomeCol] || '') + ' ' + (c[cognomeCol] || '')).toUpperCase().trim());
+        }
+        if (fullCol) options.push((c[fullCol] || '').toUpperCase().trim());
+        return options.some(o => o === ballotNorm || ballotNorm.startsWith(o) || o.startsWith(ballotNorm));
+      });
+
+      if (match && match[fotoCol]) {
+        const { data: res, error: upErr } = await vnClient.rpc('manage_ballot', {
+          p_token:  VN_TOKEN,
+          p_action: 'upsert_candidate',
+          p_data:   {
+            list_id:    bc.list_id,
+            ballot_name: bc.ballot_name,
+            full_name:   bc.full_name,
+            gender:      bc.gender,
+            why:         bc.why,
+            active:      bc.active,
+            foto_url:    match[fotoCol]
+          }
+        });
+        if (!upErr && res?.ok) updated++;
+        else skipped++;
+      } else {
+        skipped++;
+      }
+    }
+
+    document.body.removeChild(window._vnImportStatus);
+    alert(`✅ Importazione completata!\n\n📸 Foto importate: ${updated}\n⏭ Non trovate / già presenti: ${skipped + (vnAllCandidates.filter(c => c.list_id === civiciList.id && c.foto_url).length)}`);
+    vnLoadCandidates();
+
+  } catch (e) {
+    if (window._vnImportStatus && window._vnImportStatus.parentNode) {
+      document.body.removeChild(window._vnImportStatus);
+    }
+    alert('Errore durante l\'importazione: ' + e.message);
+    console.error('vnImportCiviciFotos error', e);
+  }
 }
 
 // ══ AUTO-REFRESH ════════════════════════════════════════════════════════════
