@@ -1124,111 +1124,66 @@ async function vnHandleFotoUpload(input) {
 
 // Import automatico foto per candidati Civici da tabella civicivoghera
 async function vnImportCiviciFotos() {
-  // Scopri quale lista è "civici"
-  const civiciList = vnAllLists.find(l =>
-    l.id === 'civici' || (l.name || '').toLowerCase().includes('civici')
-  );
-  if (!civiciList) {
-    alert('Lista Civici non trovata. Verifica il list_id nel database.');
+  const AVATARS_BASE = 'https://rwmmolgtrqilqeoentop.supabase.co/storage/v1/object/public/avatars/';
+
+  const civiciCands = vnAllCandidates.filter(c => !c.foto_url && c.profile_id);
+  const total       = vnAllCandidates.filter(c => c.profile_id).length;
+
+  if (civiciCands.length === 0) {
+    alert('Tutti i candidati collegati a un profilo hanno già una foto impostata.');
     return;
   }
 
-  if (!confirm(`Importare le foto dei candidati "${civiciList.name}" dal database civicivoghera?\n\nVerranno sovrascritte solo le foto mancanti (i candidati con foto già impostata non vengono toccati).`)) return;
+  if (!confirm(`Importare le foto dal database civicivoghera?\n\nCandidati senza foto: ${civiciCands.length} su ${total} con profilo collegato.\nVerranno aggiornati solo quelli senza foto.`)) return;
 
-  const statusMsg = (m) => { if (window._vnImportStatus) window._vnImportStatus.textContent = m; };
-  window._vnImportStatus = document.createElement('div');
-  window._vnImportStatus.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#1a3a6b;color:#fff;padding:12px 18px;border-radius:10px;font-size:.85rem;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.3)';
-  document.body.appendChild(window._vnImportStatus);
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#1a3a6b;color:#fff;padding:12px 18px;border-radius:10px;font-size:.85rem;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.3)';
+  toast.textContent = '🔍 Carico profili…';
+  document.body.appendChild(toast);
 
   try {
-    statusMsg('🔍 Cerco la tabella candidati…');
+    // Carica i profili collegati
+    const profileIds = civiciCands.map(c => c.profile_id);
+    const { data: profiles, error } = await vnClient
+      .from('profiles')
+      .select('id, photo_path')
+      .in('id', profileIds)
+      .not('photo_path', 'is', null);
 
-    // Prova diverse tabelle comuni
-    let rawCandidati = null;
-    let fotoCol = null;
-    let nomeCol = null, cognomeCol = null, fullCol = null;
+    if (error) throw error;
 
-    for (const tableName of ['candidati', 'candidates', 'members', 'persone']) {
-      const { data, error } = await vnClient.from(tableName).select('*').limit(3);
-      if (!error && data && data.length > 0) {
-        const cols = Object.keys(data[0]);
-        // Cerca colonna foto
-        fotoCol = cols.find(c => ['foto_url','foto','photo_url','image_url','avatar_url','immagine'].includes(c));
-        if (fotoCol) {
-          // Cerca colonne nome
-          nomeCol     = cols.find(c => ['nome','first_name','name'].includes(c));
-          cognomeCol  = cols.find(c => ['cognome','last_name','surname'].includes(c));
-          fullCol     = cols.find(c => ['full_name','nome_completo','nome_e_cognome'].includes(c));
+    toast.textContent = `📸 Trovate ${profiles.length} foto. Aggiorno…`;
 
-          // Carica tutti i candidati con foto
-          const selectCols = [fotoCol, nomeCol, cognomeCol, fullCol].filter(Boolean).join(',');
-          const { data: all, error: err2 } = await vnClient
-            .from(tableName)
-            .select(selectCols)
-            .not(fotoCol, 'is', null);
-
-          if (!err2) { rawCandidati = all; break; }
-        }
-      }
-    }
-
-    if (!rawCandidati || rawCandidati.length === 0) {
-      document.body.removeChild(window._vnImportStatus);
-      alert('Nessun candidato con foto trovato nel database civicivoghera.\n\nColonne cercate: foto_url, foto, photo_url, image_url\nTabelle cercate: candidati, candidates, members, persone');
-      return;
-    }
-
-    statusMsg(`📸 Trovate ${rawCandidati.length} foto. Matching…`);
-
-    // Candidati Civici senza foto
-    const civiciCands = vnAllCandidates.filter(c =>
-      c.list_id === civiciList.id && !c.foto_url
-    );
+    const profileMap = Object.fromEntries(profiles.map(p => [p.id, p.photo_path]));
 
     let updated = 0, skipped = 0;
-
     for (const bc of civiciCands) {
-      const ballotNorm = bc.ballot_name.toUpperCase().trim();
+      const photoPath = profileMap[bc.profile_id];
+      if (!photoPath) { skipped++; continue; }
 
-      const match = rawCandidati.find(c => {
-        const options = [];
-        if (nomeCol && cognomeCol) {
-          options.push(((c[cognomeCol] || '') + ' ' + (c[nomeCol] || '')).toUpperCase().trim());
-          options.push(((c[nomeCol] || '') + ' ' + (c[cognomeCol] || '')).toUpperCase().trim());
+      const foto_url = AVATARS_BASE + photoPath;
+      const { data: res, error: upErr } = await vnClient.rpc('manage_ballot', {
+        p_token:  VN_TOKEN,
+        p_action: 'upsert_candidate',
+        p_data:   {
+          list_id:     bc.list_id,
+          ballot_name: bc.ballot_name,
+          full_name:   bc.full_name,
+          gender:      bc.gender,
+          why:         bc.why,
+          active:      bc.active,
+          foto_url
         }
-        if (fullCol) options.push((c[fullCol] || '').toUpperCase().trim());
-        return options.some(o => o === ballotNorm || ballotNorm.startsWith(o) || o.startsWith(ballotNorm));
       });
-
-      if (match && match[fotoCol]) {
-        const { data: res, error: upErr } = await vnClient.rpc('manage_ballot', {
-          p_token:  VN_TOKEN,
-          p_action: 'upsert_candidate',
-          p_data:   {
-            list_id:    bc.list_id,
-            ballot_name: bc.ballot_name,
-            full_name:   bc.full_name,
-            gender:      bc.gender,
-            why:         bc.why,
-            active:      bc.active,
-            foto_url:    match[fotoCol]
-          }
-        });
-        if (!upErr && res?.ok) updated++;
-        else skipped++;
-      } else {
-        skipped++;
-      }
+      if (!upErr && res?.ok) updated++; else skipped++;
     }
 
-    document.body.removeChild(window._vnImportStatus);
-    alert(`✅ Importazione completata!\n\n📸 Foto importate: ${updated}\n⏭ Non trovate / già presenti: ${skipped + (vnAllCandidates.filter(c => c.list_id === civiciList.id && c.foto_url).length)}`);
+    document.body.removeChild(toast);
+    alert(`✅ Importazione completata!\n\n📸 Foto importate: ${updated}\n⏭ Saltati (foto assente): ${skipped}`);
     vnLoadCandidates();
 
   } catch (e) {
-    if (window._vnImportStatus && window._vnImportStatus.parentNode) {
-      document.body.removeChild(window._vnImportStatus);
-    }
+    if (toast.parentNode) document.body.removeChild(toast);
     alert('Errore durante l\'importazione: ' + e.message);
     console.error('vnImportCiviciFotos error', e);
   }
