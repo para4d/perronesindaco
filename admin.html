@@ -1126,15 +1126,15 @@ async function vnHandleFotoUpload(input) {
 async function vnImportCiviciFotos() {
   const AVATARS_BASE = 'https://rwmmolgtrqilqeoentop.supabase.co/storage/v1/object/public/avatars/';
 
-  const civiciCands = vnAllCandidates.filter(c => !c.foto_url && c.profile_id);
-  const total       = vnAllCandidates.filter(c => c.profile_id).length;
+  const civiciCands = vnAllCandidates.filter(c => !c.foto_url);
+  const total       = vnAllCandidates.length;
 
   if (civiciCands.length === 0) {
-    alert('Tutti i candidati collegati a un profilo hanno già una foto impostata.');
+    alert('Tutti i candidati hanno già una foto impostata.');
     return;
   }
 
-  if (!confirm(`Importare le foto dal database civicivoghera?\n\nCandidati senza foto: ${civiciCands.length} su ${total} con profilo collegato.\nVerranno aggiornati solo quelli senza foto.`)) return;
+  if (!confirm(`Importare le foto dal database civicivoghera?\n\nCandidati senza foto: ${civiciCands.length} su ${total}.\nVerranno aggiornati solo quelli senza foto.`)) return;
 
   const toast = document.createElement('div');
   toast.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#1a3a6b;color:#fff;padding:12px 18px;border-radius:10px;font-size:.85rem;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.3)';
@@ -1142,23 +1142,26 @@ async function vnImportCiviciFotos() {
   document.body.appendChild(toast);
 
   try {
-    // Carica i profili collegati
-    const profileIds = civiciCands.map(c => c.profile_id);
+    // Carica tutti i profili con foto (matching per full_name)
     const { data: profiles, error } = await vnClient
       .from('profiles')
-      .select('id, photo_path')
-      .in('id', profileIds)
+      .select('id, full_name, photo_path')
       .not('photo_path', 'is', null);
 
     if (error) throw error;
 
     toast.textContent = `📸 Trovate ${profiles.length} foto. Aggiorno…`;
 
-    const profileMap = Object.fromEntries(profiles.map(p => [p.id, p.photo_path]));
+    // Mappa full_name (uppercase) → photo_path
+    const profileMap = {};
+    profiles.forEach(p => {
+      if (p.full_name) profileMap[p.full_name.toUpperCase().trim()] = p.photo_path;
+    });
 
     let updated = 0, skipped = 0;
     for (const bc of civiciCands) {
-      const photoPath = profileMap[bc.profile_id];
+      const key = (bc.full_name || bc.ballot_name || '').toUpperCase().trim();
+      const photoPath = profileMap[key];
       if (!photoPath) { skipped++; continue; }
 
       const foto_url = AVATARS_BASE + photoPath;
