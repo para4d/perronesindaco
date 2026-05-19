@@ -1697,6 +1697,18 @@ input.addEventListener("keydown", e => {
   if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); chatSend(); }
 });
 
+/* ── Auto-open chat se URL contiene #chat ───────────────────────────────── */
+(function() {
+  const hash = window.location.hash.toLowerCase();
+  const qs   = window.location.search.toLowerCase();
+  if (hash === "#chat" || qs.includes("chat")) {
+    // Aspetta che il DOM sia pronto
+    window.addEventListener("load", function() {
+      setTimeout(chatOpen, 300);
+    });
+  }
+})();
+
 function addMsg(role, html) {
   const avHtml = role === "user"
     ? "T"
