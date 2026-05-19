@@ -83,7 +83,7 @@
     .nav-brand span.dot {
       display: inline-block;
       width: 9px; height: 9px;
-      background: #5bc8f5;
+      background: var(--arancio);
       border-radius: 50%;
     }
 
@@ -618,24 +618,6 @@
        CASELLARIO
     ============================================= */
     .casellario { background: var(--grigio); }
-
-    /* ── VIDEO REEL ─────────────────────────────── */
-    .video-reel { background: var(--sfondo); padding: 5rem 0; }
-    .video-wrap  { display: flex; justify-content: center; margin: 2.5rem 0 1.5rem; }
-    .video-cta   { text-align: center; margin-top: 1.5rem; }
-    .video-cta p { font-size: 1rem; color: var(--testo-luce); margin-bottom: 1rem; }
-    .video-cta .cta-btn {
-      display: inline-block;
-      background: var(--primario);
-      color: #fff;
-      padding: .85rem 2rem;
-      border-radius: 50px;
-      font-weight: 700;
-      text-decoration: none;
-      font-size: 1rem;
-      transition: opacity .2s;
-    }
-    .video-cta .cta-btn:hover { opacity: .85; }
 
     .casellario-box {
       text-align: center;
@@ -1562,34 +1544,6 @@
 </section>
 
 <!-- ══════════════════════════════════════════
-     VIDEO REEL
-══════════════════════════════════════════ -->
-<section id="video" class="video-reel">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-label">Guarda il video</div>
-      <h2 class="section-title">Il messaggio di Marcello</h2>
-      <div class="section-sep"></div>
-    </div>
-    <div class="video-wrap">
-      <video
-        id="reel-player"
-        src="https://zkpjqaguwfoacyyklgrz.supabase.co/storage/v1/object/public/video/cellobot_reel_1.mp4"
-        controls
-        playsinline
-        preload="auto"
-        crossorigin="anonymous"
-        style="width:100%;max-width:420px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.18);"
-      ></video>
-    </div>
-    <div class="video-cta" id="video-cta" style="display:none;">
-      <p>Hai domande? Parla con il nostro assistente!</p>
-      <a href="#chat" class="cta-btn" onclick="chatOpen()">💬 Chiedimi del programma</a>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
      FOOTER
 ══════════════════════════════════════════ -->
 <!-- ══════════════════════════════════════════
@@ -1738,21 +1692,6 @@ function chatToggle() {
     fab.style.display = "";
   }
 }
-function chatOpen() {
-  if (!panel.classList.contains("open")) chatToggle();
-}
-
-// CTA fine video
-(function() {
-  const vid = document.getElementById("reel-player");
-  const cta = document.getElementById("video-cta");
-  if (vid && cta) {
-    vid.addEventListener("ended", () => {
-      cta.style.display = "block";
-      cta.scrollIntoView({ behavior: "smooth", block: "center" });
-    });
-  }
-})();
 
 input.addEventListener("keydown", e => {
   if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); chatSend(); }
@@ -1834,7 +1773,8 @@ async function chatSend() {
     if (data.error) {
       addMsg("bot", "⚠️ " + escHtml(data.error));
     } else {
-      addMsg("bot", escHtml(data.answer));
+      const footer = `<br><br><span style="font-size:.82rem;opacity:.7;">La risposta non ti ha soddisfatto? Rifai la domanda a <a href="mailto:marcello@perronesindaco.it" style="color:var(--arancio);text-decoration:underline;">marcello@perronesindaco.it</a></span>`;
+      addMsg("bot", escHtml(data.answer) + footer);
       // Salva Q&A per condivisione e mostra il pulsante
       lastQuestion = q;
       lastAnswer   = data.answer;
