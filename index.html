@@ -888,7 +888,8 @@
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0; margin-top: 2px;
     }
-    .chat-msg.bot  .chat-av { background: var(--arancio); color: #fff; }
+    .chat-msg.bot  .chat-av { background: transparent; padding: 0; overflow: hidden; }
+    .chat-msg.bot  .chat-av img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
     .chat-msg.user .chat-av { background: var(--blu); color: #fff; }
 
     .chat-chips {
@@ -1558,9 +1559,9 @@
 <!-- Pannello chat -->
 <div id="chat-panel">
   <div class="chat-header">
-    <div class="chat-header-dot">C</div>
+    <div class="chat-header-dot" style="background:transparent;padding:0;overflow:hidden;"><img src="cellobot-av.webp" alt="cellobot" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"></div>
     <div class="chat-header-text">
-      <strong>Assistente del Programma</strong>
+      <strong>cellobot</strong>
       <span>Bergonzi Perrone · Voghera 2026</span>
     </div>
     <button class="chat-close" onclick="chatClose()" title="Chiudi">✕</button>
@@ -1569,7 +1570,7 @@
   <div id="chat-messages">
     <!-- Messaggio di benvenuto -->
     <div class="chat-msg bot">
-      <div class="chat-av">C</div>
+      <div class="chat-av"><img src="cellobot-av.webp" alt="cellobot"></div>
       <div>
         <div class="chat-bubble">Ciao! Sono cellobot! Aiuto Marcello Bergonzi Perrone a raccontare ciò che farà nei prossimi cinque anni. Vuoi farmi una domanda? 👇</div>
         <div class="chat-chips">
@@ -1697,10 +1698,12 @@ input.addEventListener("keydown", e => {
 });
 
 function addMsg(role, html) {
-  const av  = role === "user" ? "T" : "C";
+  const avHtml = role === "user"
+    ? "T"
+    : `<img src="cellobot-av.webp" alt="cellobot">`;
   const div = document.createElement("div");
   div.className = `chat-msg ${role}`;
-  div.innerHTML = `<div class="chat-av">${av}</div><div class="chat-bubble">${html}</div>`;
+  div.innerHTML = `<div class="chat-av">${avHtml}</div><div class="chat-bubble">${html}</div>`;
   messages.appendChild(div);
   if (role === "user") {
     // Scorri in fondo così l'indicatore "sta scrivendo" è visibile
@@ -1717,7 +1720,7 @@ function addTyping() {
   const div = document.createElement("div");
   div.id = "chat-typing-row";
   div.className = "chat-msg bot";
-  div.innerHTML = `<div class="chat-av">C</div>
+  div.innerHTML = `<div class="chat-av"><img src="cellobot-av.webp" alt="cellobot"></div>
     <div class="chat-bubble"><div class="chat-typing"><span></span><span></span><span></span></div></div>`;
   messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight;
