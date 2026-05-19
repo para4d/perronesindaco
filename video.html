@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marcello Bergonzi Perrone – Il video</title>
+  <meta name="description" content="Guarda il messaggio di Marcello Bergonzi Perrone, candidato Sindaco di Voghera 2026.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0d0d0d;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── HEADER MINIMALE ── */
+    header {
+      width: 100%;
+      padding: .9rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      background: #0d0d0d;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: #e07a3a; flex-shrink: 0; }
+    header span { font-size: .85rem; font-weight: 600; color: #ccc; letter-spacing: .02em; }
+
+    /* ── VIDEO WRAPPER ── */
+    .video-container {
+      width: 100%;
+      max-width: 480px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 0 1rem;
+    }
+
+    video {
+      width: 100%;
+      border-radius: 0;
+      display: block;
+      background: #000;
+      max-height: 80dvh;
+      object-fit: contain;
+    }
+
+    /* ── CTA FINALE (nascosta finché il video non finisce) ── */
+    #cta {
+      display: none;
+      width: 100%;
+      max-width: 480px;
+      padding: 1.5rem 1.2rem 2rem;
+      text-align: center;
+      animation: fadeUp .4s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    #cta p {
+      font-size: .95rem;
+      color: #aaa;
+      margin-bottom: 1rem;
+    }
+    #cta a {
+      display: inline-block;
+      background: #e07a3a;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: .9rem 2.2rem;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: opacity .2s;
+    }
+    #cta a:hover { opacity: .85; }
+
+    /* ── FOOTER LINK ── */
+    footer {
+      padding: 1rem;
+      font-size: .78rem;
+      color: #555;
+    }
+    footer a { color: #777; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="dot"></div>
+    <span>Bergonzi Perrone Sindaco · Voghera 2026</span>
+  </header>
+
+  <div class="video-container">
+    <video
+      id="player"
+      src="https://zkpjqaguwfoacyyklgrz.supabase.co/storage/v1/object/public/video/cellobot_reel_1.mp4"
+      controls
+      playsinline
+      preload="auto"
+      crossorigin="anonymous"
+    ></video>
+  </div>
+
+  <div id="cta">
+    <p>Hai domande sul programma?</p>
+    <a href="https://perronesindaco.it/#chat" onclick="this.href='https://perronesindaco.it/#chat'">
+      💬 Chiedimi del programma
+    </a>
+  </div>
+
+  <footer>
+    <a href="https://perronesindaco.it">perronesindaco.it</a>
+  </footer>
+
+  <script>
+    const vid = document.getElementById("player");
+    const cta = document.getElementById("cta");
+    vid.addEventListener("ended", () => {
+      cta.style.display = "block";
+      cta.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  </script>
+
+</body>
+</html>
