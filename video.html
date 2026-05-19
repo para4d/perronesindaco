@@ -41,6 +41,8 @@
       padding: 0 0 1rem;
     }
 
+    .video-wrap { position: relative; width: 100%; }
+
     video {
       width: 100%;
       border-radius: 0;
@@ -49,6 +51,26 @@
       max-height: 80dvh;
       object-fit: contain;
     }
+
+    #unmute-btn {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      background: rgba(0,0,0,.72);
+      color: #fff;
+      border: 2px solid rgba(255,255,255,.5);
+      border-radius: 50px;
+      padding: .45rem 1rem;
+      font-size: .9rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      backdrop-filter: blur(4px);
+      transition: opacity .2s;
+    }
+    #unmute-btn:hover { opacity: .85; }
 
     /* ── CTA FINALE (nascosta finché il video non finisce) ── */
     #cta {
@@ -98,14 +120,19 @@
   </header>
 
   <div class="video-container">
-    <video
-      id="player"
-      src="https://zkpjqaguwfoacyyklgrz.supabase.co/storage/v1/object/public/video/cellobot_reel_1.mp4"
-      controls
-      playsinline
-      preload="auto"
-      crossorigin="anonymous"
-    ></video>
+    <div class="video-wrap">
+      <video
+        id="player"
+        src="https://zkpjqaguwfoacyyklgrz.supabase.co/storage/v1/object/public/video/cellobot_reel_1.mp4"
+        controls
+        playsinline
+        autoplay
+        muted
+        preload="auto"
+        crossorigin="anonymous"
+      ></video>
+      <button id="unmute-btn" onclick="unmute()">🔇 Attiva audio</button>
+    </div>
   </div>
 
   <div id="cta">
@@ -122,7 +149,20 @@
   <script>
     const vid = document.getElementById("player");
     const cta = document.getElementById("cta");
+    const btn = document.getElementById("unmute-btn");
+
+    function unmute() {
+      vid.muted = false;
+      btn.style.display = "none";
+    }
+
+    // Nascondi il pulsante unmute se l'utente usa i controlli nativi per attivare audio
+    vid.addEventListener("volumechange", () => {
+      if (!vid.muted) btn.style.display = "none";
+    });
+
     vid.addEventListener("ended", () => {
+      btn.style.display = "none";
       cta.style.display = "block";
       cta.scrollIntoView({ behavior: "smooth", block: "center" });
     });
