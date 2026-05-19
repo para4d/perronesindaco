@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Marcello Bergonzi Perrone – Candidato Sindaco Voghera 2026</title>
   <meta name="description" content="Marcello Bergonzi Perrone, candidato sindaco per le Elezioni Comunali di Voghera del 24/25 maggio 2026. Programma amministrativo, curriculum e trasparenza.">
-  <link rel="icon" href="logocivici4.png" type="image/png">
+  <link rel="icon" href="logocivici4.webp" type="image/webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -215,30 +215,8 @@
       font-style: italic;
       color: #ffffff;
       opacity: .88;
-      margin-bottom: 1rem;
+      margin-bottom: 1.2rem;
       line-height: 1.5;
-    }
-
-    .hero-votanoi-cta {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      margin-bottom: 1.4rem;
-    }
-
-    .hero-votanoi-text {
-      color: rgba(255,255,255,.9);
-      font-family: var(--font-sans);
-      font-size: 1rem;
-      font-weight: 600;
-      letter-spacing: .02em;
-    }
-
-    .hero-votanoi-btn {
-      font-weight: 700;
-      font-size: .95rem;
-      padding: .65rem 1.4rem;
     }
 
     /* Loghi delle liste di supporto sotto lo slogan */
@@ -779,7 +757,9 @@
       justify-content: center;
     }
     #mobile-nav .mn-votanoi:hover { background: var(--arancio-sc); }
-    #mobile-nav .mn-chat { color: var(--arancio); }
+    #mobile-nav .mn-chat {
+      color: var(--arancio);
+    }
 
     /* =============================================
        RESPONSIVE
@@ -800,8 +780,10 @@
       .hero-testo h1 { font-size: 2rem; }
       .hero { padding: 3rem 1rem 2.5rem; }
       .elezioni-banner { font-size: .78rem; padding: .45rem .8rem; }
+      /* Touch targets minimi */
       .btn { min-height: 48px; padding: .85rem 1.5rem; }
       .download-btn { min-height: 48px; }
+      /* Pillole su mobile */
       .profilo-pillole { gap: .6rem; }
       .pillola { min-width: 140px; font-size: .82rem; }
     }
@@ -924,7 +906,8 @@
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0; margin-top: 2px;
     }
-    .chat-msg.bot  .chat-av { background: var(--arancio); color: #fff; }
+    .chat-msg.bot  .chat-av { background: transparent; padding: 0; overflow: hidden; }
+    .chat-msg.bot  .chat-av img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
     .chat-msg.user .chat-av { background: var(--blu); color: #fff; }
 
     .chat-chips {
@@ -999,6 +982,139 @@
       #chat-fab .fab-label { display: none; }
       #chat-messages { max-height: 55vh; }
     }
+
+    /* ── PULSANTE CONDIVISIONE (footer chat) ── */
+    #chat-share {
+      background: var(--blu-scuro);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 36px; height: 36px;
+      cursor: pointer;
+      display: none;
+      align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background .2s;
+      opacity: .55;
+    }
+    #chat-share:hover { background: var(--blu-med); opacity: 1; }
+    #chat-share.visible { display: flex; opacity: 1; }
+    #chat-share svg { width: 15px; height: 15px; }
+
+    /* ── MODALE CONDIVISIONE ── */
+    .share-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      z-index: 1200;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .share-overlay.open { display: flex; }
+
+    .share-modal {
+      background: #fff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 440px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0,0,0,.4);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .share-modal-header {
+      background: var(--blu-scuro);
+      color: #fff;
+      padding: 1rem 3rem 1rem 1.2rem;
+      font-size: .95rem;
+      font-weight: 700;
+      line-height: 1.45;
+      flex-shrink: 0;
+    }
+
+    .share-modal-close {
+      position: absolute;
+      top: .7rem; right: .8rem;
+      background: rgba(255,255,255,.18);
+      border: none;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 50%;
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      line-height: 1;
+      transition: background .2s;
+      z-index: 1;
+    }
+    .share-modal-close:hover { background: rgba(255,255,255,.32); }
+
+    .share-modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.1rem 1.2rem;
+      font-size: .88rem;
+      line-height: 1.7;
+      color: var(--testo);
+      white-space: pre-wrap;
+    }
+
+    .share-modal-footer {
+      display: flex;
+      gap: .75rem;
+      padding: .85rem 1.1rem;
+      border-top: 1px solid var(--bordo);
+      flex-shrink: 0;
+    }
+
+    .share-btn-wa {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .45rem;
+      background: #25D366;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: .7rem .5rem;
+      font-size: .83rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s;
+      font-family: var(--font-sans);
+    }
+    .share-btn-wa:hover { background: #1db954; }
+    .share-btn-wa svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    .share-btn-pdf {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .45rem;
+      background: var(--blu);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: .7rem .5rem;
+      font-size: .83rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s;
+      font-family: var(--font-sans);
+    }
+    .share-btn-pdf:hover { background: var(--blu-med); }
+    .share-btn-pdf svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    @media (max-width: 400px) {
+      .share-btn-wa, .share-btn-pdf { font-size: .76rem; padding: .65rem .3rem; }
+    }
   </style>
 </head>
 <body>
@@ -1022,10 +1138,12 @@
         <li><a href="#" onclick="chatOpen();return false;" style="color:var(--arancio);border-bottom-color:transparent;">🤖 Chiedimi del programma</a></li>
       </ul>
     </nav>
+    <!-- Hamburger (solo mobile) -->
     <button id="menu-btn" onclick="toggleMenu()" aria-label="Apri menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
+  <!-- Menu mobile -->
   <nav id="mobile-nav" aria-label="Menu mobile">
     <a href="#chi-sono" onclick="closeMenu()">👤 Chi è</a>
     <a href="#curriculum" onclick="closeMenu()">📄 Curriculum</a>
@@ -1068,12 +1186,6 @@
     <p class="hero-slogan">
       "Voghera che cresce, insieme."
     </p>
-
-    <!-- CTA Votanoi inline -->
-    <div class="hero-votanoi-cta">
-      <span class="hero-votanoi-text">Costruisci il tuo voto &rsaquo;</span>
-      <a href="scheda-elettorale.html" class="btn btn-arancio hero-votanoi-btn">🗳️ Votanoi</a>
-    </div>
 
     <!-- Loghi delle liste di sostegno -->
     <div class="hero-liste">
@@ -1159,7 +1271,7 @@
         <h3>Contatti</h3>
         <p>Via Depretis n. 28<br>27058 Voghera (PV)</p>
         <p>Tel. 0383 369 812</p>
-        <p><a href="mailto:marcello@perronesindaco.it">marcello@perronesindaco.it</a></p>
+        <p><a href="mailto:celloper1@yahoo.it">celloper1@yahoo.it</a></p>
         <p>Nato il 21/11/1966</p>
 
         <h3>Web</h3>
@@ -1493,9 +1605,9 @@
 <!-- Pannello chat -->
 <div id="chat-panel">
   <div class="chat-header">
-    <div class="chat-header-dot">C</div>
+    <div class="chat-header-dot" style="background:transparent;padding:0;overflow:hidden;"><img src="cellobot-av.webp" alt="cellobot" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"></div>
     <div class="chat-header-text">
-      <strong>Assistente del Programma</strong>
+      <strong>cellobot</strong>
       <span>Bergonzi Perrone · Voghera 2026</span>
     </div>
     <button class="chat-close" onclick="chatClose()" title="Chiudi">✕</button>
@@ -1504,9 +1616,9 @@
   <div id="chat-messages">
     <!-- Messaggio di benvenuto -->
     <div class="chat-msg bot">
-      <div class="chat-av">C</div>
+      <div class="chat-av"><img src="cellobot-av.webp" alt="cellobot"></div>
       <div>
-        <div class="chat-bubble">Ciao! Sono l'assistente del programma elettorale di Marcello Bergonzi Perrone. Puoi chiedermi qualsiasi cosa sul programma. 👇</div>
+        <div class="chat-bubble">Ciao! Sono cellobot! Aiuto Marcello Bergonzi Perrone a raccontare ciò che farà nei prossimi cinque anni. Vuoi farmi una domanda? 👇</div>
         <div class="chat-chips">
           <button class="chat-chip" onclick="chatAsk(this.textContent)">Cosa prevede il programma per i giovani?</button>
           <button class="chat-chip" onclick="chatAsk(this.textContent)">Quali proposte per la sicurezza?</button>
@@ -1518,6 +1630,14 @@
   </div>
 
   <div class="chat-footer">
+    <button id="chat-share" onclick="openShareModal()" title="Condividi risposta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+        <polyline points="16 6 12 2 8 6"/>
+        <line x1="12" y1="2" x2="12" y2="15"/>
+      </svg>
+    </button>
     <input id="chat-input" type="text" placeholder="Scrivi una domanda…" autocomplete="off">
     <button id="chat-send" onclick="chatSend()" title="Invia">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
@@ -1526,6 +1646,34 @@
         <polygon points="22 2 15 22 11 13 2 9 22 2"/>
       </svg>
     </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MODALE CONDIVISIONE Q&A
+══════════════════════════════════════════ -->
+<div class="share-overlay" id="share-overlay" onclick="closeShareModalOutside(event)">
+  <div class="share-modal">
+    <div class="share-modal-header" id="share-q-text"></div>
+    <button class="share-modal-close" onclick="closeShareModal()" title="Chiudi">✕</button>
+    <div class="share-modal-body" id="share-a-text"></div>
+    <div class="share-modal-footer">
+      <button class="share-btn-wa" onclick="shareWhatsApp()">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        WhatsApp
+      </button>
+      <button class="share-btn-pdf" onclick="downloadPDF()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Scarica PDF
+      </button>
+    </div>
   </div>
 </div>
 
@@ -1543,6 +1691,7 @@ function closeMenu() {
   document.getElementById('mobile-nav').classList.remove('open');
   document.getElementById('menu-btn').setAttribute('aria-expanded', 'false');
 }
+// Chiudi menu se si clicca fuori
 document.addEventListener('click', e => {
   const nav = document.getElementById('mobile-nav');
   if (nav.classList.contains('open') &&
@@ -1552,13 +1701,14 @@ document.addEventListener('click', e => {
   }
 });
 
-/* ── Configurazione ────────────────────────────────────────────────────────
-   Sostituisci SUPABASE_URL e SUPABASE_ANON_KEY con i valori del tuo progetto.
-   Li trovi su: Supabase Dashboard → Settings → API
-   ──────────────────────────────────────────────────────────────────────── */
+/* ── Configurazione ─────────────────────────────────────────────────────── */
 const SUPABASE_URL      = "https://zkpjqaguwfoacyyklgrz.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InprcGpxYWd1d2ZvYWN5eWtsZ3J6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1Njg0NTUsImV4cCI6MjA5NDE0NDQ1NX0.gnoJGr4XSRuesI5L6VdwoZufRSGVDBr8AHc9W-wHFug";
 const CHAT_ENDPOINT     = `${SUPABASE_URL}/functions/v1/chat`;
+
+/* ── Stato condivisione ─────────────────────────────────────────────────── */
+let lastQuestion = '';
+let lastAnswer   = '';
 
 /* ── UI helpers ──────────────────────────────────────────────────────────── */
 const panel    = document.getElementById("chat-panel");
@@ -1608,11 +1758,25 @@ input.addEventListener("keydown", e => {
   if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); chatSend(); }
 });
 
+/* ── Auto-open chat se URL contiene #chat ───────────────────────────────── */
+(function() {
+  const hash = window.location.hash.toLowerCase();
+  const qs   = window.location.search.toLowerCase();
+  if (hash === "#chat" || qs.includes("chat")) {
+    // Aspetta che il DOM sia pronto
+    window.addEventListener("load", function() {
+      setTimeout(chatOpen, 300);
+    });
+  }
+})();
+
 function addMsg(role, html) {
-  const av  = role === "user" ? "T" : "C";
+  const avHtml = role === "user"
+    ? "T"
+    : `<img src="cellobot-av.webp" alt="cellobot">`;
   const div = document.createElement("div");
   div.className = `chat-msg ${role}`;
-  div.innerHTML = `<div class="chat-av">${av}</div><div class="chat-bubble">${html}</div>`;
+  div.innerHTML = `<div class="chat-av">${avHtml}</div><div class="chat-bubble">${html}</div>`;
   messages.appendChild(div);
   if (role === "user") {
     // Scorri in fondo così l'indicatore "sta scrivendo" è visibile
@@ -1629,7 +1793,7 @@ function addTyping() {
   const div = document.createElement("div");
   div.id = "chat-typing-row";
   div.className = "chat-msg bot";
-  div.innerHTML = `<div class="chat-av">C</div>
+  div.innerHTML = `<div class="chat-av"><img src="cellobot-av.webp" alt="cellobot"></div>
     <div class="chat-bubble"><div class="chat-typing"><span></span><span></span><span></span></div></div>`;
   messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight;
@@ -1651,7 +1815,7 @@ async function chatSend() {
   const q = input.value.trim();
   if (!q) return;
   input.value = "";
-  input.blur(); // nasconde la tastiera su mobile
+  input.blur();
   addMsg("user", escHtml(q));
   addTyping();
 
@@ -1667,12 +1831,95 @@ async function chatSend() {
     });
     const data = await res.json();
     removeTyping();
-    if (data.error) addMsg("bot", "⚠️ " + escHtml(data.error));
-    else            addMsg("bot", escHtml(data.answer));
+    if (data.error) {
+      addMsg("bot", "⚠️ " + escHtml(data.error));
+    } else {
+      addMsg("bot", escHtml(data.answer));
+      // Salva Q&A per condivisione e mostra il pulsante
+      lastQuestion = q;
+      lastAnswer   = data.answer;
+      document.getElementById("chat-share").classList.add("visible");
+    }
   } catch (err) {
     removeTyping();
     addMsg("bot", "⚠️ Errore di connessione. Riprova tra qualche secondo.");
   }
+}
+
+/* ── Condivisione ────────────────────────────────────────────────────────── */
+function openShareModal() {
+  if (!lastQuestion || !lastAnswer) return;
+  document.getElementById("share-q-text").textContent = lastQuestion;
+  document.getElementById("share-a-text").textContent = lastAnswer;
+  document.getElementById("share-overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeShareModal() {
+  document.getElementById("share-overlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+function closeShareModalOutside(e) {
+  if (e.target === document.getElementById("share-overlay")) closeShareModal();
+}
+
+function shareWhatsApp() {
+  const testo =
+    "🗳️ *Programma Bergonzi Perrone – Voghera 2026*\n\n" +
+    "❓ " + lastQuestion + "\n\n" +
+    lastAnswer + "\n\n" +
+    "👉 perronesindaco.it";
+  const url = "https://wa.me/?text=" + encodeURIComponent(testo);
+  window.open(url, "_blank");
+}
+
+function downloadPDF() {
+  const escPdf = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const answerHtml = escPdf(lastAnswer).replace(/\n/g, "<br>");
+
+  const printWindow = window.open("", "_blank");
+  if (!printWindow) { alert("Abilita i popup per scaricare il PDF."); return; }
+  printWindow.document.write(`<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Programma – Q&A</title>
+  <style>
+    @media print { @page { margin: 2cm; } body { padding: 0; } }
+    body {
+      font-family: -apple-system, Helvetica, Arial, sans-serif;
+      max-width: 680px; margin: 0 auto; padding: 24px;
+      color: #1e2d3d; font-size: 14px; line-height: 1.65;
+    }
+    .brand {
+      font-size: 11px; font-weight: 700; letter-spacing: .6px;
+      text-transform: uppercase; color: #fff;
+      background: #1e3450; padding: 8px 14px;
+      border-radius: 8px 8px 0 0; margin-bottom: 0;
+    }
+    .question {
+      background: #2d4a6e; color: #fff;
+      padding: 14px 16px; font-size: 15px; font-weight: 700;
+      line-height: 1.4; border-radius: 0 0 8px 8px;
+      margin-bottom: 22px;
+    }
+    .answer { line-height: 1.75; color: #2c3e50; }
+    .footer {
+      margin-top: 40px; padding-top: 14px;
+      border-top: 1px solid #ddd;
+      font-size: 11px; color: #999; text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="brand">Programma Elettorale · Bergonzi Perrone Sindaco · Voghera 2026</div>
+  <div class="question">${escPdf(lastQuestion)}</div>
+  <div class="answer">${answerHtml}</div>
+  <div class="footer">perronesindaco.it &nbsp;·&nbsp; Elezioni Comunali Voghera 24/25 Maggio 2026</div>
+  <script>window.onload = function(){ setTimeout(function(){ window.print(); }, 300); }<\/script>
+</body></html>`);
+  printWindow.document.close();
 }
 </script>
 
@@ -1680,7 +1927,7 @@ async function chatSend() {
   <div class="footer-nome">Marcello Bergonzi Perrone</div>
   <div>Candidato Sindaco del Comune di Voghera – Elezioni Comunali 24/25 Maggio 2026</div>
   <div style="margin-top:.5rem;">
-    <a href="mailto:marcello@perronesindaco.it">marcello@perronesindaco.it</a>
+    <a href="mailto:celloper1@yahoo.it">celloper1@yahoo.it</a>
     &nbsp;·&nbsp;
     <a href="https://www.avvocatovoghera.it/" target="_blank" rel="noopener">avvocatovoghera.it</a>
   </div>
