@@ -770,7 +770,10 @@ async function caricaLogs() {
   const el = document.getElementById('table-body');
   try {
     const { data, error } = await sbClient
-      .rpc('get_recent_logs', { limite: 100 });
+      .from('chat_logs')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(100);
     if (error) throw error;
     logsData = data || [];
 
