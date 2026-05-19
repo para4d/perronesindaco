@@ -286,28 +286,6 @@
     padding: .55rem 1.2rem; border-radius: 8px; cursor: pointer; font-weight: 600;
     font-size: .88rem;
   }
-
-  /* ── EDITOR FOTO ── */
-  #tab-foto { display: none; }
-  .crop-editor-card {
-    background: var(--card); border-radius: 12px; padding: 1.5rem 2rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,.06); border: 1px solid var(--bordo);
-    max-width: 720px;
-  }
-  .crop-editor-layout {
-    display: flex; gap: 2.5rem; align-items: flex-start; flex-wrap: wrap;
-  }
-  .crop-controls { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 1.1rem; }
-  .crop-preview-wrap { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: .6rem; }
-  #crop-canvas { cursor: grab; display: block; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,.18); }
-  #crop-canvas:active { cursor: grabbing; }
-  .crop-hint { font-size: .72rem; color: var(--testo-light); text-align: center; }
-  .crop-zoom-row { display: flex; align-items: center; gap: .75rem; }
-  .crop-zoom-row label { font-size: .78rem; font-weight: 600; color: var(--testo-light); white-space: nowrap; }
-  input[type=range].crop-zoom { flex: 1; accent-color: var(--arancio); cursor: pointer; }
-  .crop-status { font-size: .82rem; margin-top: .25rem; min-height: 1.4em; }
-  .crop-current-wrap { display: flex; flex-direction: column; gap: .4rem; }
-  .crop-current-label { font-size: .75rem; font-weight: 600; color: var(--testo-light); }
 </style>
 </head>
 <body>
@@ -339,7 +317,6 @@
   <div class="tab-nav">
     <button class="tab-btn active" id="tab-btn-bot" onclick="showTab('bot')">🤖 Bot Dashboard</button>
     <button class="tab-btn" id="tab-btn-votanoi" onclick="showTab('votanoi')">🗳️ Votanoi</button>
-    <button class="tab-btn" id="tab-btn-foto" onclick="showTab('foto')">📸 Editor Foto</button>
   </div>
 
   <!-- ═══════ BOT DASHBOARD ═══════ -->
@@ -510,7 +487,6 @@
         <option value="F">Solo F</option>
       </select>
       <button class="btn-primary" onclick="vnOpenForm(null)">+ Aggiungi candidato</button>
-      <button class="btn-secondary" onclick="vnImportCiviciFotos()" title="Importa le foto dei candidati Civici dal database civicivoghera" style="white-space:nowrap;">📸 Importa foto Civici</button>
     </div>
     <div class="table-card">
       <div id="vn-candidates-body">
@@ -520,62 +496,6 @@
 
   </main>
   </div><!-- /tab-votanoi -->
-
-  <!-- ═══════ EDITOR FOTO ═══════ -->
-  <div id="tab-foto">
-  <main>
-    <div class="vn-section-title">Editor foto candidati</div>
-    <div class="crop-editor-card">
-
-      <!-- Selezione candidato e upload -->
-      <div style="display:flex;flex-direction:column;gap:.9rem;margin-bottom:1.5rem;">
-        <div class="form-field" style="max-width:460px;">
-          <label>Candidato</label>
-          <select class="vn-select" id="crop-candidate-select" style="width:100%;"
-                  onchange="cropUpdateCurrentFoto()">
-            <option value="">— Seleziona candidato —</option>
-          </select>
-        </div>
-        <div class="form-field" style="max-width:460px;">
-          <label>Carica foto <span style="color:#999;font-weight:400">(JPG, PNG, WEBP)</span></label>
-          <input type="file" id="crop-file-input" accept="image/*"
-                 style="width:100%;font-size:.85rem;" onchange="cropLoadFile(this)">
-        </div>
-      </div>
-
-      <!-- Editor canvas + controlli -->
-      <div class="crop-editor-layout">
-        <div class="crop-preview-wrap">
-          <canvas id="crop-canvas" width="300" height="300"></canvas>
-          <div class="crop-hint">Trascina per spostare · Rotella o slider per zoomare</div>
-        </div>
-        <div class="crop-controls">
-          <div class="crop-zoom-row">
-            <label>🔍 Zoom</label>
-            <input type="range" class="crop-zoom" id="crop-zoom-slider"
-                   min="10" max="400" value="100"
-                   oninput="cropSetZoomFromSlider(this.value)">
-            <span id="crop-zoom-pct" style="font-size:.78rem;color:var(--testo-light);min-width:42px;text-align:right;">100%</span>
-          </div>
-          <button class="btn-secondary" onclick="cropReset()" style="align-self:flex-start;">↺ Reimposta</button>
-          <div>
-            <button class="btn-primary" id="crop-save-btn" onclick="cropSave()" style="width:100%;">
-              💾 Salva foto candidato
-            </button>
-            <div class="crop-status" id="crop-status"></div>
-          </div>
-          <div id="crop-current-foto-wrap" style="display:none;" class="crop-current-wrap">
-            <div class="crop-current-label">Foto attuale:</div>
-            <img id="crop-current-foto-img"
-                 style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--bordo);"
-                 src="" alt="">
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </main>
-  </div><!-- /tab-foto -->
 
   <!-- ═══════ MODAL FORM CANDIDATO ═══════ -->
   <div class="modal-overlay" id="vn-modal">
@@ -608,21 +528,6 @@
       <div class="form-field" style="margin-bottom:.75rem;">
         <label>«Mi candido perché…» <span style="color:#999;font-weight:400">(opzionale)</span></label>
         <textarea id="vn-form-why" placeholder="Testo motivazione..."></textarea>
-      </div>
-      <div class="form-field" style="margin-bottom:.75rem;">
-        <label>Foto candidato <span style="color:#999;font-weight:400">(opzionale)</span></label>
-        <div id="vn-foto-preview-wrap" style="display:none;align-items:center;gap:.75rem;margin-bottom:.6rem;">
-          <img id="vn-foto-preview-img" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--bordo);" src="" alt="">
-          <button type="button" style="font-size:.75rem;color:var(--rosso);background:none;border:none;cursor:pointer;font-weight:600;" onclick="vnClearFoto()">✕ Rimuovi foto</button>
-        </div>
-        <input type="file" id="vn-form-foto-file" accept="image/jpeg,image/png,image/webp"
-               style="margin-bottom:.4rem;width:100%;font-size:.82rem;"
-               onchange="vnHandleFotoUpload(this)">
-        <input type="text" id="vn-form-foto-url"
-               style="width:100%;padding:.55rem .8rem;border:1.5px solid var(--bordo);border-radius:8px;font-size:.82rem;font-family:inherit;"
-               placeholder="oppure incolla URL immagine..."
-               oninput="vnUpdateFotoPreview()">
-        <div id="vn-foto-upload-status" style="font-size:.75rem;color:var(--testo-light);margin-top:.3rem;"></div>
       </div>
       <div class="modal-footer">
         <button class="btn-secondary" onclick="vnCloseForm()">Annulla</button>
@@ -685,12 +590,9 @@ function mostraDashboard() {
 function showTab(name) {
   document.getElementById('tab-bot').style.display     = name === 'bot'     ? 'block' : 'none';
   document.getElementById('tab-votanoi').style.display = name === 'votanoi' ? 'block' : 'none';
-  document.getElementById('tab-foto').style.display    = name === 'foto'    ? 'block' : 'none';
   document.getElementById('tab-btn-bot').classList.toggle('active',     name === 'bot');
   document.getElementById('tab-btn-votanoi').classList.toggle('active', name === 'votanoi');
-  document.getElementById('tab-btn-foto').classList.toggle('active',    name === 'foto');
   if (name === 'votanoi') vnInit();
-  if (name === 'foto')    cropInitTab();
 }
 
 async function logout() {
@@ -973,7 +875,7 @@ async function vnLoadCandidates() {
   try {
     let q = vnClient
       .from('ballot_candidates')
-      .select('id, list_id, ballot_name, full_name, gender, why, active, foto_url')
+      .select('id, list_id, ballot_name, full_name, gender, why, active')
       .order('list_id').order('gender').order('ballot_name');
     if (listId) q = q.eq('list_id', listId);
     if (gender) q = q.eq('gender', gender);
@@ -987,12 +889,8 @@ async function vnLoadCandidates() {
     }
     const rows = vnAllCandidates.map(c => {
       const lista = vnAllLists.find(l => l.id === c.list_id);
-      const fotoHtml = c.foto_url
-        ? `<img src="${esc(c.foto_url)}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;vertical-align:middle;border:1.5px solid var(--bordo);" onerror="this.style.display='none'">`
-        : '<span style="color:#ccc;font-size:.8rem;">—</span>';
       return `
         <tr>
-          <td>${fotoHtml}</td>
           <td style="white-space:nowrap;">
             <span class="badge-${c.gender}">${c.gender}</span>
           </td>
@@ -1012,7 +910,7 @@ async function vnLoadCandidates() {
       <table>
         <thead>
           <tr>
-            <th>Foto</th><th>Sesso</th><th>Nome elettorale</th><th>Nome completo</th>
+            <th>Sesso</th><th>Nome elettorale</th><th>Nome completo</th>
             <th>Lista</th><th>Mi candido perché</th><th>Stato</th><th>Azioni</th>
           </tr>
         </thead>
@@ -1051,8 +949,6 @@ function vnOpenForm(candidateId) {
       document.getElementById('vn-form-list').value   = c.list_id     || '';
       document.getElementById('vn-form-why').value    = c.why         || '';
       document.getElementById('vn-form-original-ballot').value = c.ballot_name || '';
-      document.getElementById('vn-form-foto-url').value = c.foto_url  || '';
-      vnUpdateFotoPreview();
     }
   } else {
     document.getElementById('vn-form-full').value   = '';
@@ -1060,9 +956,6 @@ function vnOpenForm(candidateId) {
     document.getElementById('vn-form-gender').value = 'M';
     document.getElementById('vn-form-why').value    = '';
     document.getElementById('vn-form-original-ballot').value = '';
-    document.getElementById('vn-form-foto-url').value = '';
-    document.getElementById('vn-form-foto-file').value = '';
-    vnUpdateFotoPreview();
     // Preseleziona lista filtrata se attiva
     const filterList = document.getElementById('vn-filter-list').value;
     if (filterList) document.getElementById('vn-form-list').value = filterList;
@@ -1072,20 +965,15 @@ function vnOpenForm(candidateId) {
 
 function vnCloseForm() {
   document.getElementById('vn-modal').classList.remove('open');
-  document.getElementById('vn-form-foto-file').value = '';
-  document.getElementById('vn-form-foto-url').value  = '';
-  document.getElementById('vn-foto-upload-status').textContent = '';
-  vnUpdateFotoPreview();
   vnEditingId = null;
 }
 
 async function vnSaveCandidate() {
-  const full     = document.getElementById('vn-form-full').value.trim();
-  const ballot   = document.getElementById('vn-form-ballot').value.trim().toUpperCase();
-  const gender   = document.getElementById('vn-form-gender').value;
-  const listId   = document.getElementById('vn-form-list').value;
-  const why      = document.getElementById('vn-form-why').value.trim();
-  const foto_url = document.getElementById('vn-form-foto-url').value.trim() || null;
+  const full   = document.getElementById('vn-form-full').value.trim();
+  const ballot = document.getElementById('vn-form-ballot').value.trim().toUpperCase();
+  const gender = document.getElementById('vn-form-gender').value;
+  const listId = document.getElementById('vn-form-list').value;
+  const why    = document.getElementById('vn-form-why').value.trim();
 
   if (!ballot || !gender || !listId) {
     alert('Compilare: nome elettorale, sesso e lista.');
@@ -1105,7 +993,7 @@ async function vnSaveCandidate() {
   const { data, error } = await vnClient.rpc('manage_ballot', {
     p_token:  VN_TOKEN,
     p_action: 'upsert_candidate',
-    p_data:   { list_id: listId, ballot_name: ballot, full_name: full, gender, why, active: true, foto_url }
+    p_data:   { list_id: listId, ballot_name: ballot, full_name: full, gender, why, active: true }
   });
 
   if (error || !data?.ok) {
@@ -1148,442 +1036,6 @@ function esportaCSV() {
   const a    = document.createElement('a');
   a.href = url; a.download = `chatbot_logs_${new Date().toISOString().slice(0,10)}.csv`;
   a.click(); URL.revokeObjectURL(url);
-}
-
-// ══ FOTO CANDIDATI ══════════════════════════════════════════════════════════
-
-function vnUpdateFotoPreview() {
-  const url  = document.getElementById('vn-form-foto-url').value.trim();
-  const wrap = document.getElementById('vn-foto-preview-wrap');
-  const img  = document.getElementById('vn-foto-preview-img');
-  if (url) {
-    img.src = url;
-    wrap.style.display = 'flex';
-  } else {
-    wrap.style.display = 'none';
-    img.src = '';
-  }
-}
-
-function vnClearFoto() {
-  document.getElementById('vn-form-foto-url').value  = '';
-  document.getElementById('vn-form-foto-file').value = '';
-  document.getElementById('vn-foto-upload-status').textContent = '';
-  vnUpdateFotoPreview();
-}
-
-async function vnHandleFotoUpload(input) {
-  const file = input.files[0];
-  if (!file) return;
-
-  const statusEl = document.getElementById('vn-foto-upload-status');
-  statusEl.textContent = '⏳ Upload in corso…';
-
-  try {
-    // Genera un nome file sicuro e univoco
-    const ext      = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
-    const filename = `cand_${Date.now()}.${ext}`;
-
-    const { data, error } = await vnClient.storage
-      .from('candidati-foto')
-      .upload(filename, file, { upsert: true, contentType: file.type });
-
-    if (error) throw error;
-
-    const { data: { publicUrl } } = vnClient.storage
-      .from('candidati-foto')
-      .getPublicUrl(filename);
-
-    document.getElementById('vn-form-foto-url').value = publicUrl;
-    vnUpdateFotoPreview();
-    statusEl.textContent = '✅ Upload completato!';
-    setTimeout(() => { statusEl.textContent = ''; }, 3000);
-  } catch (e) {
-    statusEl.textContent = '❌ Errore upload: ' + e.message;
-    console.error('foto upload error', e);
-  }
-}
-
-// Import automatico foto per candidati Civici da tabella civicivoghera
-async function vnImportCiviciFotos() {
-  const AVATARS_BASE = 'https://rwmmolgtrqilqeoentop.supabase.co/storage/v1/object/public/avatars/';
-
-  const civiciCands = vnAllCandidates.filter(c => !c.foto_url);
-  const total       = vnAllCandidates.length;
-
-  if (civiciCands.length === 0) {
-    alert('Tutti i candidati hanno già una foto impostata.');
-    return;
-  }
-
-  if (!confirm(`Importare le foto dal database civicivoghera?\n\nCandidati senza foto: ${civiciCands.length} su ${total}.\nVerranno aggiornati solo quelli senza foto.`)) return;
-
-  const toast = document.createElement('div');
-  toast.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#1a3a6b;color:#fff;padding:12px 18px;border-radius:10px;font-size:.85rem;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.3)';
-  toast.textContent = '🔍 Carico profili…';
-  document.body.appendChild(toast);
-
-  try {
-    // Carica tutti i profili con foto (matching per full_name)
-    const { data: profiles, error } = await vnClient
-      .from('profiles')
-      .select('id, full_name, photo_path')
-      .not('photo_path', 'is', null);
-
-    if (error) throw error;
-
-    toast.textContent = `📸 Trovate ${profiles.length} foto. Aggiorno…`;
-
-    // Mappa full_name (uppercase) → photo_path
-    const profileMap = {};
-    profiles.forEach(p => {
-      if (p.full_name) profileMap[p.full_name.toUpperCase().trim()] = p.photo_path;
-    });
-
-    let updated = 0, skipped = 0;
-    for (const bc of civiciCands) {
-      const key = (bc.full_name || bc.ballot_name || '').toUpperCase().trim();
-      const photoPath = profileMap[key];
-      if (!photoPath) { skipped++; continue; }
-
-      const foto_url = AVATARS_BASE + photoPath;
-      const { data: res, error: upErr } = await vnClient.rpc('manage_ballot', {
-        p_token:  VN_TOKEN,
-        p_action: 'upsert_candidate',
-        p_data:   {
-          list_id:     bc.list_id,
-          ballot_name: bc.ballot_name,
-          full_name:   bc.full_name,
-          gender:      bc.gender,
-          why:         bc.why,
-          active:      bc.active,
-          foto_url
-        }
-      });
-      if (!upErr && res?.ok) updated++; else skipped++;
-    }
-
-    document.body.removeChild(toast);
-    alert(`✅ Importazione completata!\n\n📸 Foto importate: ${updated}\n⏭ Saltati (foto assente): ${skipped}`);
-    vnLoadCandidates();
-
-  } catch (e) {
-    if (toast.parentNode) document.body.removeChild(toast);
-    alert('Errore durante l\'importazione: ' + e.message);
-    console.error('vnImportCiviciFotos error', e);
-  }
-}
-
-// ══ EDITOR FOTO (crop circolare) ════════════════════════════════════════════
-
-let cropImg       = null;
-let cropScale     = 1;
-let cropBaseScale = 1;   // scala "fit" iniziale
-let cropOffX      = 0;
-let cropOffY      = 0;
-let cropDragging  = false;
-let cropLastX     = 0;
-let cropLastY     = 0;
-const CROP_DISPLAY = 300;  // dimensione canvas a schermo (px)
-const CROP_OUTPUT  = 420;  // dimensione immagine di output (px)
-
-function cropInitTab() {
-  // Popola dropdown candidati da vnAllCandidates (carica se vuoto)
-  const doPopulate = () => {
-    const sel = document.getElementById('crop-candidate-select');
-    const prev = sel.value;
-    sel.innerHTML = '<option value="">— Seleziona candidato —</option>';
-    const sorted = [...vnAllCandidates].sort((a, b) => {
-      if (a.list_id !== b.list_id) return a.list_id.localeCompare(b.list_id);
-      return (a.ballot_name || '').localeCompare(b.ballot_name || '');
-    });
-    sorted.forEach(c => {
-      const lista = vnAllLists.find(l => l.id === c.list_id);
-      const tag   = lista ? (lista.short_name || lista.name) : c.list_id;
-      const opt   = document.createElement('option');
-      opt.value       = c.id;
-      opt.textContent = `${c.ballot_name}  [${tag}]${c.foto_url ? ' ✓' : ''}`;
-      sel.appendChild(opt);
-    });
-    if (prev) sel.value = prev;
-    cropUpdateCurrentFoto();
-  };
-
-  if (vnAllCandidates.length) {
-    doPopulate();
-  } else {
-    vnInit().then(doPopulate);
-  }
-
-  // Attacca eventi canvas (solo la prima volta)
-  const canvas = document.getElementById('crop-canvas');
-  if (canvas._cropReady) { cropDraw(); return; }
-  canvas._cropReady = true;
-
-  // Mouse
-  canvas.addEventListener('mousedown', e => {
-    if (!cropImg) return;
-    cropDragging = true;
-    cropLastX = e.clientX; cropLastY = e.clientY;
-  });
-  canvas.addEventListener('mousemove', e => {
-    if (!cropDragging || !cropImg) return;
-    cropOffX += e.clientX - cropLastX;
-    cropOffY += e.clientY - cropLastY;
-    cropLastX = e.clientX; cropLastY = e.clientY;
-    cropDraw();
-  });
-  canvas.addEventListener('mouseup',    () => { cropDragging = false; });
-  canvas.addEventListener('mouseleave', () => { cropDragging = false; });
-
-  // Wheel zoom
-  canvas.addEventListener('wheel', e => {
-    if (!cropImg) return;
-    e.preventDefault();
-    cropSetScale(cropScale * (e.deltaY > 0 ? 0.94 : 1.06));
-  }, { passive: false });
-
-  // Touch
-  let lastTouchDist = null;
-  canvas.addEventListener('touchstart', e => {
-    if (!cropImg) return;
-    if (e.touches.length === 1) {
-      cropDragging = true;
-      cropLastX = e.touches[0].clientX; cropLastY = e.touches[0].clientY;
-    } else if (e.touches.length === 2) {
-      cropDragging = false;
-      lastTouchDist = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-    }
-  });
-  canvas.addEventListener('touchmove', e => {
-    e.preventDefault();
-    if (!cropImg) return;
-    if (e.touches.length === 1 && cropDragging) {
-      cropOffX += e.touches[0].clientX - cropLastX;
-      cropOffY += e.touches[0].clientY - cropLastY;
-      cropLastX = e.touches[0].clientX; cropLastY = e.touches[0].clientY;
-      cropDraw();
-    } else if (e.touches.length === 2 && lastTouchDist) {
-      const d = Math.hypot(
-        e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
-      );
-      cropSetScale(cropScale * (d / lastTouchDist));
-      lastTouchDist = d;
-    }
-  }, { passive: false });
-  canvas.addEventListener('touchend', () => { cropDragging = false; lastTouchDist = null; });
-
-  cropDraw();
-}
-
-function cropUpdateCurrentFoto() {
-  const sel   = document.getElementById('crop-candidate-select');
-  const wrap  = document.getElementById('crop-current-foto-wrap');
-  const img   = document.getElementById('crop-current-foto-img');
-  const cand  = vnAllCandidates.find(c => c.id === sel.value);
-  if (cand && cand.foto_url) {
-    img.src = cand.foto_url;
-    wrap.style.display = 'flex';
-  } else {
-    wrap.style.display = 'none';
-    img.src = '';
-  }
-}
-
-function cropLoadFile(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    const img = new Image();
-    img.onload = () => { cropImg = img; cropReset(); };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-function cropReset() {
-  if (!cropImg) { cropDraw(); return; }
-  const r = CROP_DISPLAY / 2 - 4;
-  cropBaseScale = (r * 2) / Math.min(cropImg.width, cropImg.height);
-  cropScale     = cropBaseScale;
-  cropOffX      = 0;
-  cropOffY      = 0;
-  cropUpdateSlider();
-  cropDraw();
-}
-
-function cropSetScale(scale) {
-  const min = cropBaseScale * 0.25;
-  const max = cropBaseScale * 6;
-  cropScale = Math.min(max, Math.max(min, scale));
-  cropUpdateSlider();
-  cropDraw();
-}
-
-function cropSetZoomFromSlider(val) {
-  const pct = parseInt(val);
-  document.getElementById('crop-zoom-pct').textContent = pct + '%';
-  cropScale = cropBaseScale * pct / 100;
-  cropDraw();
-}
-
-function cropUpdateSlider() {
-  const pct = Math.round((cropScale / cropBaseScale) * 100);
-  const clamped = Math.min(400, Math.max(10, pct));
-  document.getElementById('crop-zoom-slider').value = clamped;
-  document.getElementById('crop-zoom-pct').textContent = pct + '%';
-}
-
-function cropDraw() {
-  const canvas = document.getElementById('crop-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const S   = CROP_DISPLAY;
-  const cx  = S / 2, cy = S / 2, r = S / 2 - 4;
-
-  ctx.clearRect(0, 0, S, S);
-
-  // Sfondo grigio
-  ctx.fillStyle = '#c8c8c8';
-  ctx.fillRect(0, 0, S, S);
-
-  if (!cropImg) {
-    // Scacchiera + testo guida
-    ctx.save();
-    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.clip();
-    const sz = 22;
-    for (let row = 0; row * sz < S; row++)
-      for (let col = 0; col * sz < S; col++) {
-        ctx.fillStyle = (row + col) % 2 === 0 ? '#e4e4e4' : '#cccccc';
-        ctx.fillRect(col * sz, row * sz, sz, sz);
-      }
-    ctx.restore();
-    ctx.fillStyle = '#999';
-    ctx.font = '14px -apple-system, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('Carica una foto sopra', cx, cy);
-  } else {
-    // Immagine
-    const w = cropImg.width  * cropScale;
-    const h = cropImg.height * cropScale;
-    const x = cx - cropImg.width  / 2 * cropScale + cropOffX;
-    const y = cy - cropImg.height / 2 * cropScale + cropOffY;
-    ctx.drawImage(cropImg, x, y, w, h);
-  }
-
-  // Overlay scuro fuori dal cerchio (evenodd)
-  ctx.save();
-  ctx.fillStyle = 'rgba(0,0,0,0.52)';
-  ctx.beginPath();
-  ctx.rect(0, 0, S, S);
-  ctx.arc(cx, cy, r, 0, Math.PI * 2, true);  // anticlockwise = buco
-  ctx.fill('evenodd');
-  ctx.restore();
-
-  // Bordo cerchio
-  ctx.strokeStyle = 'rgba(255,255,255,0.85)';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, 0, Math.PI * 2);
-  ctx.stroke();
-}
-
-async function cropSave() {
-  const sel    = document.getElementById('crop-candidate-select');
-  const candId = sel.value;
-  if (!candId)  { alert('Seleziona prima un candidato.'); return; }
-  if (!cropImg) { alert('Carica prima una foto.'); return; }
-
-  const cand = vnAllCandidates.find(c => c.id === candId);
-  if (!cand)  { alert('Candidato non trovato.'); return; }
-
-  const statusEl = document.getElementById('crop-status');
-  const saveBtn  = document.getElementById('crop-save-btn');
-  saveBtn.disabled = true;
-  statusEl.style.color   = 'var(--testo-light)';
-  statusEl.textContent   = '⏳ Rendering e upload…';
-
-  try {
-    const OUT   = CROP_OUTPUT;
-    const ratio = OUT / CROP_DISPLAY;
-    const off   = document.createElement('canvas');
-    off.width   = off.height = OUT;
-    const ctx2  = off.getContext('2d');
-
-    // Sfondo bianco (JPEG non supporta trasparenza)
-    ctx2.fillStyle = 'white';
-    ctx2.fillRect(0, 0, OUT, OUT);
-
-    // Clip circolare e disegna immagine scalata
-    ctx2.save();
-    ctx2.beginPath();
-    ctx2.arc(OUT / 2, OUT / 2, OUT / 2, 0, Math.PI * 2);
-    ctx2.clip();
-    const outScale = cropScale * ratio;
-    ctx2.drawImage(
-      cropImg,
-      OUT / 2 - cropImg.width  / 2 * outScale + cropOffX * ratio,
-      OUT / 2 - cropImg.height / 2 * outScale + cropOffY * ratio,
-      cropImg.width  * outScale,
-      cropImg.height * outScale
-    );
-    ctx2.restore();
-
-    const blob = await new Promise(resolve => off.toBlob(resolve, 'image/jpeg', 0.93));
-
-    // Nome file dal ballot_name
-    const slug = cand.ballot_name.toLowerCase()
-      .normalize('NFD').replace(/[̀-ͯ]/g, '')
-      .replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/, '');
-    const filename = `crop_${slug}_${Date.now()}.jpg`;
-
-    // Upload su Supabase Storage
-    const { error: upErr } = await vnClient.storage
-      .from('candidati-foto')
-      .upload(filename, blob, { upsert: true, contentType: 'image/jpeg' });
-    if (upErr) throw upErr;
-
-    const { data: { publicUrl } } = vnClient.storage
-      .from('candidati-foto').getPublicUrl(filename);
-
-    // Aggiorna candidato
-    const { data: rpcRes, error: rpcErr } = await vnClient.rpc('manage_ballot', {
-      p_token:  VN_TOKEN,
-      p_action: 'upsert_candidate',
-      p_data: {
-        list_id:     cand.list_id,
-        ballot_name: cand.ballot_name,
-        full_name:   cand.full_name,
-        gender:      cand.gender,
-        why:         cand.why,
-        active:      cand.active,
-        foto_url:    publicUrl,
-      }
-    });
-    if (rpcErr || !rpcRes?.ok) throw new Error(rpcRes?.error || rpcErr?.message);
-
-    statusEl.style.color = 'var(--verde)';
-    statusEl.textContent = '✅ Foto salvata!';
-
-    // Aggiorna lista candidati e dropdown
-    await vnLoadCandidates();
-    cropInitTab();
-    cropUpdateCurrentFoto();
-
-  } catch (e) {
-    statusEl.style.color = 'var(--rosso)';
-    statusEl.textContent = '❌ Errore: ' + e.message;
-    console.error('cropSave error', e);
-  } finally {
-    saveBtn.disabled = false;
-    setTimeout(() => { statusEl.textContent = ''; }, 6000);
-  }
 }
 
 // ══ AUTO-REFRESH ════════════════════════════════════════════════════════════

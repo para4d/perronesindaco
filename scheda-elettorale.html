@@ -476,72 +476,13 @@ html, body {
   white-space: nowrap;
 }
 
-/* ===== CANDIDATE PHOTO BLOCK ===== */
-.cand-block {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-}
-.cand-block:last-child { margin-bottom: 0; }
-
-.cand-photo-block {
-  width: 420px;
-  max-width: 100%;
-  background: linear-gradient(160deg, #1a3a6b 0%, #2d5fa8 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 22px 20px 16px;
-  gap: 8px;
-  border-radius: 12px 12px 0 0;
-}
-.cand-photo-block.female {
-  background: linear-gradient(160deg, #6b1a3a 0%, #a82d6a 100%);
-}
-.cand-photo-img {
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid rgba(255,255,255,0.85);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
-.cand-photo-name {
-  font-family: 'Caveat', cursive;
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: #fff;
-  text-align: center;
-  letter-spacing: 0.03em;
-}
-.cand-photo-lista {
-  font-size: 0.68rem;
-  color: rgba(255,255,255,0.7);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-/* ===== SHARE ROW ===== */
-.share-row {
-  width: 420px;
-  max-width: 100%;
-  margin-top: 14px;
-}
-.share-row .btn-whatsapp {
-  width: 100%;
-  padding: 16px 28px;
-  font-size: 1.05rem;
-  border-radius: 14px;
-  box-shadow: 0 4px 20px rgba(37,211,102,0.35);
-}
-
 /* ===== WHY CARDS ===== */
 .why-section {
   width: 420px;
   max-width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 12px;
   margin-top: 16px;
 }
 .why-card {
@@ -550,10 +491,6 @@ html, body {
   border-radius: 12px;
   padding: 14px 16px;
   border-left: 4px solid #1a3a6b;
-}
-.why-card.why-card-attached {
-  border-radius: 0 0 12px 12px;
-  border-top: none;
 }
 .why-card.female { border-left-color: #be185d; }
 .why-name {
@@ -665,8 +602,7 @@ html, body {
 .step.active { display: block; }
 
 @media (max-width: 580px) {
-  #ballot, .why-section, .action-row, .wa-section,
-  .cand-photo-block, .share-row { width: 100%; }
+  #ballot, .why-section, .action-row, .wa-section { width: 100%; }
   .candidate-grid { grid-template-columns: 1fr 1fr; }
 }
 </style>
@@ -822,27 +758,23 @@ html, body {
         <div class="ballot-portrait-footer">perronesindaco.it</div>
       </div><!-- /#ballot-portrait -->
 
-      <!-- 2. CONDIVIDI SU WHATSAPP (sotto fac-simile) -->
-      <div class="share-row">
-        <button class="btn btn-whatsapp" onclick="shareWhatsApp()">📲 Condividi su WhatsApp</button>
-      </div>
-
-      <!-- 3-6. FOTO + WHY per ogni candidato -->
+      <!-- WHY CARDS -->
       <div class="why-section" id="why-section"></div>
 
-      <!-- 7. TESTO DESCRITTIVO -->
-      <div class="wa-section">
-        <div class="wa-label">💬 Testo pronto per WhatsApp</div>
-        <textarea id="wa-text" rows="9" readonly></textarea>
-      </div>
-
-      <!-- AZIONI SECONDARIE -->
+      <!-- ACTIONS -->
       <div class="action-row">
         <button class="btn btn-download" onclick="downloadImage()">📥 Scarica immagine</button>
+        <button class="btn btn-whatsapp" onclick="shareWhatsApp()">📲 Condividi immagine</button>
         <button class="btn btn-copy" onclick="copyText()">📋 Copia testo</button>
         <button class="btn btn-restart" onclick="restart()">🔄 Ricomincia</button>
       </div>
       <div class="copy-ok" id="copy-ok">✅ Testo copiato!</div>
+
+      <!-- WA TEXT -->
+      <div class="wa-section">
+        <div class="wa-label">💬 Testo pronto per WhatsApp</div>
+        <textarea id="wa-text" rows="9" readonly></textarea>
+      </div>
     </div>
   </div>
 
@@ -875,7 +807,7 @@ async function loadData() {
   if (activeIds.length > 0) {
     const { data: candsData, error: candsErr } = await sbVotanoi
       .from('ballot_candidates')
-      .select('list_id, ballot_name, full_name, gender, why, foto_url')
+      .select('list_id, ballot_name, full_name, gender, why')
       .in('list_id', activeIds)
       .eq('active', true)
       .order('gender')
@@ -893,8 +825,7 @@ async function loadData() {
         ballot: c.ballot_name,
         full:   c.full_name || c.ballot_name,
         gender: c.gender,
-        why:    c.why || '',
-        foto:   c.foto_url || ''
+        why:    c.why || ''
       }));
     LISTS[lst.id] = {
       name:       lst.name,
@@ -911,7 +842,7 @@ async function loadData() {
 // ========================================
 let state = {
   partyKey: null,
-  cand1: null,  // { ballot, full, gender, why, foto }
+  cand1: null,  // { ballot, full, gender, why }
   cand2: null,
   currentStep: 1
 };
@@ -1075,57 +1006,33 @@ function buildStep4() {
   const c1 = state.cand1;
   const c2 = state.cand2;
 
-  // Line 1 = primo candidato selezionato, Line 2 = secondo (se presente)
-  document.getElementById('line-' + partyKey + '-1').textContent = c1 ? c1.ballot : '';
-  document.getElementById('line-' + partyKey + '-2').textContent = c2 ? c2.ballot : '';
+  // Line 1 = M candidate, Line 2 = F candidate (standard ballot order)
+  let lineM = '', lineF = '';
+  if (c1 && c1.gender === 'M') lineM = c1.ballot;
+  if (c1 && c1.gender === 'F') lineF = c1.ballot;
+  if (c2 && c2.gender === 'M') lineM = c2.ballot;
+  if (c2 && c2.gender === 'F') lineF = c2.ballot;
 
-  // BLOCCHI CANDIDATO (foto + why separati)
+  document.getElementById('line-' + partyKey + '-1').textContent = lineM;
+  document.getElementById('line-' + partyKey + '-2').textContent = lineF;
+
+  // WHY CARDS
   const whySection = document.getElementById('why-section');
   whySection.innerHTML = '';
   [c1, c2].forEach(c => {
-    if (!c) return;
-    const hasPhoto = !!c.foto;
-    const hasWhy   = !!c.why;
-    if (!hasPhoto && !hasWhy) return;
-
-    const isF  = c.gender === 'F';
-    const lst  = LISTS[state.partyKey];
-
-    const block = document.createElement('div');
-    block.className = 'cand-block';
-
-    // Foto
-    if (hasPhoto) {
-      const photoDiv = document.createElement('div');
-      photoDiv.className = 'cand-photo-block' + (isF ? ' female' : '');
-      photoDiv.innerHTML = `
-        <img class="cand-photo-img"
-             src="${c.foto}"
-             alt="${c.full}"
-             crossorigin="anonymous"
-             onerror="this.style.display='none'">
-        <div class="cand-photo-name">${c.ballot}</div>
-        <div class="cand-photo-lista">${lst.name}</div>
-      `;
-      block.appendChild(photoDiv);
-    }
-
-    // Why
-    if (hasWhy) {
-      const card = document.createElement('div');
-      card.className = 'why-card' + (isF ? ' female' : '') + (hasPhoto ? ' why-card-attached' : '');
-      card.innerHTML = `
-        <div class="why-name">
-          <span>${isF ? '👩' : '👨'}</span>
-          ${c.full}
-          <span class="why-label">– Mi candido perché...</span>
-        </div>
-        <div class="why-text">"${c.why}"</div>
-      `;
-      block.appendChild(card);
-    }
-
-    whySection.appendChild(block);
+    if (!c || !c.why) return;
+    const isF = c.gender === 'F';
+    const card = document.createElement('div');
+    card.className = 'why-card' + (isF ? ' female' : '');
+    card.innerHTML = `
+      <div class="why-name">
+        <span>${isF ? '👩' : '👨'}</span>
+        ${c.full}
+        <span class="why-label">– Mi candido perché...</span>
+      </div>
+      <div class="why-text">"${c.why}"</div>
+    `;
+    whySection.appendChild(card);
   });
 
   buildWhatsAppText();
@@ -1159,8 +1066,8 @@ function buildWhatsAppText() {
 
   const text = `🗳️ COME VOTARE – Elezioni Voghera 2026
 
-✅ 1. In cima alla scheda metti una X sul nome
-MARCELLO BERGONZI PERRONE
+✅ 1. In cima alla scheda scrivi:
+   BERGONZI PERRONE
 
 ✅ 2. Metti una X sul simbolo:
    ${lst.name}
@@ -1180,11 +1087,8 @@ ${prefText}
 function makeCandBtn(c, onClick) {
   const btn = document.createElement('button');
   btn.className = 'candidate-btn';
-  const fotoEl = c.foto
-    ? `<img src="${c.foto}" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;border:1.5px solid #dde3ee;" crossorigin="anonymous" onerror="this.style.display='none'">`
-    : `<div class="gender-badge ${c.gender}">${c.gender}</div>`;
   btn.innerHTML = `
-    ${fotoEl}
+    <div class="gender-badge ${c.gender}">${c.gender}</div>
     <div>
       <div class="ballot-name">${c.ballot}</div>
       <div class="full-name">${c.full !== c.ballot ? c.full : ''}</div>
@@ -1211,7 +1115,7 @@ function buildSummary(showCand1) {
   return html;
 }
 
-// ── Filename ──────────────────────────────────────────────────────────────
+// Genera il filename standard
 function buildFilename() {
   const now = new Date();
   const yy = String(now.getFullYear()).slice(2);
@@ -1222,116 +1126,59 @@ function buildFilename() {
   return `${yy}${mm}${dd}-votanoi-${n1}${n2}.jpg`;
 }
 
-// ── Cattura un elemento DOM → Blob JPEG ───────────────────────────────────
-function captureBlob(el, bg) {
-  return html2canvas(el, {
-    scale: 2.5, useCORS: true,
-    backgroundColor: bg || '#ffffff',
-    logging: false
-  }).then(canvas => new Promise(resolve =>
-    canvas.toBlob(blob => resolve(blob), 'image/jpeg', 0.92)
-  ));
-}
-
-// ── Immagine 1: scheda ballot ──────────────────────────────────────────────
+// Genera il canvas e restituisce una Promise<{blob, filename}>
 function generateImageBlob() {
-  return captureBlob(document.getElementById('ballot-portrait'), '#1a3a6b')
-    .then(blob => ({ blob, filename: buildFilename() }));
+  const ballot = document.getElementById('ballot-portrait');
+  return html2canvas(ballot, {
+    scale: 2.5,
+    useCORS: true,
+    backgroundColor: '#1a3a6b',
+    logging: false
+  }).then(canvas => new Promise(resolve => {
+    canvas.toBlob(blob => resolve({ blob, filename: buildFilename() }), 'image/jpeg', 0.92);
+  }));
 }
 
-// ── Immagine 2: "Mi candido perché..." con wrapper portrait ───────────────
-function generateWhyBlob() {
-  const whySrc = document.getElementById('why-section');
-  if (!whySrc || whySrc.children.length === 0) return Promise.resolve(null);
-
-  // Wrapper off-screen clone, stessa estetica del ballot-portrait
-  const wrap = document.createElement('div');
-  wrap.style.cssText = [
-    'position:fixed', 'left:-9999px', 'top:0',
-    'width:420px', 'background:#1a3a6b',
-    'font-family:Inter,Arial,sans-serif', 'overflow:hidden'
-  ].join(';');
-  wrap.innerHTML = `
-    <div style="background:linear-gradient(135deg,#1a3a6b,#2d5fa8);
-                padding:18px 20px 14px;text-align:center;color:#fff;">
-      <div style="font-size:1rem;font-weight:800;letter-spacing:.06em;
-                  text-transform:uppercase;margin-bottom:3px;">🗳️ Votanoi</div>
-      <div style="font-size:.72rem;opacity:.8;letter-spacing:.04em;">
-        Voghera 2026 · perronesindaco.it</div>
-    </div>
-    <div id="_why_inner"
-         style="background:#eef2f7;padding:16px;display:flex;
-                flex-direction:column;gap:12px;"></div>
-    <div style="background:#1a3a6b;padding:10px;text-align:center;
-                color:rgba(255,255,255,.7);font-size:.7rem;
-                letter-spacing:.05em;">perronesindaco.it</div>`;
-  document.body.appendChild(wrap);
-
-  // Copia le why-card (cloneNode preserva stili inline; le classi CSS
-  // sono nella <style> della pagina e vengono lette da html2canvas)
-  const inner = wrap.querySelector('#_why_inner');
-  Array.from(whySrc.children).forEach(c => inner.appendChild(c.cloneNode(true)));
-
-  return captureBlob(wrap, '#1a3a6b').finally(() => document.body.removeChild(wrap));
-}
-
-// ── Download ───────────────────────────────────────────────────────────────
 function downloadImage() {
   generateImageBlob().then(({ blob, filename }) => {
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = filename; a.click();
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
     setTimeout(() => URL.revokeObjectURL(url), 5000);
   });
 }
 
-// ── Condivisione WhatsApp: ballot + why (se compilato) + testo istruzioni ─
 async function shareWhatsApp() {
   const btn = document.querySelector('.btn-whatsapp');
-  const orig = btn.innerHTML;
-  btn.innerHTML = '⏳ Preparando…'; btn.disabled = true;
-
+  const origHtml = btn.innerHTML;
+  btn.innerHTML = '⏳';
+  btn.disabled = true;
   try {
-    // Genera le immagini in parallelo
-    const [imgResult, whyBlob] = await Promise.all([
-      generateImageBlob(),
-      generateWhyBlob()
-    ]);
-
-    const files = [
-      new File([imgResult.blob], imgResult.filename, { type: 'image/jpeg' })
-    ];
-    if (whyBlob) {
-      files.push(new File([whyBlob], 'votanoi-perche.jpg', { type: 'image/jpeg' }));
-    }
-
-    const text = document.getElementById('wa-text').value;
-
-    // Web Share API con file (iOS Safari + Chrome Android)
-    if (navigator.share && navigator.canShare && navigator.canShare({ files })) {
-      await navigator.share({ files, title: 'Votanoi – Voghera 2026', text });
-    } else {
-      // Fallback desktop: scarica immagini + apre wa.me col testo
-      files.forEach((f, i) => {
-        setTimeout(() => {
-          const url = URL.createObjectURL(f);
-          const a = document.createElement('a');
-          a.href = url; a.download = f.name; a.click();
-          setTimeout(() => URL.revokeObjectURL(url), 5000);
-        }, i * 600);
+    const { blob, filename } = await generateImageBlob();
+    const file = new File([blob], filename, { type: 'image/jpeg' });
+    // Prova Web Share API con file (funziona su mobile moderno)
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: 'Votanoi – Voghera 2026',
+        text: '🗳️ Ecco come voto! Crea la tua scheda su perronesindaco.it'
       });
-      setTimeout(() => {
-        window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
-      }, files.length * 600 + 200);
+    } else {
+      // Fallback desktop: condividi il testo via wa.me
+      const text = document.getElementById('wa-text').value;
+      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
     }
   } catch (err) {
     if (err.name !== 'AbortError') {
-      // Errore inatteso: fallback testo
+      // L'utente ha annullato oppure errore: fallback testo
       const text = document.getElementById('wa-text').value;
       window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
     }
   } finally {
-    btn.innerHTML = orig; btn.disabled = false;
+    btn.innerHTML = origHtml;
+    btn.disabled = false;
   }
 }
 
